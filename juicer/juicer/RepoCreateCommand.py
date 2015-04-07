@@ -24,7 +24,6 @@ class RepoCreateCommand(JuicerCommand):
     def __init__(self, args):
         super(RepoCreateCommand, self).__init__(args)
 
-
     def run(self):
         from pulp.bindings.repository import RepositoryAPI
         from pulp.bindings.repository import RepositoryActionsAPI

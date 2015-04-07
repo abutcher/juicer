@@ -24,7 +24,6 @@ class HelloCommand(JuicerCommand):
     def __init__(self, args):
         super(HelloCommand, self).__init__(args)
 
-
     def run(self):
         from pulp.bindings.server_info import ServerInfoAPI
         

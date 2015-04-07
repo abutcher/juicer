@@ -18,3 +18,4 @@ juicer.spec
 juicerenv
 pulp
 .coverage
+cover/

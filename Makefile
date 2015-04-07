@@ -1,6 +1,6 @@
 ########################################################
 
-# Makefile for re-worker-satellite5
+# Makefile for juicer
 #
 # useful targets (not all implemented yet!):
 #   make clean               -- Clean up garbage

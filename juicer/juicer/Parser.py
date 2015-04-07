@@ -17,6 +17,9 @@
 
 import argparse
 import juicer.juicer
+from juicer.juicer.HelloCommand import HelloCommand
+from juicer.juicer.RepoCreateCommand import RepoCreateCommand
+from juicer.juicer.RepoPublishCommand import RepoPublishCommand
 
 
 class Parser(object):
@@ -227,7 +230,7 @@ class Parser(object):
                                   default=self._default_envs,
                                   dest='environment')
 
-        parser_hello.set_defaults(cmd=juicer.juicer.HelloCommand)
+        parser_hello.set_defaults(cmd=HelloCommand)
 
         ##################################################################
         # create the 'cart promote' sub-parser
@@ -290,7 +293,7 @@ class Parser(object):
                                          default=self._default_envs,
                                          dest='environment')
 
-        parser_repo_publish.set_defaults(cmd=juicer.juicer.RepoPublishCommand)
+        parser_repo_publish.set_defaults(cmd=RepoPublishCommand)
 
         ##################################################################
         # Create the 'repo create' sub-parser
@@ -316,7 +319,7 @@ class Parser(object):
                                         default=self._default_envs,
                                         help='The environments in which to create your repository')
 
-        parser_repo_create.set_defaults(cmd=juicer.juicer.RepoCreateCommand)
+        parser_repo_create.set_defaults(cmd=RepoCreateCommand)
 
 
 def main():

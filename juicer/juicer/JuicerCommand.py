@@ -30,8 +30,8 @@ class JuicerCommand(object):
             self.connections[environment] = PulpConnection(
                 cfg['hostname'],
                 int(cfg['port']),
-                username = cfg['username'],
-                password = cfg['password'],
-                cert_filename = cfg['cert_filename'],
-                verify_ssl = False,
-                ca_path = cfg['ca_path'])
+                username=cfg['username'],
+                password=cfg['password'],
+                cert_filename=cfg['cert_filename'],
+                verify_ssl=False,
+                ca_path=cfg['ca_path'])

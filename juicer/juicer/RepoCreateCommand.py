@@ -27,7 +27,7 @@ class RepoCreateCommand(JuicerCommand):
     def run(self):
         from pulp.bindings.repository import RepositoryAPI
         from pulp.bindings.repository import RepositoryActionsAPI
-        
+
         for environment in self.args.environment:
             repo_id = "{0}-{1}".format(self.args.repo, environment)
             display_name = self.args.repo
@@ -42,17 +42,17 @@ class RepoCreateCommand(JuicerCommand):
                 notes={'_repo-type': 'rpm-repo'},
                 importer_type_id='yum_importer',
                 importer_config={},
-                distributors=[{ 'distributor_id': 'yum_distributor',
-                                'distributor_type_id': 'yum_distributor',
-                                'distributor_config': {
-                                    'relative_url': relative_url,
-                                    'http': True,
-                                    'https': True,
-                                    'checksum_type': checksum_type
-                                },
-                                'auto_publish': True,
-                                'relative_path': relative_url
-                        }]
+                distributors=[{'distributor_id': 'yum_distributor',
+                               'distributor_type_id': 'yum_distributor',
+                               'distributor_config': {
+                                   'relative_url': relative_url,
+                                   'http': True,
+                                   'https': True,
+                                   'checksum_type': checksum_type
+                               },
+                               'auto_publish': True,
+                               'relative_path': relative_url
+                           }]
             )
 
             if response.response_code == Constants.PULP_POST_CREATED:

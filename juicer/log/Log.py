@@ -17,6 +17,7 @@
 
 import inspect
 import os.path
+import sys
 
 LOG_DEBUG = 4
 LOG_NOTICE = 3
@@ -24,7 +25,7 @@ LOG_WARN = 2
 LOG_INFO = 1
 LOG_ERROR = 0
 LOG_LEVEL_CURRENT = 1
-            # error, info -> stdout
+# error, info -> stdout
 LOG_TO_STDOUT = [LOG_ERROR, LOG_INFO, LOG_NOTICE]
 LOG_TO_STDERR = [LOG_DEBUG, LOG_WARN]
 
@@ -120,7 +121,7 @@ def print_log_msg(log_level, msg):
     line_called_from = inspect.stack()[2][2]
     method_called_from = inspect.stack()[2][3]
     debug_info = "%s:%s:%s" % (os.path.basename(file_called_from),
-                                 method_called_from, line_called_from)
+                               method_called_from, line_called_from)
 
     try:
         for l in msg.split("\n"):
@@ -130,7 +131,7 @@ def print_log_msg(log_level, msg):
                 else:
                     print "%s: %s" % (log_level, l)
             else:
-                print_stderr("%s[%s]: %s\n" %\
+                print_stderr("%s[%s]: %s\n" %
                              (log_level, debug_info, l))
     except Exception as e:
         # A logging mechanism should never cause a script to abort if

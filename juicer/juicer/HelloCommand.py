@@ -26,7 +26,7 @@ class HelloCommand(JuicerCommand):
 
     def run(self):
         from pulp.bindings.server_info import ServerInfoAPI
-        
+
         for environment in self.args.environment:
             hostname = self.config.get(environment)['hostname']
             pulp = ServerInfoAPI(self.connections[environment])

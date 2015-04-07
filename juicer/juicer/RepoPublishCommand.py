@@ -26,7 +26,7 @@ class RepoPublishCommand(JuicerCommand):
 
     def run(self):
         from pulp.bindings.repository import RepositoryActionsAPI
-        
+
         for environment in self.args.environment:
             repo_id = "{0}-{1}".format(self.args.repo, environment)
             display_name = self.args.repo

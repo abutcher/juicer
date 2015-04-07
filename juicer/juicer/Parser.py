@@ -162,12 +162,12 @@ class Parser(object):
 
         ##################################################################
         # Create the 'cart delete' sub-parser
-        parser_cart_delete = subparser_cart.add_parser('delete', \
-                help='Delete a cart locally and on the pulp server.',
-                usage='%(prog)s CARTNAME [-h]')
+        parser_cart_delete = subparser_cart.add_parser('delete',
+                                                       help='Delete a cart locally and on the pulp server.',
+                                                       usage='%(prog)s CARTNAME [-h]')
 
-        parser_cart_delete.add_argument('cartname', metavar='cartname', \
-                                    help='The name of the release cart to delete')
+        parser_cart_delete.add_argument('cartname', metavar='cartname',
+                                        help='The name of the release cart to delete')
 
         #parser_cart_delete.set_defaults(command=juicer.juicer.cart_delete)
 
@@ -317,3 +317,12 @@ class Parser(object):
                                         help='The environments in which to create your repository')
 
         parser_repo_create.set_defaults(cmd=juicer.juicer.RepoCreateCommand)
+
+
+def main():
+    parser = Parser()
+    args = parser.parser.parse_args()
+    args.cmd(args).run()
+
+if __name__ == '__main__':
+    main()

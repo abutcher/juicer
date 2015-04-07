@@ -1,7 +1,14 @@
 import os
 import sys
 
-from distutils.core import setup
+
+try:
+    from setuptools import setup
+except ImportError:
+    import warnings
+    warnings.warn('No setuptools. Script creation will be skipped.')
+    from distutils.core import setup
+
 
 setup(name='juicer',
       version='1.0.0',
@@ -18,7 +25,9 @@ setup(name='juicer',
           'juicer.juicer',
           'juicer.log'
       ],
-      scripts=[
-         'bin/juicer'
-      ]
+      entry_points={
+          'console_scripts': [
+              'juicer = juicer.juicer.Parser:main',
+          ],
+      }
 )

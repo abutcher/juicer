@@ -21,6 +21,7 @@ setup(name='juicer',
       packages=[
           'juicer',
           'juicer.cart',
+          'juicer.common',
           'juicer.config',
           'juicer.juicer',
           'juicer.log'

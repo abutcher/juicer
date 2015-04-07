@@ -29,6 +29,8 @@ TESTPACKAGE := juicer
 RPMSPECDIR := ./contrib/rpm/
 RPMSPEC := $(RPMSPECDIR)/juicer.spec
 
+PULPTAG := "2.6-release"
+
 sdist: clean
 	python setup.py sdist
 	rm -fR $(SHORTNAME).egg-info
@@ -41,13 +43,15 @@ virtualenv:
 #	. $(NAME)env/bin/activate && pip install -r requirements.txt
 #	. $(NAME)env/bin/activate && pip install pep8 nose coverage mock
 # If there are any special things to install do it here
-	. $(NAME)env/bin/activate && pip install .
+	if [ ! -d "pulp" ]; then git clone https://github.com/pulp/pulp.git; fi
+	. $(NAME)env/bin/activate && cd pulp && git checkout $(PULPTAG)
+	. $(NAME)env/bin/activate && cd pulp/bindings && pip install .
 
 ci-unittests:
 	@echo "#############################################"
 	@echo "# Running Unit Tests in virtualenv"
 	@echo "#############################################"
-	. $(NAME)env/bin/activate && nosetests -v --with-cover --cover-min-percentage=80 --cover-package=$(TESTPACKAGE) test/
+	. $(NAME)env/bin/activate && nosetests -v --with-cover --cover-min-percentage=80 --cover-html --cover-package=$(TESTPACKAGE).juicer test/
 
 ci-list-deps:
 	@echo "#############################################"
@@ -78,8 +82,8 @@ unittests:
 clean:
 	@find . -type f -regex ".*\.py[co]$$" -delete
 	@find . -type f \( -name "*~" -or -name "#*" \) -delete
-	@rm -fR build dist rpm-build MANIFEST htmlcov .coverage $(SHORTNAME).egg-info reworkersatellite5.egg-info
-	@rm -rf $(NAME)env
+	@rm -fR build dist rpm-build MANIFEST htmlcov .coverage $(SHORTNAME).egg-info
+	@rm -rf $(NAME)env cover
 
 pep8:
 	@echo "#############################################"
@@ -107,8 +111,8 @@ srpm: rpmcommon
 	--define "_sourcedir %{_topdir}" \
 	-bs $(RPMSPEC)
 	@echo "#############################################"
-	@echo "Re-Core SRPM is built:"
-	@find rpm-build -maxdepth 2 -name 're-worker-satellite5*src.rpm' | awk '{print "    " $$1}'
+	@echo "JUICER SRPM is built:"
+	@find rpm-build -maxdepth 2 -name 'juicer*src.rpm' | awk '{print "    " $$1}'
 	@echo "#############################################"
 
 rpm: rpmcommon
@@ -120,6 +124,6 @@ rpm: rpmcommon
 	--define "_sourcedir %{_topdir}" \
 	-ba $(RPMSPEC)
 	@echo "#############################################"
-	@echo "Re-Core RPMs are built:"
-	@find rpm-build -maxdepth 2 -name 're-worker-satellite5*.rpm' | awk '{print "    " $$1}'
+	@echo "JUICER RPMs are built:"
+	@find rpm-build -maxdepth 2 -name 'juicer*.rpm' | awk '{print "    " $$1}'
 	@echo "#############################################"

@@ -1,24 +1,23 @@
 Juicer
 ------
 ```
-$ juicer --help
 usage: juicer [-h] [-v] [-V] {repo,rpm,hello,cart} ...
 
 Manage release carts
 
 optional arguments:
 -h, --help            show this help message and exit
--v                    Increase the verbosity (up to 3x)
+-v                    increase the verbosity (up to 3x)
 -V, --version         show program's version number and exit
 
 Commands:
 'juicer COMMAND -h' for individual help topics
 
 {repo,rpm,hello,cart}
-cart                Cart operations
-rpm                 RPM operations
-repo                Repo operations
-hello               Test your connection to the pulp server
+cart                cart operations
+rpm                 rpm operations
+repo                repo operations
+hello               test your connection to the pulp server
 ```
 
 Config

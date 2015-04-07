@@ -31,7 +31,7 @@ class Parser(object):
 
         self.parser.add_argument('-v', action='count',
                                  default=1,
-                                 help='Increase the verbosity (up to 3x)')
+                                 help='increase the verbosity (up to 3x)')
 
         self.parser.add_argument('-V', '--version', action='version',
                                  version='juicer-1.0.0')
@@ -45,21 +45,21 @@ class Parser(object):
         ##################################################################
         # Create the 'cart' sub-parser
         parser_cart = subparsers.add_parser('cart',
-                                            help='Cart operations')
+                                            help='cart operations')
 
         subparser_cart = parser_cart.add_subparsers(dest='sub_command')
 
         ##################################################################
         # Create the 'rpm' sub-parser
         parser_rpm = subparsers.add_parser('rpm',
-                                           help='RPM operations')
+                                           help='rpm operations')
 
         subparser_rpm = parser_rpm.add_subparsers(dest='sub_command')
 
         ##################################################################
         # Create the 'repo' sub-parser
         parser_repo = subparsers.add_parser('repo',
-                                            help='Repo operations')
+                                            help='repo operations')
 
         subparser_repo = parser_repo.add_subparsers(dest='sub_command')
 
@@ -218,7 +218,7 @@ class Parser(object):
         ##################################################################
         # create the 'hello' sub-parser
         parser_hello = subparsers.add_parser('hello',
-                                             help='Test your connection to the pulp server',
+                                             help='test your connection to the pulp server',
                                              usage='%(prog)s [--in env ...]')
 
         parser_hello.add_argument('--in', nargs='*',

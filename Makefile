@@ -41,7 +41,7 @@ virtualenv:
 	@echo "#############################################"
 	virtualenv $(NAME)env
 #	. $(NAME)env/bin/activate && pip install -r requirements.txt
-#	. $(NAME)env/bin/activate && pip install pep8 nose coverage mock
+	. $(NAME)env/bin/activate && pip install pep8 nose coverage mock
 # If there are any special things to install do it here
 	if [ ! -d "pulp" ]; then git clone https://github.com/pulp/pulp.git; fi
 	. $(NAME)env/bin/activate && cd pulp && git checkout $(PULPTAG)
@@ -65,7 +65,15 @@ ci-pep8:
 	@echo "#############################################"
 	. $(NAME)env/bin/activate && pep8 --ignore=E501,E121,E124 $(SHORTNAME)/
 
-ci: clean virtualenv ci-list-deps ci-pep8 ci-unittests
+ci-pyflakes:
+	@echo "#############################################"
+	@echo "# Running Pyflakes Sanity Tests in virtualenv"
+	@echo "# Note: most import errors may be ignored"
+	@echo "#############################################"
+	-. $(NAME)env/bin/activate && pyflakes $(SHORTNAME)
+
+
+ci: clean virtualenv ci-list-deps ci-pyflakes ci-pep8 ci-unittests
 	:
 
 

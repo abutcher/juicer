@@ -16,9 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.config.Config import Config
-from juicer.common import Constants
-from juicer.log import Log
-from pulp.bindings.exceptions import *
 from pulp.bindings.server import PulpConnection
 
 

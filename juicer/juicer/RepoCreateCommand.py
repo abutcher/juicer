@@ -59,7 +59,7 @@ class RepoCreateCommand(JuicerCommand):
             if response.response_code == Constants.PULP_POST_CREATED:
                 Log.log_info("%s created in %s", display_name, environment)
             else:
-                Log.log_info("failed to create %s in %s", self.args.repo, environment)
+                Log.log_info("failed to create %s in %s", display_name, environment)
                 Log.log_debug(response)
 
             pulp = RepositoryActionsAPI(self.connections[environment])

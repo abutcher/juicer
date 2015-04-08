@@ -1,0 +1,29 @@
+language: python
+notifications:
+    email: false
+branches:
+    only:
+        - master
+script: make ci
+
+# Need extra deps for our requirements
+addons:
+  apt_packages:
+    # swig for some weird crypto stuff
+    - swig
+
+
+# if we get to the point where we want multiple builds (python 2.x and
+# 3.x) then we will update the makefile and use the following (as per
+# the github.com/tbielawa/bitmath project example)
+#
+# after_success:
+#     - coveralls
+# matrix:
+#   include:
+#     - python: "2.7"
+#       env: CI=ci
+#     - python: "3.3"
+#       env: CI=ci3
+# script: make $CI
+#install: ""

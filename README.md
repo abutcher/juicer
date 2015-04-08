@@ -1,3 +1,6 @@
+[![Build Status](https://api.travis-ci.org/abutcher/juicer.png)](https://travis-ci.org/abutcher/juicer/)
+
+
 Juicer
 ------
 ```

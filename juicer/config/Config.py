@@ -17,6 +17,7 @@
 
 import ConfigParser
 import juicer.common.Constants
+import os
 
 
 class Config(object):
@@ -29,6 +30,10 @@ class Config(object):
     def read(self):
         config = ConfigParser.SafeConfigParser()
         configs = []
+
+        if not os.path.exists(juicer.common.Constants.USER_CONFIG):
+            raise SystemError("No configuration file found: %s" % juicer.common.Constants.USER_CONFIG)
+
         configs.append(juicer.common.Constants.USER_CONFIG)
         config.read(configs)
         return config

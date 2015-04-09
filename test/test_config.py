@@ -78,8 +78,8 @@ class TestConfig(TestCase):
         # patch the constant to point to a non-existant cart
         with mock.patch('juicer.common.Constants') as constants:
             constants.USER_CONFIG = './doesnt-exist-config'
-            c = juicer.config.Config.Config()
-            self.assertEqual(c.config, {})
+            with self.assertRaises(SystemError):
+                c = juicer.config.Config.Config()
 
     def test_get_missing_config_section(self):
         """KeyError raises if an invalid config section is requested"""

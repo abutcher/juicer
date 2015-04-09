@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import ConfigParser
-import os
+import juicer.common.Constants
 
 
 class Config(object):
@@ -29,7 +29,7 @@ class Config(object):
     def read(self):
         config = ConfigParser.SafeConfigParser()
         configs = []
-        configs.append(os.path.expanduser('~/.config/juicer/config'))
+        configs.append(juicer.common.Constants.USER_CONFIG)
         config.read(configs)
         return config
 

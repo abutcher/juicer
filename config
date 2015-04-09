@@ -1,0 +1,15 @@
+[DEFAULT]
+username: testuser
+password: testpass
+port: 443
+verify_ssl: False
+ca_path: /home/testuser/certs/pulp.crt
+cert_filename: /home/testuser/certs/client.crt
+start_in: re
+
+[re]
+hostname: testhost.re.example.com
+promotes_to: qa
+
+[qa]
+hostname: testhost.qa.example.com

@@ -322,10 +322,10 @@ class Parser(object):
         parser_repo_create.set_defaults(cmd=RepoCreateCommand)
 
 
-def main():
+def main():  # pragma: no cover
     parser = Parser()
     args = parser.parser.parse_args()
     args.cmd(args).run()
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()

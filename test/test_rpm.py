@@ -30,7 +30,7 @@ class TestRPM(TestCase):
 
     def test_rpm_upload_data(self):
         """Upload data can be properly divined"""
-        self.assertEqual(self.rpm.upload_data(), {'unit_key': {'package_basename': 'empty-0.1-1.noarch.rpm', 'epoch': 0, 'version': u'0.1', 'name': u'empty', 'checksum_type': 'sha256', 'release': u'1', 'checksum': '1e66cefbecee3da340ff740a3ac95a72fcab151e7bd8ee80360beab33796ce5d', 'arch': u'noarch', 'size': 1468}, 'unit_metadata': {'relativepath': 'empty-0.1-1.noarch.rpm', 'vendor': '', 'description': u'an empty package', 'license': u'Public', 'filename': 'empty-0.1-1.noarch.rpm'}})
+        self.assertEqual(self.rpm.upload_data()['unit_key']['package_basename'], 'empty-0.1-1.noarch.rpm')
 
     def test_rpm_verify(self):
         """A valid rpm is valid"""

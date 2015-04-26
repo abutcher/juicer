@@ -20,6 +20,7 @@ import juicer.juicer
 from juicer.juicer.HelloCommand import HelloCommand
 from juicer.juicer.RepoCreateCommand import RepoCreateCommand
 from juicer.juicer.RepoPublishCommand import RepoPublishCommand
+from juicer.juicer.RPMUploadCommand import RPMUploadCommand
 
 
 class Parser(object):
@@ -216,7 +217,7 @@ class Parser(object):
                                        help='The environments to upload into.',
                                        dest='environment')
 
-        # parser_rpm_upload.set_defaults(command=juicer.juicer.upload)
+        parser_rpm_upload.set_defaults(cmd=RPMUploadCommand)
 
         ##################################################################
         # create the 'hello' sub-parser

@@ -24,7 +24,8 @@ setup(name='juicer',
           'juicer.common',
           'juicer.config',
           'juicer.juicer',
-          'juicer.log'
+          'juicer.log',
+          'juicer.rpm'
       ],
       entry_points={
           'console_scripts': [

@@ -29,6 +29,10 @@ class Cart(object):
         self.repo_items_hash = {}
         self.remotes_storage = os.path.expanduser(os.path.join(Constants.CART_LOCATION, "%s-remotes" % self.name))
 
+        if autoload:
+            Log.log_notice("[CART:%s] Auto-loading cart items" % self.name)
+            self.load()
+
         if description is not None:
             for repo_items in description:
                 (repo, items) = (repo_items[0], repo_items[1:])
@@ -116,7 +120,40 @@ class Cart(object):
         Log.log_info("Saved cart '%s'." % self.name)
 
     def load(self):
-        pass
+        """
+        Build a cart from a json file
+        """
+        if not os.path.exists(self.cart_file):
+            raise SystemError("No cart file found %s" % self.cart_file)
+
+        cart_file = open(self.cart_file)
+        cart_body = json.loads(cart_file.read())
+        cart_file.close()
+
+        for repo, items in cart_body['repos_items'].iteritems():
+            self.add_repo(repo, items)
+
+    def delete(self):
+        """
+        Remove all trace of this cart: delete the file(s) on the local
+        filesystem and delete the entry from the database
+        """
+        Log.log_debug("Deleting cart %s" % self.name)
+
+        # rm -r self.remotes_storage()
+        if os.path.exists(self.remotes_storage):
+            for item in os.listdir(self.remotes_storage):
+                ipath = os.path.expanduser(self.remotes_storage + '/' + item)
+                if os.path.exists(ipath):
+                    Log.log_debug("removing %s" % ipath)
+                    os.remove(ipath)
+                Log.log_debug("removing %s's remote item storage dir" % self.name)
+                os.rmdir(self.remotes_storage)
+
+        # rm cart_file()
+        if os.path.exists(self.cart_file):
+            Log.log_debug("removing %s's cart file" % self.name)
+            os.remove(self.cart_file)
 
     def __str__(self):
         return json.dumps(self._cart_dict(), indent=4)

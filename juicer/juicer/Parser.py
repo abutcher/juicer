@@ -17,10 +17,14 @@
 
 import argparse
 import juicer.juicer
+from juicer.juicer.CartCreateCommand import CartCreateCommand
+from juicer.juicer.CartDeleteCommand import CartDeleteCommand
+from juicer.juicer.CartShowCommand import CartShowCommand
 from juicer.juicer.HelloCommand import HelloCommand
 from juicer.juicer.RepoCreateCommand import RepoCreateCommand
 from juicer.juicer.RepoDeleteCommand import RepoDeleteCommand
 from juicer.juicer.RepoPublishCommand import RepoPublishCommand
+from juicer.juicer.RPMDeleteCommand import RPMDeleteCommand
 from juicer.juicer.RPMUploadCommand import RPMUploadCommand
 
 
@@ -72,7 +76,7 @@ class Parser(object):
         # Create the 'cart create' sub-parser
         parser_cart_create = subparser_cart.add_parser('create',
                                                        help='Create a cart with the items specified.',
-                                                       usage='%(prog)s CARTNAME [-f rpm-manifest] ... [-r REPONAME items ... [ -r REPONAME items ...]]')
+                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [ -r REPONAME items ...]]')
 
         parser_cart_create.add_argument('cartname', metavar='cart-name',
                                         help='Cart name')
@@ -84,11 +88,7 @@ class Parser(object):
                             nargs='+',
                             help='Destination repo name')
 
-        cgroup.add_argument('-f', metavar='rpm-manifest',
-                            action='append',
-                            help='RPM manifest for cart')
-
-        # parser_cart_create.set_defaults(command=juicer.juicer.cart_create)
+        parser_cart_create.set_defaults(cmd=CartCreateCommand)
 
         ##################################################################
         # Create the 'cart show' sub-parser
@@ -105,7 +105,7 @@ class Parser(object):
                                       help='Only show carts pushed to the given environment.',
                                       dest='environment')
 
-        # parser_cart_show.set_defaults(command=juicer.juicer.cart_show)
+        parser_cart_show.set_defaults(cmd=CartShowCommand)
 
         ##################################################################
         # Create the 'cart list' sub-parser
@@ -174,7 +174,7 @@ class Parser(object):
         parser_cart_delete.add_argument('cartname', metavar='cartname',
                                         help='The name of the release cart to delete')
 
-        # parser_cart_delete.set_defaults(command=juicer.juicer.cart_delete)
+        parser_cart_delete.set_defaults(cmd=CartDeleteCommand)
 
         ##################################################################
         # Create the 'rpm search' sub-parser

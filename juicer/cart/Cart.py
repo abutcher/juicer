@@ -23,7 +23,7 @@ import os
 
 
 class Cart(object):
-    def __init__(self, name, description=None, autoload=False, autosync=False):
+    def __init__(self, name, description=None, autoload=False, autosync=False, autosave=False):
         self.name = name
         self.cart_file = os.path.join(Constants.CART_LOCATION, "%s.json" % self.name)
         self.repo_items_hash = {}
@@ -35,7 +35,8 @@ class Cart(object):
                 Log.log_debug("Processing %s input items for repo %s"
                               % (len(items), repo))
                 self[repo] = items
-            self.save()
+            if autosave:
+                self.save()
 
     def __getitem__(self, repo):
         """ Return the items in the given repo """

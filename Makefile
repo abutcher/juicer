@@ -49,6 +49,9 @@ virtualenv:
 	. $(NAME)env/bin/activate && cd pulp && git checkout $(PULPTAG)
 	. $(NAME)env/bin/activate && cd pulp/bindings && pip install .
 	. $(NAME)env/bin/activate && cd pulp/common && pip install .
+# Install pyrpm in the virtualenv, only clone if it doesn't exist
+	if [ ! -d "pyrpm" ]; then git clone https://github.com/02strich/pyrpm.git; fi
+	. $(NAME)env/bin/activate && cd pyrpm && pip install .
 # Install juicer in the virtual env
 	. $(NAME)env/bin/activate && pip install .
 

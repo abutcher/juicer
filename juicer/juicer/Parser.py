@@ -19,6 +19,7 @@ import argparse
 import juicer.juicer
 from juicer.juicer.HelloCommand import HelloCommand
 from juicer.juicer.RepoCreateCommand import RepoCreateCommand
+from juicer.juicer.RepoDeleteCommand import RepoDeleteCommand
 from juicer.juicer.RepoPublishCommand import RepoPublishCommand
 from juicer.juicer.RPMUploadCommand import RPMUploadCommand
 
@@ -273,14 +274,30 @@ class Parser(object):
 
         parser_rpm_delete.add_argument('--in', nargs='*',
                                        metavar='environment',
-                                       help='The environments to test the connection to.',
+                                       help='The environments to test the connection to',
                                        default=self._default_envs,
                                        dest='environment')
 
         # parser_rpm_delete.set_defaults(command=juicer.juicer.delete_rpm)
 
         ##################################################################
-        # create the 'publish' sub-parser
+        # Create the 'repo delete' sub-parser
+        parser_repo_delete = subparser_repo.add_parser('delete',
+                                                       help='Delete pulp repository')
+
+        parser_repo_delete.add_argument('repo', metavar='reponame',
+                                        help='Target repo to delete.')
+
+        parser_repo_delete.add_argument('--in', metavar='envs',
+                                        nargs="+",
+                                        dest='environment',
+                                        default=self._default_envs,
+                                        help='The environments in which to delete your repository')
+
+        parser_repo_delete.set_defaults(cmd=RepoDeleteCommand)
+
+        ##################################################################
+        # create the 'repo publish' sub-parser
         parser_repo_publish = subparser_repo.add_parser('publish',
                                                         help='Publish a repository, this will regenerate metadata.',
                                                         usage='%(prog)s publish REPONAME --in [ENV ...]')

@@ -20,8 +20,8 @@ from juicer.common import Constants
 from juicer.log import Log
 import magic
 import os.path
+from pyrpm.rpm import RPM as PYRPM
 import re
-import rpm
 
 
 class RPM(object):
@@ -51,8 +51,25 @@ class RPM(object):
                 verified = True
         return verified
 
-    def upload_data(self):
-        return self._generate_rpm_data(self.path)
+    def generate_upload_data(self, checksumtype='sha256'):
+        rpm = PYRPM(file(self.path))
+        unit_key = {
+            'checksumtype': checksumtype,
+            'checksum': getattr(hashlib, checksumtype)(self.path).hexdigest(),
+            'epoch': str(rpm.header.epoch),
+            'version': str(rpm.header.version),
+            'release': str(rpm.header.release),
+            'arch': str(rpm.header.architecture)
+        }
+        unit_metadata = {
+            'vendor': None if str(rpm.header.vendor) == '' else str(rpm.header.vendor),
+            'description': str(rpm.header.description),
+            'license': str(rpm.header.license),
+            'relativepath': self.name,
+            'buildhost': str(rpm.header.build_host),
+            'filename': self.name
+        }
+        return unit_key, unit_metadata
 
     def sync(self, destination):
         dest_file = os.path.join(destination, self.name)
@@ -80,7 +97,7 @@ class RPM(object):
             self.sync()
 
         pulp = UploadAPI(connection)
-        unit_key, unit_metadata = self.upload_data()
+        unit_key, unit_metadata = self.generate_upload_data()
 
         ################################################################
         # Initialize upload
@@ -141,96 +158,3 @@ class RPM(object):
         # FIN
         ################################################################
         Log.log_info("successfully uploaded %s" % self.name)
-
-    def _generate_rpm_data(self, rpm_filename, user_metadata=None):
-        """
-        For the given RPM, analyzes its metadata to generate the appropriate unit
-        key and metadata fields, returning both to the caller.
-
-        :param rpm_filename: full path to the RPM to analyze
-        :type  rpm_filename: str
-        :param user_metadata: user supplied metadata about the unit. This is optional.
-        :type  user_metadata: dict
-
-        :return: tuple of unit key and unit metadata for the RPM
-        :rtype:  tuple
-        """
-
-        # Expected metadata fields:
-        # "vendor", "description", "buildhost", "license", "vendor", "requires", "provides", "relativepath", "filename"
-        #
-        # Expected unit key fields:
-        # "name", "epoch", "version", "release", "arch", "checksumtype", "checksum"
-
-        unit_key = dict()
-        metadata = dict()
-
-        # Read the RPM header attributes for use later
-        ts = rpm.TransactionSet()
-        ts.setVSFlags(rpm._RPMVSF_NOSIGNATURES)
-        fd = os.open(rpm_filename, os.O_RDONLY)
-        try:
-            headers = ts.hdrFromFdno(fd)
-            os.close(fd)
-        except rpm.error:
-            # Raised if the headers cannot be read
-            os.close(fd)
-            raise
-
-        # -- Unit Key -----------------------
-        # Checksum
-        if user_metadata and user_metadata.get('checksum_type'):
-            user_checksum_type = user_metadata.get('checksum_type')
-            unit_key['checksumtype'] = user_checksum_type
-        else:
-            unit_key['checksumtype'] = 'sha256'
-            unit_key['checksum'] = getattr(hashlib, unit_key['checksumtype'])(rpm_filename).hexdigest()
-
-        # Name, Version, Release, Epoch
-        for k in ['name', 'version', 'release', 'epoch']:
-            unit_key[k] = headers[k]
-
-        #   Epoch munging
-        if unit_key['epoch'] is None:
-            unit_key['epoch'] = str(0)
-        else:
-            unit_key['epoch'] = str(unit_key['epoch'])
-
-        # Arch
-        if headers['sourcepackage']:
-            if RPMTAG_NOSOURCE in headers.keys():
-                unit_key['arch'] = 'nosrc'
-            else:
-                unit_key['arch'] = 'src'
-        else:
-            unit_key['arch'] = headers['arch']
-
-        # -- Unit Metadata ------------------
-
-        # construct filename from metadata (BZ #1101168)
-        if headers[rpm.RPMTAG_SOURCEPACKAGE]:
-            rpm_basefilename = "%s-%s-%s.src.rpm" % (headers['name'],
-                                                     headers['version'],
-                                                     headers['release'])
-        else:
-            rpm_basefilename = "%s-%s-%s.%s.rpm" % (headers['name'],
-                                                    headers['version'],
-                                                    headers['release'],
-                                                    headers['arch'])
-
-        metadata['relativepath'] = rpm_basefilename
-        metadata['filename'] = rpm_basefilename
-
-        # This format is, and has always been, incorrect. As of the new yum importer, the
-        # plugin will generate these from the XML snippet because the API into RPM headers
-        # is atrocious. This is the end game for this functionality anyway, moving all of
-        # that metadata derivation into the plugin, so this is just a first step.
-        # I'm leaving these in and commented to show how not to do it.
-        # metadata['requires'] = [(r,) for r in headers['requires']]
-        # metadata['provides'] = [(p,) for p in headers['provides']]
-
-        metadata['buildhost'] = headers['buildhost']
-        metadata['license'] = headers['license']
-        metadata['vendor'] = headers['vendor']
-        metadata['description'] = headers['description']
-        return unit_key, metadata

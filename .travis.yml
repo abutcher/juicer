@@ -11,8 +11,6 @@ addons:
   apt_packages:
     # swig for some weird crypto stuff
     - swig
-    - python-rpm
-    - python-mock
 
 # if we get to the point where we want multiple builds (python 2.x and
 # 3.x) then we will update the makefile and use the following (as per

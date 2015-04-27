@@ -23,6 +23,7 @@ setup(name='juicer',
           'juicer.cart',
           'juicer.common',
           'juicer.config',
+          'juicer.interface',
           'juicer.juicer',
           'juicer.log',
           'juicer.rpm'

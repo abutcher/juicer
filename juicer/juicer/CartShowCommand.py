@@ -17,7 +17,6 @@
 
 from juicer.juicer.JuicerCommand import JuicerCommand
 from juicer.cart.Cart import Cart
-from juicer.common import Constants
 from juicer.log import Log
 
 

@@ -17,8 +17,6 @@
 
 from juicer.juicer.JuicerCommand import JuicerCommand
 from juicer.cart.Cart import Cart
-from juicer.common import Constants
-from juicer.log import Log
 
 
 class CartCreateCommand(JuicerCommand):
@@ -26,4 +24,4 @@ class CartCreateCommand(JuicerCommand):
         super(CartCreateCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart(self.args.cartname, self.args.r, autosave=True)
+        Cart(self.args.cartname, self.args.r, autosave=True)

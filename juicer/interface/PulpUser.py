@@ -14,20 +14,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-from juicer.juicer.JuicerCommand import JuicerCommand
-from juicer.interface.PulpRepo import PulpRepo
-
-
-class RepoCreateCommand(JuicerCommand):
-    def __init__(self, args):
-        super(RepoCreateCommand, self).__init__(args)
-
-    def run(self):
-        for environment in self.args.environment:
-            pulp_repo = PulpRepo(self.connections[environment])
-            pulp_repo.create(name=self.args.repo,
-                             environment=environment,
-                             checksumtype=self.args.checksum_type)
-            pulp_repo.publish(name=self.args.repo,
-                              environment=environment)

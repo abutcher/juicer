@@ -29,11 +29,6 @@ class TestRPM(TestCase):
         self.assertEqual(self.local_rpm.path, os.path.abspath('share/juicer/empty-0.1-1.noarch.rpm'))
         self.assertTrue(self.local_rpm.synced)
 
-    def test_local_rpm_upload_data(self):
-        """Upload data can be properly divined"""
-        unit_key, unit_metadata = self.local_rpm.generate_upload_data()
-        self.assertEqual(unit_metadata['filename'], 'empty-0.1-1.noarch.rpm')
-
     def test_local_rpm_verify(self):
         """A valid, local rpm is valid"""
         self.assertTrue(self.local_rpm.verify())

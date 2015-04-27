@@ -16,8 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.juicer.JuicerCommand import JuicerCommand
-from juicer.cart.Cart import Cart
-from juicer.common import Constants
 from juicer.log import Log
 
 

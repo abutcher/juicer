@@ -26,8 +26,7 @@ class RPMUploadCommand(JuicerCommand):
         super(RPMUploadCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart('upload-cart', self.args.r)
-        for repo, items in cart.iterrepos():
-            for item in items:
-                Log.log_info(item.upload_data())
-                Log.log_info(item.verify())
+        for environment in self.args.environment:
+            Log.log_info("Starting upload for %s environment" % environment)
+            cart = Cart('upload-cart', self.args.r)
+            cart.upload_items(environment, self.connections[environment])

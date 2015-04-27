@@ -155,6 +155,12 @@ class Cart(object):
             Log.log_debug("removing %s's cart file" % self.name)
             os.remove(self.cart_file)
 
+    def upload_items(self, environment, connection):
+        for repo, items in self.iterrepos():
+            repo_id = "{0}-{1}".format(repo, environment)
+            for item in items:
+                item.upload(repo_id, environment, connection)
+
     def __str__(self):
         return json.dumps(self._cart_dict(), indent=4)
 

@@ -39,7 +39,7 @@ virtualenv:
 	@echo "#############################################"
 	@echo "# Creating a virtualenv"
 	@echo "#############################################"
-	virtualenv $(NAME)env
+	virtualenv $(NAME)env --system-site-packages
 # Swig must be install at =< 3.0.4 for M2Crypto
 	. $(NAME)env/bin/activate && pip install -r requirements.txt
 # Install our unittest tools in the virtual env
@@ -49,9 +49,6 @@ virtualenv:
 	. $(NAME)env/bin/activate && cd pulp && git checkout $(PULPTAG)
 	. $(NAME)env/bin/activate && cd pulp/bindings && pip install .
 	. $(NAME)env/bin/activate && cd pulp/common && pip install .
-# Install pyrpm in the virtualenv, only clone if it doesn't exist
-	if [ ! -d "pyrpm" ]; then git clone https://github.com/02strich/pyrpm.git; fi
-	. $(NAME)env/bin/activate && cd pyrpm && pip install .
 # Install juicer in the virtual env
 	. $(NAME)env/bin/activate && pip install .
 
@@ -59,7 +56,7 @@ ci-unittests:
 	@echo "#############################################"
 	@echo "# Running Unit Tests in virtualenv"
 	@echo "#############################################"
-	. $(NAME)env/bin/activate && nosetests -v --with-cover --cover-min-percentage=60 --cover-html --cover-package=$(TESTPACKAGE) test/
+	. $(NAME)env/bin/activate && nosetests -v --with-cover --cover-min-percentage=50 --cover-html --cover-package=$(TESTPACKAGE) test/
 	@echo "#############################################"
 	@echo "# UNIT TESTS RAN. HTML CODE COVERAGE RESULTS:"
 	@echo "  % xdg-open ./cover/index.html"

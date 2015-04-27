@@ -31,7 +31,8 @@ class TestRPM(TestCase):
 
     def test_local_rpm_upload_data(self):
         """Upload data can be properly divined"""
-        self.assertEqual(self.local_rpm.upload_data()['unit_key']['package_basename'], 'empty-0.1-1.noarch.rpm')
+        unit_key, unit_metadata = self.local_rpm.upload_data()
+        self.assertEqual(unit_metadata['filename'], 'empty-0.1-1.noarch.rpm')
 
     def test_local_rpm_verify(self):
         """A valid, local rpm is valid"""

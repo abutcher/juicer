@@ -15,23 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.juicer.JuicerCommand import JuicerCommand
-from juicer.common import Constants
+from juicer.command.JuicerCommand import JuicerCommand
 from juicer.log import Log
 
 
-class HelloCommand(JuicerCommand):
+class RPMDeleteCommand(JuicerCommand):
     def __init__(self, args):
-        super(HelloCommand, self).__init__(args)
+        super(RPMDeleteCommand, self).__init__(args)
 
     def run(self):
-        from pulp.bindings.server_info import ServerInfoAPI
-
-        for environment in self.args.environment:
-            hostname = self.config.get(environment)['hostname']
-            pulp = ServerInfoAPI(self.connections[environment])
-            response = pulp.get_types()
-            if response.response_code == Constants.PULP_GET_OK:
-                Log.log_info("%s: %s OK", environment, hostname)
-            else:
-                Log.log_info("%s: %s FAILED", environment, hostname)
+        pass

@@ -15,17 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from juicer.command.JuicerCommand import JuicerCommand
 from juicer.cart.Cart import Cart
-from juicer.juicer.JuicerCommand import JuicerCommand
 from juicer.log import Log
 
 
-class RPMUploadCommand(JuicerCommand):
+class CartShowCommand(JuicerCommand):
     def __init__(self, args):
-        super(RPMUploadCommand, self).__init__(args)
+        super(CartShowCommand, self).__init__(args)
 
     def run(self):
-        for environment in self.args.environment:
-            Log.log_info("Starting upload for %s environment" % environment)
-            cart = Cart('upload-cart', self.args.r)
-            cart.upload_items(environment, self.connections[environment])
+        cart = Cart(self.args.cartname, autoload=True)
+        Log.log_info(str(cart))

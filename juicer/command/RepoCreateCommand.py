@@ -15,26 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.juicer.JuicerCommand import JuicerCommand
-from juicer.common import Constants
-from juicer.log import Log
+from juicer.command.JuicerCommand import JuicerCommand
+from juicer.interface.PulpRepo import PulpRepo
 
 
-class RepoDeleteCommand(JuicerCommand):
+class RepoCreateCommand(JuicerCommand):
     def __init__(self, args):
-        super(RepoDeleteCommand, self).__init__(args)
+        super(RepoCreateCommand, self).__init__(args)
 
     def run(self):
-        from pulp.bindings.repository import RepositoryAPI
-
         for environment in self.args.environment:
-            repo_id = "{0}-{1}".format(self.args.repo, environment)
-
-            pulp = RepositoryAPI(self.connections[environment])
-            response = pulp.delete(repo_id)
-
-            if response.response_code == Constants.PULP_DELETE_ACCEPTED:
-                Log.log_info("%s deleted in %s", self.args.repo, environment)
-            else:
-                Log.log_info("failed to delete %s in %s", self.args.repo, environment)
-                Log.log_debug(response)
+            pulp_repo = PulpRepo(self.connections[environment])
+            pulp_repo.create(name=self.args.repo,
+                             environment=environment,
+                             checksumtype=self.args.checksum_type)
+            pulp_repo.publish(name=self.args.repo,
+                              environment=environment)

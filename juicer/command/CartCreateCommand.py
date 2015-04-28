@@ -15,15 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.juicer.JuicerCommand import JuicerCommand
+from juicer.command.JuicerCommand import JuicerCommand
 from juicer.cart.Cart import Cart
-from juicer.log import Log
 
 
-class CartShowCommand(JuicerCommand):
+class CartCreateCommand(JuicerCommand):
     def __init__(self, args):
-        super(CartShowCommand, self).__init__(args)
+        super(CartCreateCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart(self.args.cartname, autoload=True)
-        Log.log_info(str(cart))
+        Cart(self.args.cartname, self.args.r, autosave=True)

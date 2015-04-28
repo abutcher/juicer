@@ -15,19 +15,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.juicer.JuicerCommand import JuicerCommand
-from juicer.interface.PulpRepo import PulpRepo
+from juicer.command.JuicerCommand import JuicerCommand
+from juicer.common import Constants
+from juicer.log import Log
 
 
-class RepoCreateCommand(JuicerCommand):
+class RepoPublishCommand(JuicerCommand):
     def __init__(self, args):
-        super(RepoCreateCommand, self).__init__(args)
+        super(RepoPublishCommand, self).__init__(args)
 
     def run(self):
+        from pulp.bindings.repository import RepositoryActionsAPI
+
         for environment in self.args.environment:
-            pulp_repo = PulpRepo(self.connections[environment])
-            pulp_repo.create(name=self.args.repo,
-                             environment=environment,
-                             checksumtype=self.args.checksum_type)
-            pulp_repo.publish(name=self.args.repo,
-                              environment=environment)
+            repo_id = "{0}-{1}".format(self.args.repo, environment)
+            display_name = self.args.repo
+
+            pulp = RepositoryActionsAPI(self.connections[environment])
+            response = pulp.publish(repo_id, 'yum_distributor', {})
+
+            if response.response_code == Constants.PULP_POST_ACCEPTED:
+                Log.log_info("%s published in %s", display_name, environment)
+            else:
+                Log.log_info("failed to publish %s in %s", display_name, environment)
+                Log.log_debug(response)

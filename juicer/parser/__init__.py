@@ -14,17 +14,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-from juicer.juicer.JuicerCommand import JuicerCommand
-from juicer.cart.Cart import Cart
-from juicer.log import Log
-
-
-class CartDeleteCommand(JuicerCommand):
-    def __init__(self, args):
-        super(CartDeleteCommand, self).__init__(args)
-
-    def run(self):
-        cart = Cart(self.args.cartname)
-        cart.delete()
-        Log.log_info("successfully deleted cart %s" % cart.name)

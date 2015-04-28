@@ -16,7 +16,7 @@
 from . import TestCase, unittest
 from contextlib import nested
 
-import juicer.juicer.Parser
+from juicer.parser.Parser import Parser
 
 
 class TestJuicerParser(TestCase):
@@ -25,4 +25,4 @@ class TestJuicerParser(TestCase):
 
     def test_parser(self):
         """Verify the argument parser can be created"""
-        parser = juicer.juicer.Parser.Parser()
+        parser = Parser()

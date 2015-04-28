@@ -14,14 +14,3 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-from juicer.juicer.JuicerCommand import JuicerCommand
-from juicer.cart.Cart import Cart
-
-
-class CartCreateCommand(JuicerCommand):
-    def __init__(self, args):
-        super(CartCreateCommand, self).__init__(args)
-
-    def run(self):
-        Cart(self.args.cartname, self.args.r, autosave=True)

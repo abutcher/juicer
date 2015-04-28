@@ -16,16 +16,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
-import juicer.juicer
-from juicer.juicer.CartCreateCommand import CartCreateCommand
-from juicer.juicer.CartDeleteCommand import CartDeleteCommand
-from juicer.juicer.CartShowCommand import CartShowCommand
-from juicer.juicer.HelloCommand import HelloCommand
-from juicer.juicer.RepoCreateCommand import RepoCreateCommand
-from juicer.juicer.RepoDeleteCommand import RepoDeleteCommand
-from juicer.juicer.RepoPublishCommand import RepoPublishCommand
-from juicer.juicer.RPMDeleteCommand import RPMDeleteCommand
-from juicer.juicer.RPMUploadCommand import RPMUploadCommand
+import juicer.parser
+from juicer.command.CartCreateCommand import CartCreateCommand
+from juicer.command.CartDeleteCommand import CartDeleteCommand
+from juicer.command.CartShowCommand import CartShowCommand
+from juicer.command.HelloCommand import HelloCommand
+from juicer.command.RepoCreateCommand import RepoCreateCommand
+from juicer.command.RepoDeleteCommand import RepoDeleteCommand
+from juicer.command.RepoPublishCommand import RepoPublishCommand
+from juicer.command.RPMDeleteCommand import RPMDeleteCommand
+from juicer.command.RPMUploadCommand import RPMUploadCommand
 
 
 class Parser(object):
@@ -33,7 +33,7 @@ class Parser(object):
 
         self.parser = argparse.ArgumentParser(
             description='Manage release carts')
-        juicer.juicer.parser = self.parser
+        juicer.command.parser = self.parser
 
         self._default_start_in = 're'
         self._default_envs = ['re', 'qa']
@@ -116,7 +116,7 @@ class Parser(object):
                                       nargs='*', default=['*'],
                                       help='A pattern to match cart names against (default: *)')
 
-        # parser_cart_list.set_defaults(command=juicer.juicer.cart_list)
+        # parser_cart_list.set_defaults(command=juicer.command.cart_list)
 
         ##################################################################
         # Create the 'cart update' sub-parser
@@ -136,7 +136,7 @@ class Parser(object):
                                         action='append',
                                         help='RPM manifest for cart')
 
-        # parser_cart_update.set_defaults(command=juicer.juicer.cart_update)
+        # parser_cart_update.set_defaults(command=juicer.command.cart_update)
 
         ##################################################################
         # Create the 'cart pull' sub-parser
@@ -146,7 +146,7 @@ class Parser(object):
         parser_cart_pull.add_argument('cartname', metavar='cartname',
                                       help='The name of your release cart')
 
-        # parser_cart_pull.set_defaults(command=juicer.juicer.cart_pull)
+        # parser_cart_pull.set_defaults(command=juicer.command.cart_pull)
 
         ##################################################################
         # Create the 'cart push' sub-parser
@@ -163,7 +163,7 @@ class Parser(object):
                                       help='The environments to push into.',
                                       dest='environment')
 
-        # parser_cart_push.set_defaults(command=juicer.juicer.cart_push)
+        # parser_cart_push.set_defaults(command=juicer.command.cart_push)
 
         ##################################################################
         # Create the 'cart delete' sub-parser
@@ -218,7 +218,7 @@ class Parser(object):
         parser_cart_promote.add_argument('cartname', metavar='cart',
                                          help='The name of the cart to promote')
 
-        # parser_cart_promote.set_defaults(command=juicer.juicer.promote)
+        # parser_cart_promote.set_defaults(command=juicer.command.promote)
 
         ##################################################################
         # create the 'cart merge' sub-parser
@@ -234,7 +234,7 @@ class Parser(object):
                                        metavar='new_cart_name',
                                        help='Name of resultant cart, defaults to updating CART1')
 
-        # parser_cart_merge.set_defaults(command=juicer.juicer.merge)
+        # parser_cart_merge.set_defaults(command=juicer.command.merge)
 
         ##################################################################
         # create the 'rpm delete' sub-parser
@@ -254,7 +254,7 @@ class Parser(object):
                                        default=self._default_envs,
                                        dest='environment')
 
-        # parser_rpm_delete.set_defaults(command=juicer.juicer.delete_rpm)
+        # parser_rpm_delete.set_defaults(command=juicer.command.delete_rpm)
 
         ##################################################################
         # Create the 'repo delete' sub-parser

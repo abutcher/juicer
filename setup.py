@@ -21,16 +21,18 @@ setup(name='juicer',
       packages=[
           'juicer',
           'juicer.cart',
+          'juicer.command',
           'juicer.common',
           'juicer.config',
           'juicer.interface',
           'juicer.juicer',
           'juicer.log',
+          'juicer.parser',
           'juicer.rpm'
       ],
       entry_points={
           'console_scripts': [
-              'juicer = juicer.juicer.Parser:main',
+              'juicer = juicer.parser.Parser:main',
           ],
       }
 )

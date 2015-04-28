@@ -17,7 +17,7 @@
 
 import hashlib
 from juicer.common import Constants
-from juicer.interface.PulpRepo import PulpRepo
+from juicer.pulp.PulpRepo import PulpRepo
 from juicer.log import Log
 from pyrpm.rpm import RPM as PYRPM
 from pulp.bindings.upload import UploadAPI

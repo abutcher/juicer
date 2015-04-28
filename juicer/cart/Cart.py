@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.common import Constants
-from juicer.interface.PulpUpload import PulpUpload
+from juicer.pulp.PulpUpload import PulpUpload
 from juicer.log import Log
 from juicer.rpm.RPM import RPM
 import json

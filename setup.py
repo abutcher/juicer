@@ -24,10 +24,10 @@ setup(name='juicer',
           'juicer.command',
           'juicer.common',
           'juicer.config',
-          'juicer.interface',
           'juicer.juicer',
           'juicer.log',
           'juicer.parser',
+          'juicer.pulp',
           'juicer.rpm'
       ],
       entry_points={

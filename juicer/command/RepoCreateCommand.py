@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.command.JuicerCommand import JuicerCommand
-from juicer.interface.PulpRepo import PulpRepo
+from juicer.pulp.PulpRepo import PulpRepo
 
 
 class RepoCreateCommand(JuicerCommand):

@@ -177,30 +177,6 @@ class Parser(object):
         parser_cart_delete.set_defaults(cmd=CartDeleteCommand)
 
         ##################################################################
-        # Create the 'rpm search' sub-parser
-        # parser_rpm_search = subparser_rpm.add_parser('search',
-        #                                              help='Search for an RPM in pulp.',
-        #                                              usage='%(prog)s rpmname [-r repo [repo]] [-c] [--in environment [environment]] [-h]')
-
-        # parser_rpm_search.add_argument('rpmname', metavar='rpmname',
-        #                                help='The name of the rpm(s) to search for.')
-
-        # parser_rpm_search.add_argument('-r', nargs='*', metavar='repos',
-        #                                default=[], help='The repo(s) to limit search scope to.')
-
-        # parser_rpm_search.add_argument('-c', '--carts', dest='carts',
-        #                                action='store_true',
-        #                                help="Search for the package in carts as well")
-
-        # parser_rpm_search.add_argument('--in', nargs='*',
-        #                                metavar='environment',
-        #                                default=[self._default_start_in],
-        #                                help='The environments to limit search scope to.',
-        #                                dest='environment')
-
-        # parser_rpm_search.set_defaults(command=juicer.juicer.search)
-
-        ##################################################################
         # create the 'rpm upload' sub-parser
         parser_rpm_upload = subparser_rpm.add_parser('upload',
                                                      help='Upload the items specified into repos.',

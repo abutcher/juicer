@@ -52,9 +52,9 @@ class PulpRepo(object):
         )
 
         if response.response_code == Constants.PULP_POST_CREATED:
-            Log.log_info("%s created in %s", name, environment)
+            Log.log_info("repo %s created in %s", name, environment)
         else:
-            Log.log_info("failed to create %s in %s", name, environment)
+            Log.log_error("failed to create repo %s in %s", name, environment)
             Log.log_debug(response)
 
     def publish(self, name, environment):
@@ -63,10 +63,18 @@ class PulpRepo(object):
         response = pulp.publish(repo_id, 'yum_distributor', {})
 
         if response.response_code == Constants.PULP_POST_ACCEPTED:
-            Log.log_debug("%s published in %s", name, environment)
+            Log.log_debug("repo %s published in %s", name, environment)
         else:
-            Log.log_debug("failed to publish %s in %s", name, environment)
+            Log.log_debug("failed to publish repo %s in %s", name, environment)
             Log.log_debug(response)
 
     def delete(self, name, environment):
-        pass
+        repo_id = "{0}-{1}".format(name, environment)
+        pulp = RepositoryActionsAPI(self.connection)
+        response = pulp.delete(repo_id)
+
+        if response.response_code == Constants.PULP_DELETE_ACCEPTED:
+            Log.log_info("repo %s deleted in %s", name, environment)
+        else:
+            Log.log_error("failed to delete repo %s in %s", name, environment)
+            Log.log_debug(response)

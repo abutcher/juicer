@@ -18,6 +18,7 @@
 from juicer.common import Constants
 from juicer.log import Log
 from pulp.bindings.auth import UserAPI
+from pulp.bindings.exceptions import NotFoundException
 
 
 class PulpUser(object):
@@ -26,25 +27,38 @@ class PulpUser(object):
 
     def create(self, login, password, environment, name=None, roles=None):
         pulp = UserAPI(self.connection)
-        response = pulp.create(login=login,
-                               password=password[0],
-                               name=name,
-                               roles=roles)
-        if response.response_code == Constants.PULP_POST_ACCEPTED:
-            Log.log_info("user %s created in %s" % (login, environment))
+        if self.exists(login):
+            Log.log_info("user %s already exists in %s" % (login, environment))
         else:
-            Log.log_error("failed to create user %s in %s" % (login, environment))
-            Log.log_debug(response)
-        pass
+            response = pulp.create(login=login,
+                                   password=password[0],
+                                   name=name,
+                                   roles=roles)
+            if response.response_code == Constants.PULP_POST_CREATED:
+                Log.log_info("user %s created in %s" % (login, environment))
+            else:
+                Log.log_error("failed to create user %s in %s" % (login, environment))
+                Log.log_debug(response)
 
     def delete(self, login, environment):
         pulp = UserAPI(self.connection)
         response = pulp.delete(login)
-        if response.response_code == Constants.PULP_DELETE_ACCEPTED:
+        if response.response_code == Constants.PULP_DELETE_OK:
             Log.log_info("user %s deleted in %s" % (login, environment))
         else:
             Log.log_error("failed to delete user %s in %s" % (login, environment))
             Log.log_debug(response)
+
+    def exists(self, login):
+        exists = False
+        pulp = UserAPI(self.connection)
+        try:
+            response = pulp.user(login)
+            if response.response_code == Constants.PULP_GET_OK:
+                exists = True
+        except NotFoundException:
+            pass
+        return exists
 
     def list(self, environment):
         pulp = UserAPI(self.connection)
@@ -57,10 +71,10 @@ class PulpUser(object):
 
     def show(self, login, environment):
         pulp = UserAPI(self.connection)
-        response = pulp.user(login)
-        if response.response_code == Constants.PULP_GET_OK:
+        try:
+            response = pulp.user(login)
             Log.log_info(response.response_body)
-        else:
+        except NotFoundException:
             Log.log_error("failed to show user %s in %s" % (login, environment))
             Log.log_debug(response)
 

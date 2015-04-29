@@ -17,15 +17,28 @@
 
 import argparse
 import juicer.parser
+from juicer.parser.PromptAction import PromptAction
+
 from juicer.command.CartCreateCommand import CartCreateCommand
 from juicer.command.CartDeleteCommand import CartDeleteCommand
 from juicer.command.CartShowCommand import CartShowCommand
+
 from juicer.command.HelloCommand import HelloCommand
+
 from juicer.command.RepoCreateCommand import RepoCreateCommand
 from juicer.command.RepoDeleteCommand import RepoDeleteCommand
+from juicer.command.RepoListCommand import RepoListCommand
 from juicer.command.RepoPublishCommand import RepoPublishCommand
+from juicer.command.RepoShowCommand import RepoShowCommand
+
 from juicer.command.RPMDeleteCommand import RPMDeleteCommand
 from juicer.command.RPMUploadCommand import RPMUploadCommand
+
+from juicer.command.UserCreateCommand import UserCreateCommand
+from juicer.command.UserDeleteCommand import UserDeleteCommand
+from juicer.command.UserListCommand import UserListCommand
+from juicer.command.UserShowCommand import UserShowCommand
+from juicer.command.UserUpdateCommand import UserUpdateCommand
 
 
 class Parser(object):
@@ -71,6 +84,13 @@ class Parser(object):
                                             help='repo operations')
 
         subparser_repo = parser_repo.add_subparsers(dest='sub_command')
+
+        ##################################################################
+        # Create the 'user' sub-parser
+        parser_user = subparsers.add_parser('user',
+                                            help='user operations')
+
+        subparser_user = parser_user.add_subparsers(dest='sub_command')
 
         ##################################################################
         # Create the 'cart create' sub-parser
@@ -314,6 +334,167 @@ class Parser(object):
                                         help='The environments in which to create your repository')
 
         parser_repo_create.set_defaults(cmd=RepoCreateCommand)
+
+        ##################################################################
+        # Create the 'repo list' sub-parser
+        parser_repo_list = subparser_repo.add_parser('list',
+                                                     help='List all repos')
+
+        parser_repo_list.add_argument('--in', metavar='envs',
+                                      nargs="+",
+                                      dest='environment',
+                                      default=self._default_envs,
+                                      help='The environments in which to list repos')
+
+        parser_repo_list.add_argument('--json',
+                                      action='store_true', default=False,
+                                      help='Dump everything in JSON format')
+
+        parser_repo_list.set_defaults(cmd=RepoListCommand)
+
+        ##################################################################
+        # Create the 'repo show' sub-parser
+
+        parser_repo_show = subparser_repo.add_parser('show',
+                                                     usage='%(prog)s REPONAME [...] [--json] --in [ENV ...]',
+                                                     help='Show pulp repository(s)')
+
+        parser_repo_show.add_argument('repo', metavar='reponame',
+                                      nargs="+",
+                                      help='The name of your repo(s)')
+
+        parser_repo_show.add_argument('--json',
+                                      action='store_true', default=False,
+                                      help='Dump everything in JSON format')
+
+        parser_repo_show.add_argument('--in', metavar='envs',
+                                      nargs="+",
+                                      dest='environment',
+                                      default=self._default_envs,
+                                      help='The environments in which to show your repository')
+
+        parser_repo_show.set_defaults(cmd=RepoShowCommand)
+
+        ##################################################################
+        # Create the 'user create' sub-parser
+        parser_user_create = subparser_user.add_parser('create',
+                                                       help='Create pulp user',
+                                                       usage='%(prog)s LOGIN --name FULLNAME --password PASSWORD \
+                       \n\nYou will be prompted if the PASSWORD argument not supplied.')
+
+        parser_user_create.add_argument('login', metavar='login',
+                                        help='Login user id for user')
+
+        parser_user_create.add_argument('--name', metavar='name',
+                                        dest='name',
+                                        required=True,
+                                        default=None,
+                                        help='Full name of user')
+
+        parser_user_create.add_argument('--password', metavar='password',
+                                        dest='password',
+                                        nargs='*',
+                                        required=True,
+                                        action=PromptAction,
+                                        help='Plain text password for user')
+
+        parser_user_create.add_argument('--roles', metavar='roles',
+                                        nargs="+",
+                                        dest='roles',
+                                        required=False,
+                                        default=None,
+                                        help='Roles to apply to the user.')
+
+        parser_user_create.add_argument('--in', metavar='envs',
+                                        nargs="+",
+                                        dest='environment',
+                                        default=self._default_envs,
+                                        help='The environments in which to create pulp user')
+
+        parser_user_create.set_defaults(cmd=UserCreateCommand)
+
+        ##################################################################
+        # Create the 'user delete' sub-parser
+        parser_user_delete = subparser_user.add_parser('delete',
+                                                       help='Delete pulp user')
+
+        parser_user_delete.add_argument('login', metavar='login',
+                                        help='Login user id for user')
+
+        parser_user_delete.add_argument('--in', metavar='envs',
+                                        nargs="+",
+                                        dest='environment',
+                                        default=self._default_envs,
+                                        help='The environments in which to delete user')
+
+        parser_user_delete.set_defaults(cmd=UserDeleteCommand)
+
+        ##################################################################
+        # Create the 'user show' sub-parser
+        parser_user_show = subparser_user.add_parser('show',
+                                                     usage='%(prog)s LOGIN --in [ENV ...]',
+                                                     help='Show pulp user')
+
+        parser_user_show.add_argument('login', metavar='login',
+                                      help='Login user id for user')
+
+        parser_user_show.add_argument('--in', metavar='envs',
+                                      nargs="+",
+                                      dest='environment',
+                                      default=self._default_envs,
+                                      help='The environments in which to show user')
+
+        parser_user_show.set_defaults(cmd=UserShowCommand)
+
+        ##################################################################
+        # Create the 'user update' sub-parser
+        parser_user_update = subparser_user.add_parser('update',
+                                                       help='Change user information',
+                                                       usage='%(prog)s LOGIN --name FULLNAME --password PASSWORD \
+                       \n\nYou will be prompted if the PASSWORD argument not supplied.')
+
+        parser_user_update.add_argument('login', metavar='login',
+                                        help='Login user id for user to update')
+
+        parser_user_update.add_argument('--name', metavar='name',
+                                        dest='name',
+                                        required=False,
+                                        help='Updated name of user')
+
+        parser_user_update.add_argument('--password', metavar='password',
+                                        dest='password',
+                                        nargs='*',
+                                        required=False,
+                                        action=PromptAction,
+                                        help='Updated password for user')
+
+        parser_user_update.add_argument('--roles', metavar='roles',
+                                        nargs="+",
+                                        dest='roles',
+                                        required=False,
+                                        default=None,
+                                        help='Roles to apply to the user.')
+
+        parser_user_update.add_argument('--in', metavar='envs',
+                                        nargs="+",
+                                        dest='environment',
+                                        default=self._default_envs,
+                                        help='The environments in which to create pulp user')
+
+        parser_user_update.set_defaults(cmd=UserUpdateCommand)
+
+        ##################################################################
+        # Create the 'user list' sub-parser
+        parser_user_list = subparser_user.add_parser('list',
+                                                     help='List all users')
+
+        parser_user_list.add_argument('--in', metavar='envs',
+                                      nargs="+",
+                                      dest='environment',
+                                      default=self._default_envs,
+                                      help='The environments in which to list users')
+
+        parser_user_list.set_defaults(cmd=UserListCommand)
 
 
 def main():  # pragma: no cover

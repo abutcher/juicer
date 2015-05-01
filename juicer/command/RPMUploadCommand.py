@@ -17,7 +17,6 @@
 
 from juicer.cart.Cart import Cart
 from juicer.command.JuicerCommand import JuicerCommand
-from juicer.log import Log
 
 
 class RPMUploadCommand(JuicerCommand):
@@ -26,6 +25,6 @@ class RPMUploadCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            Log.log_info("Starting upload for %s environment" % environment)
+            self.output.info("Starting upload for %s environment" % environment)
             cart = Cart('upload-cart', self.args.r)
             cart.upload_items(environment, self.connections[environment])

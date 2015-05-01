@@ -16,15 +16,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.common import Constants
-from juicer.log import Log
+from juicer.pulp.PulpInterface import PulpInterface
 from pulp.bindings.auth import UserAPI
 from pulp.bindings.exceptions import ConflictException
 from pulp.bindings.exceptions import NotFoundException
 
 
-class PulpUser(object):
+class PulpUser(PulpInterface):
     def __init__(self, connection):
-        self.connection = connection
+        super(PulpUser, self).__init__(connection)
 
     def create(self, login, password, environment, name=None, roles=None):
         pulp = UserAPI(self.connection)
@@ -34,50 +34,50 @@ class PulpUser(object):
                                    name=name,
                                    roles=roles)
             if response.response_code == Constants.PULP_POST_CREATED:
-                Log.log_info("user %s created in %s" % (login, environment))
+                self.output.info("user %s created in %s" % (login, environment))
             else:
-                Log.log_error("failed to create user %s in %s" % (login, environment))
-                Log.log_debug(response)
+                self.output.error("failed to create user %s in %s" % (login, environment))
+                self.output.debug(response)
         except ConflictException:
-            Log.log_error("user %s already exists in %s" % (login, environment))
+            self.output.error("user %s already exists in %s" % (login, environment))
 
     def delete(self, login, environment):
         pulp = UserAPI(self.connection)
         try:
             response = pulp.delete(login)
             if response.response_code == Constants.PULP_DELETE_OK:
-                Log.log_info("user %s deleted in %s" % (login, environment))
+                self.output.info("user %s deleted in %s" % (login, environment))
             else:
-                Log.log_error("failed to delete user %s in %s" % (login, environment))
-                Log.log_debug(response)
+                self.output.error("failed to delete user %s in %s" % (login, environment))
+                self.output.debug(response)
         except NotFoundException:
-            Log.log_error("user %s does not exist in %s" % (login, environment))
+            self.output.error("user %s does not exist in %s" % (login, environment))
 
     def list(self, environment):
         pulp = UserAPI(self.connection)
         response = pulp.users()
         if response.response_code == Constants.PULP_GET_OK:
-            Log.log_info(environment)
+            self.output.info(environment)
             for user in response.response_body:
-                Log.log_info("  login: {0}, name: {1}, roles: {2}".format(
+                self.output.info("  login: {0}, name: {1}, roles: {2}".format(
                     user['login'],
                     user['name'],
                     ', '.join(user['roles']) if user['roles'] else None))
         else:
-            Log.log_error("failed to list users in %s" % environment)
-            Log.log_debug(response)
+            self.output.error("failed to list users in %s" % environment)
+            self.output.debug(response)
 
     def show(self, login, environment):
         pulp = UserAPI(self.connection)
         try:
             response = pulp.user(login)
             user = response.response_body
-            Log.log_info(environment)
-            Log.log_info("  login: {0}".format(user['login']))
-            Log.log_info("  name: {0}".format(user['name']))
-            Log.log_info("  roles: {0}".format(', '.join(user['roles']) if user['roles'] else None))
+            self.output.info(environment)
+            self.output.info("  login: {0}".format(user['login']))
+            self.output.info("  name: {0}".format(user['name']))
+            self.output.info("  roles: {0}".format(', '.join(user['roles']) if user['roles'] else None))
         except NotFoundException:
-            Log.log_error("user %s does not exist in %s" % (login, environment))
+            self.output.error("user %s does not exist in %s" % (login, environment))
 
     def update(self, login, environment, password=None, name=None, roles=None):
         pulp = UserAPI(self.connection)
@@ -93,9 +93,9 @@ class PulpUser(object):
         try:
             response = pulp.update(login, delta)
             if response.response_code == Constants.PULP_PUT_OK:
-                Log.log_info("user %s updated in %s" % (login, environment))
+                self.output.info("user %s updated in %s" % (login, environment))
             else:
-                Log.log_error("failed to update user %s in %s" % (login, environment))
-                Log.log_debug(response)
+                self.output.error("failed to update user %s in %s" % (login, environment))
+                self.output.debug(response)
         except NotFoundException:
-            Log.log_error("user %s does not exist in %s" % (login, environment))
+            self.output.error("user %s does not exist in %s" % (login, environment))

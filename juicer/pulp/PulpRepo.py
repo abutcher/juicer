@@ -16,16 +16,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.common import Constants
-from juicer.log import Log
+from juicer.pulp.PulpInterface import PulpInterface
 from pulp.bindings.repository import RepositoryAPI
 from pulp.bindings.repository import RepositoryActionsAPI
 from pulp.bindings.exceptions import ConflictException
 from pulp.bindings.exceptions import NotFoundException
 
 
-class PulpRepo(object):
+class PulpRepo(PulpInterface):
     def __init__(self, connection):
-        self.connection = connection
+        super(PulpRepo, self).__init__(connection)
 
     def create(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)
@@ -55,12 +55,12 @@ class PulpRepo(object):
             )
 
             if response.response_code == Constants.PULP_POST_CREATED:
-                Log.log_info("repo %s created in %s", name, environment)
+                self.output.info("repo %s created in %s" % (name, environment))
             else:
-                Log.log_error("failed to create repo %s in %s", name, environment)
-                Log.log_debug(response)
+                self.output.error("failed to create repo %s in %s" % (name, environment))
+                self.output.debug(response)
         except ConflictException:
-            Log.log_error("repo %s already exists in %s", name, environment)
+            self.output.error("repo %s already exists in %s" % (name, environment))
 
     def delete(self, name, environment):
         repo_id = "{0}-{1}".format(name, environment)
@@ -68,24 +68,24 @@ class PulpRepo(object):
         try:
             response = pulp.delete(repo_id)
             if response.response_code == Constants.PULP_DELETE_ACCEPTED:
-                Log.log_info("repo %s deleted in %s", name, environment)
+                self.output.info("repo %s deleted in %s" % (name, environment))
             else:
-                Log.log_error("failed to delete repo %s in %s", name, environment)
-                Log.log_debug(response)
+                self.output.error("failed to delete repo %s in %s" % (name, environment))
+                self.output.debug(response)
         except NotFoundException:
-            Log.log_error("repo %s does not exist in %s", name, environment)
+            self.output.error("repo %s does not exist in %s" % (name, environment))
 
     def list(self, environment):
         pulp = RepositoryAPI(self.connection)
         response = pulp.repositories()
         if response.response_code == Constants.PULP_GET_OK:
-            Log.log_info(environment)
+            self.output.info(environment)
             for repo in response.response_body:
                 if "-{0}".format(environment) in repo['id']:
-                    Log.log_info("  {0}".format(repo['display_name']))
+                    self.output.info("  {0}".format(repo['display_name']))
         else:
-            Log.log_error("failed to list repos in %s" % environment)
-            Log.log_debug(response)
+            self.output.error("failed to list repos in %s" % environment)
+            self.output.debug(response)
 
     def publish(self, name, environment):
         repo_id = "{0}-{1}".format(name, environment)
@@ -93,12 +93,12 @@ class PulpRepo(object):
         try:
             response = pulp.publish(repo_id, 'yum_distributor', {})
             if response.response_code == Constants.PULP_POST_ACCEPTED:
-                Log.log_debug("repo %s published in %s", name, environment)
+                self.output.info("repo %s published in %s" % (name, environment))
             else:
-                Log.log_debug("failed to publish repo %s in %s", name, environment)
-                Log.log_debug(response)
+                self.output.debug("failed to publish repo %s in %s" % (name, environment))
+                self.output.debug(response)
         except NotFoundException:
-            Log.log_error("repo %s does not exist in %s", name, environment)
+            self.output.error("repo %s does not exist in %s" % (name, environment))
 
     def show(self, name, environment, json=False):
         repo_id = "{0}-{1}".format(name, environment)
@@ -107,14 +107,14 @@ class PulpRepo(object):
             response = pulp.repository(repo_id)
             if response.response_code == Constants.PULP_GET_OK:
                 if json:
-                    Log.log_info(response.response_body)
+                    self.output.info(response.response_body)
                 else:
                     repo = response.response_body
-                    Log.log_info(environment)
-                    Log.log_info("  name: {0}".format(repo['display_name']))
-                    Log.log_info("  rpms: {0}".format(repo['content_unit_counts']['rpm']))
+                    self.output.info(environment)
+                    self.output.info("  name: {0}".format(repo['display_name']))
+                    self.output.info("  rpms: {0}".format(repo['content_unit_counts']['rpm']))
             else:
-                Log.log_error("failed to show repo %s in %s", name, environment)
-                Log.log_debug(response)
+                self.output.error("failed to show repo %s in %s" % (name, environment))
+                self.output.debug(response)
         except NotFoundException:
-            Log.log_error("repo %s does not exist in %s", name, environment)
+            self.output.error("repo %s does not exist in %s" % (name, environment))

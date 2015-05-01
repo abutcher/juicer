@@ -17,16 +17,16 @@
 
 import hashlib
 from juicer.common import Constants
+from juicer.pulp.PulpInterface import PulpInterface
 from juicer.pulp.PulpRepo import PulpRepo
-from juicer.log import Log
 from pyrpm.rpm import RPM as PYRPM
 from pulp.bindings.upload import UploadAPI
 import os
 
 
-class PulpUpload(object):
+class PulpUpload(PulpInterface):
     def __init__(self, connection):
-        self.connection = connection
+        super(PulpUpload, self).__init__(connection)
 
     def upload(self, path, repo, environment):
         pulp = UploadAPI(self.connection)
@@ -39,7 +39,7 @@ class PulpUpload(object):
         ################################################################
         response = pulp.initialize_upload()
         if response.response_code == Constants.PULP_POST_CREATED:
-            Log.log_debug("Initialized upload process for %s" % name)
+            self.output.debug("Initialized upload process for %s" % name)
         else:
             raise SystemError("Failed to initialize upload process for %s" %
                               name)
@@ -58,12 +58,12 @@ class PulpUpload(object):
             last_offset = total_seeked
             total_seeked += len(chunk)
 
-            Log.log_notice("Seeked %s data... (total seeked: %s)" %
-                           (len(chunk), total_seeked))
+            self.output.notice("Seeked %s data... (total seeked: %s)" %
+                               (len(chunk), total_seeked))
 
             response = pulp.upload_segment(upload_id, last_offset, chunk)
             if response.response_code is not Constants.PULP_PUT_OK:
-                Log.log_debug("Failed to upload %s" % name)
+                self.output.error("Failed to upload %s" % name)
                 raise SystemError("Failed to upload %s" % name)
 
         ################################################################
@@ -76,17 +76,17 @@ class PulpUpload(object):
                                       unit_metadata)
         if response.response_code not in [Constants.PULP_POST_OK,
                                           Constants.PULP_POST_ACCEPTED]:
-            Log.log_error("Failed to import upload for %s" % name)
+            self.output.error("Failed to import upload for %s" % name)
             raise SystemError("Failed to import upload for %s" % name)
 
-        Log.log_debug("RPM upload %s complete" % name)
+        self.output.debug("RPM upload %s complete" % name)
 
         ################################################################
         # Finalize upload by cleaning up request on server
         ################################################################
         response = pulp.delete_upload(upload_id)
         if response.response_code != Constants.PULP_DELETE_OK:
-            Log.log_error("Failed to clean up upload for %s" % name)
+            self.output.error("Failed to clean up upload for %s" % name)
             raise SystemError("Failed to clean up upload for %s" % name)
 
         ################################################################
@@ -99,7 +99,7 @@ class PulpUpload(object):
         ################################################################
         # FIN
         ################################################################
-        Log.log_info("successfully uploaded %s" % name)
+        self.output.info("successfully uploaded %s" % name)
 
     def generate_upload_data(self, path, checksumtype='sha256'):
         rpm = PYRPM(file(path))

@@ -25,7 +25,6 @@ setup(name='juicer',
           'juicer.common',
           'juicer.config',
           'juicer.juicer',
-          'juicer.log',
           'juicer.parser',
           'juicer.pulp',
           'juicer.rpm'

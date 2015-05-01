@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.common import Constants
-from juicer.log import Log
+import logging
 import magic
 import os.path
 import re
@@ -24,6 +24,7 @@ import re
 
 class RPM(object):
     def __init__(self, source):
+        self.output = logging.getLogger('juicer')
         self.name = os.path.basename(source)
         # Source is the original location of this RPM. That includes
         # both http://.... RPMs and local /home/user/... RPMs.
@@ -60,7 +61,7 @@ class RPM(object):
             os.mkdir(destination)
 
         self.path = dest_file
-        Log.log_debug("Beginning remote->local sync: %s->%s" % (self.source, self.path))
+        self.output.debug("Beginning remote->local sync: %s->%s" % (self.source, self.path))
         juicer.utils.save_url_as(self.source, dest_file)
         self.modified = True
         self.synced = True

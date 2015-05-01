@@ -17,7 +17,6 @@
 
 from juicer.command.JuicerCommand import JuicerCommand
 from juicer.cart.Cart import Cart
-from juicer.log import Log
 
 
 class CartShowCommand(JuicerCommand):
@@ -26,4 +25,4 @@ class CartShowCommand(JuicerCommand):
 
     def run(self):
         cart = Cart(self.args.cartname, autoload=True)
-        Log.log_info(str(cart))
+        self.output.info(str(cart))

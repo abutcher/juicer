@@ -17,7 +17,6 @@
 
 from juicer.command.JuicerCommand import JuicerCommand
 from juicer.cart.Cart import Cart
-from juicer.log import Log
 
 
 class CartDeleteCommand(JuicerCommand):
@@ -27,4 +26,4 @@ class CartDeleteCommand(JuicerCommand):
     def run(self):
         cart = Cart(self.args.cartname)
         cart.delete()
-        Log.log_info("successfully deleted cart %s" % cart.name)
+        self.output.info("successfully deleted cart %s" % cart.name)

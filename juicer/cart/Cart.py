@@ -17,28 +17,29 @@
 
 from juicer.common import Constants
 from juicer.pulp.PulpUpload import PulpUpload
-from juicer.log import Log
 from juicer.rpm.RPM import RPM
 import json
+import logging
 import os
 
 
 class Cart(object):
     def __init__(self, name, description=None, autoload=False, autosync=False, autosave=False):
+        self.output = logging.getLogger('juicer')
         self.name = name
         self.cart_file = os.path.join(Constants.CART_LOCATION, "%s.json" % self.name)
         self.repo_items_hash = {}
         self.remotes_storage = os.path.expanduser(os.path.join(Constants.CART_LOCATION, "%s-remotes" % self.name))
 
         if autoload:
-            Log.log_notice("[CART:%s] Auto-loading cart items" % self.name)
+            self.output.notice("[CART:%s] Auto-loading cart items" % self.name)
             self.load()
 
         if description is not None:
             for repo_items in description:
                 (repo, items) = (repo_items[0], repo_items[1:])
-                Log.log_debug("Processing %s input items for repo %s"
-                              % (len(items), repo))
+                self.output.debug("Processing %s input items for repo %s"
+                                  % (len(items), repo))
                 self[repo] = items
             if autosave:
                 self.save()
@@ -66,12 +67,12 @@ class Cart(object):
         `name` - Name of this repo.
         `items` - List of paths to rpm.
         """
-        Log.log_debug("[CART:%s] Adding %s items to repo '%s'" %
-                      (self.name, len(items), repo_name))
+        self.output.debug("[CART:%s] Adding %s items to repo '%s'" %
+                          (self.name, len(items), repo_name))
         # Is some sort of validation required here?
         cart_items = []
         for item in items:
-            Log.log_debug("Creating CartObject for %s" % item)
+            self.output.debug("Creating CartObject for %s" % item)
             rpm = RPM(item)
             cart_items.append(rpm)
         self.repo_items_hash[repo_name] = cart_items
@@ -108,17 +109,17 @@ class Cart(object):
 
     def save(self):
         if self.is_empty():
-            Log.log_error('Cart is empty, not saving anything')
+            self.output.error('Cart is empty, not saving anything')
             return None
 
         json_body = json.dumps(self._cart_dict())
         if os.path.exists(self.cart_file):
-            Log.log_warn("Cart file '%s' already exists, overwriting with new data." % self.cart_file)
+            self.output.warn("Cart file '%s' already exists, overwriting with new data." % self.cart_file)
         f = open(self.cart_file, 'w')
         f.write(json_body)
         f.flush()
         f.close()
-        Log.log_info("Saved cart '%s'." % self.name)
+        self.output.info("Saved cart '%s'." % self.name)
 
     def load(self):
         """
@@ -139,21 +140,21 @@ class Cart(object):
         Remove all trace of this cart: delete the file(s) on the local
         filesystem and delete the entry from the database
         """
-        Log.log_debug("Deleting cart %s" % self.name)
+        self.output.debug("Deleting cart %s" % self.name)
 
         # rm -r self.remotes_storage()
         if os.path.exists(self.remotes_storage):
             for item in os.listdir(self.remotes_storage):
                 ipath = os.path.expanduser(self.remotes_storage + '/' + item)
                 if os.path.exists(ipath):
-                    Log.log_debug("removing %s" % ipath)
+                    self.output.debug("removing %s" % ipath)
                     os.remove(ipath)
-                Log.log_debug("removing %s's remote item storage dir" % self.name)
+                self.output.debug("removing %s's remote item storage dir" % self.name)
                 os.rmdir(self.remotes_storage)
 
         # rm cart_file()
         if os.path.exists(self.cart_file):
-            Log.log_debug("removing %s's cart file" % self.name)
+            self.output.debug("removing %s's cart file" % self.name)
             os.remove(self.cart_file)
 
     def upload_items(self, environment, connection):

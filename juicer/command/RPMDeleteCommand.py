@@ -16,7 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.command.JuicerCommand import JuicerCommand
-from juicer.log import Log
 
 
 class RPMDeleteCommand(JuicerCommand):

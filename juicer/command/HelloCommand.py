@@ -17,13 +17,11 @@
 
 from juicer.command.JuicerCommand import JuicerCommand
 from juicer.common import Constants
-import logging
 
 
 class HelloCommand(JuicerCommand):
     def __init__(self, args):
         super(HelloCommand, self).__init__(args)
-        self.output = logging.getLogger('juicer')
 
     def run(self):
         from pulp.bindings.server_info import ServerInfoAPI

@@ -17,12 +17,14 @@
 
 from juicer.config.Config import Config
 from pulp.bindings.server import PulpConnection
+import logging
 
 
 class JuicerCommand(object):
     def __init__(self, args):
         self.args = args
         self.config = Config()
+        self.output = logging.getLogger('juicer')
 
         self.connections = {}
         for environment in self.config.keys():

@@ -40,6 +40,8 @@ from juicer.command.UserListCommand import UserListCommand
 from juicer.command.UserShowCommand import UserShowCommand
 from juicer.command.UserUpdateCommand import UserUpdateCommand
 
+import logging
+
 
 class Parser(object):
     def __init__(self):
@@ -498,6 +500,34 @@ class Parser(object):
 
 
 def main():  # pragma: no cover
+
+    ######################################################################
+    # Create the logger object. Right now it is useless, we have no
+    # handlers or formatters configurd
+    #
+    # TODO: Probably set log level from a CLI param or smth
+    log_level = logging.INFO
+    juicer_logger = logging.getLogger('juicer')
+    juicer_logger.setLevel(log_level)
+
+    ######################################################################
+    # Now create the stdout 'stream' handler for printing to the
+    # console
+    juicer_stream_handler = logging.StreamHandler()
+    # More items you can put into log records are here:
+    # https://docs.python.org/2/library/logging.html#logrecord-attributes
+    log_string = "%(asctime)s - %(message)s"
+    juicer_stream_formatter = logging.Formatter(log_string)
+    juicer_stream_handler.setFormatter(juicer_stream_formatter)
+    juicer_stream_handler.setLevel(log_level)
+
+    ######################################################################
+    # We have a stream handler, and it has a formatting string set,
+    # now we join all the things together
+    juicer_logger.addHandler(juicer_stream_handler)
+    juicer_logger.info("initialized juicer-logging at level: %s" % log_level)
+
+    ######################################################################
     parser = Parser()
     args = parser.parser.parse_args()
     args.cmd(args).run()

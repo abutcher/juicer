@@ -21,12 +21,12 @@ from juicer.command.HelloCommand import HelloCommand
 from juicer.parser.Parser import Parser
 
 
-class TestHello(TestCase):
+class TestJuicerHello(TestCase):
     def setUp(self):
         parser = Parser()
         self.args = parser.parser.parse_args(['hello'])
 
-    def test_hello(self):
+    def test_juicer_hello(self):
         """Verify that hello can be ran"""
         with nested(
                 mock.patch('pulp.bindings.server_info'),

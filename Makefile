@@ -59,7 +59,7 @@ ci-unittests:
 	@echo "#############################################"
 	@echo "# Running Unit Tests in virtualenv"
 	@echo "#############################################"
-	. $(NAME)env/bin/activate && nosetests -v --with-cover --cover-min-percentage=50 --cover-html --cover-package=$(TESTPACKAGE) test/
+	. $(NAME)env/bin/activate && nosetests -v --with-cover --cover-min-percentage=65 --cover-html --cover-package=$(TESTPACKAGE) test/
 	@echo "#############################################"
 	@echo "# UNIT TESTS RAN. HTML CODE COVERAGE RESULTS:"
 	@echo "  % xdg-open ./cover/index.html"

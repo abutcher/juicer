@@ -26,7 +26,6 @@ class TestHello(TestCase):
         parser = Parser()
         self.args = parser.parser.parse_args(['hello'])
 
-
     def test_hello(self):
         """Verify that hello can be ran"""
         with mock.patch('pulp.bindings.server_info') as server_info:

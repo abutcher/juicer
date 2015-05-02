@@ -91,7 +91,7 @@ class TestPulpRepo(TestCase):
     def test_pulp_repo_list(self):
         """Verify pulp repo list"""
         with mock.patch('pulp.bindings.repository') as repository:
-            # Return value for the list() method call (RepositoryAPI Class method)
+            # Return value for the repositories() method call (RepositoryAPI Class method)
             mock_response = mock.MagicMock()
             mock_response.response_code = 200
             mock_response.response_body = [{'id': 'test-repo-re', 'display_name': 'test-repo'}]

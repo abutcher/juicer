@@ -1,5 +1,4 @@
 [![Build Status](https://api.travis-ci.org/abutcher/juicer.png)](https://travis-ci.org/abutcher/juicer/)
-[![Code Climate](https://codeclimate.com/github/abutcher/juicer/badges/gpa.svg)](https://codeclimate.com/github/abutcher/juicer)
 
 Juicer
 ------

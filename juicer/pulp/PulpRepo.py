@@ -106,7 +106,7 @@ class PulpRepo(PulpInterface):
                 self.output.debug("failed to publish repo %s in %s" % (name, environment))
                 self.output.debug(response)
                 return False
-        except pulp.bindings.exception.NotFoundException:
+        except pulp.bindings.exceptions.NotFoundException:
             self.output.error("repo %s does not exist in %s" % (name, environment))
             return False
 

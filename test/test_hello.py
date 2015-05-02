@@ -26,13 +26,23 @@ class TestHello(TestCase):
         parser = Parser()
         self.args = parser.parser.parse_args(['hello'])
 
-    @mock.patch('juicer.common.Constants')
-    @mock.patch('pulp.bindings.responses.Response')
-    @mock.patch('pulp.bindings.server_info.ServerInfoAPI')
-    def test_hello(self, mock_Constants, mock_Response, mock_ServerInfoAPI):
+
+    def test_hello(self):
         """Verify that hello can be ran"""
-        mock_Constants.USER_CONFIG = './config'
-        mock_Response.response_code = 200
-        mock_Response.response_body = '[{}]'
-        mock_ServerInfoAPI.types.return_value = mock_Response
-        hello = HelloCommand(self.args).run()
+        with mock.patch('pulp.bindings.server_info') as server_info:
+            # Return value for the get_types() method call (serverInfoAPI Class method)
+            mock_response = mock.MagicMock()
+            mock_response.response_code = 200
+            mock_pulp = mock.Mock(get_types=mock.MagicMock(return_value=mock_response))
+
+            # (pulp.bindings).server_info.ServerInfoAPI
+            server_info.ServerInfoAPI = mock.Mock(return_value=mock_pulp)
+            hello = HelloCommand(self.args).run()
+
+            # true for the case where connection made
+            self.assertTrue(hello)
+
+            mock_response.response_code = 400
+            hello = HelloCommand(self.args).run()
+            # true for the case where connection failed
+            self.assertFalse(hello)

@@ -17,6 +17,7 @@
 
 from juicer.command.JuicerCommand import JuicerCommand
 from juicer.common import Constants
+import pulp.bindings.server_info
 
 
 class HelloCommand(JuicerCommand):
@@ -24,13 +25,13 @@ class HelloCommand(JuicerCommand):
         super(HelloCommand, self).__init__(args)
 
     def run(self):
-        from pulp.bindings.server_info import ServerInfoAPI
-
         for environment in self.args.environment:
             hostname = self.config.get(environment)['hostname']
-            pulp = ServerInfoAPI(self.connections[environment])
-            response = pulp.get_types()
+            _pulp = pulp.bindings.server_info.ServerInfoAPI(self.connections[environment])
+            response = _pulp.get_types()
             if response.response_code == Constants.PULP_GET_OK:
                 self.output.info("%s: %s OK" % (environment, hostname))
+                return True
             else:
                 self.output.info("%s: %s FAILED" % (environment, hostname))
+                return False

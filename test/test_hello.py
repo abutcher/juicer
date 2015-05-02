@@ -28,7 +28,14 @@ class TestHello(TestCase):
 
     def test_hello(self):
         """Verify that hello can be ran"""
-        with mock.patch('pulp.bindings.server_info') as server_info:
+        with nested(
+                mock.patch('pulp.bindings.server_info'),
+                mock.patch('juicer.common.Constants')) as (
+                    server_info,
+                    constants):
+
+            constants.USER_CONFIG = './config'
+
             # Return value for the get_types() method call (serverInfoAPI Class method)
             mock_response = mock.MagicMock()
             mock_response.response_code = 200

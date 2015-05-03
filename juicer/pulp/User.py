@@ -16,15 +16,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.common import Constants
-from juicer.pulp.PulpInterface import PulpInterface
+from juicer.pulp.Pulp import Pulp
 
 import pulp.bindings.auth
 import pulp.bindings.exceptions
 
 
-class PulpUser(PulpInterface):
+class User(Pulp):
     def __init__(self, connection):
-        super(PulpUser, self).__init__(connection)
+        super(User, self).__init__(connection)
 
     def create(self, login, password, environment, name=None, roles=None):
         _pulp = pulp.bindings.auth.UserAPI(self.connection)

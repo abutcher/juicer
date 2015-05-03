@@ -23,7 +23,7 @@ from juicer.parser.Parser import Parser
 import pulp.bindings.exceptions
 
 
-class TestPulpUser(TestCase):
+class TestUser(TestCase):
     def setUp(self):
         pass
 
@@ -38,7 +38,7 @@ class TestPulpUser(TestCase):
             # (pulp.bindings).auth.UserAPI
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
 
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             created = pulp_user.create(login='test-user',
                                        password='sw33tp@55w3rd',
                                        name='Test User',
@@ -58,7 +58,7 @@ class TestPulpUser(TestCase):
 
             mock_pulp = mock.Mock(create=mock.MagicMock(side_effect=pulp.bindings.exceptions.ConflictException({'_href': 'oh no'})))
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             # false for the case where user not created due to a conflict
             created = pulp_user.create(login='test-user',
                                        password='sw33tp@55w3rd',
@@ -77,7 +77,7 @@ class TestPulpUser(TestCase):
 
             # (pulp.bindings).auth.UserAPI
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             deleted = pulp_user.delete(login='test-user',
                                        environment='re')
             # true for the case where user deleted
@@ -110,7 +110,7 @@ class TestPulpUser(TestCase):
 
             # (pulp.bindings).auth.UserAPI
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             listed = pulp_user.list(environment='re')
             # true for the case where user listed
             self.assertTrue(listed)
@@ -133,7 +133,7 @@ class TestPulpUser(TestCase):
 
             # (pulp.bindings).auth.UserAPI
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             shown = pulp_user.show(login='test-user',
                                    environment='re')
             # true for the case where user shown
@@ -147,7 +147,7 @@ class TestPulpUser(TestCase):
 
             mock_pulp = mock.Mock(user=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             # false for the case where user not shown because it didn't exist
             shown = pulp_user.show(login='test-user',
                                    environment='re')
@@ -163,7 +163,7 @@ class TestPulpUser(TestCase):
 
             # (pulp.bindings).auth.UserAPI
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             updated = pulp_user.update(login='test-user',
                                        password='sw337',
                                        name='New Name',
@@ -183,7 +183,7 @@ class TestPulpUser(TestCase):
 
             mock_pulp = mock.Mock(update=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
             auth.UserAPI = mock.Mock(return_value=mock_pulp)
-            pulp_user = juicer.pulp.PulpUser.PulpUser(None)
+            pulp_user = juicer.pulp.User.User(None)
             # false for the case where user not updated because it didn't exist
             updated = pulp_user.update(login='test-user',
                                        password='sw337',

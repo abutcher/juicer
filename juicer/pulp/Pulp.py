@@ -18,7 +18,7 @@
 import logging
 
 
-class PulpInterface(object):
+class Pulp(object):
     def __init__(self, connection):
         self.connection = connection
         self.output = logging.getLogger('juicer')

@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.common import Constants
-from juicer.pulp.PulpUpload import PulpUpload
+from juicer.pulp.Upload import Upload
 from juicer.rpm.RPM import RPM
 import json
 import logging
@@ -158,7 +158,7 @@ class Cart(object):
             os.remove(self.cart_file)
 
     def upload_items(self, environment, connection):
-        pulp_upload = PulpUpload(connection)
+        pulp_upload = Upload(connection)
         for repo, items in self.iterrepos():
             for item in items:
                 if not item.synced:

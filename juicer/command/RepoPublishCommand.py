@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.command.JuicerCommand import JuicerCommand
-from juicer.pulp.PulpRepo import PulpRepo
+from juicer.pulp.Repo import Repo
 
 
 class RepoPublishCommand(JuicerCommand):
@@ -25,6 +25,6 @@ class RepoPublishCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_repo = PulpRepo(self.connections[environment])
+            pulp_repo = Repo(self.connections[environment])
             pulp_repo.publish(name=self.args.repo,
                               environment=environment)

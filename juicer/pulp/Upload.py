@@ -17,16 +17,16 @@
 
 import hashlib
 from juicer.common import Constants
-from juicer.pulp.PulpInterface import PulpInterface
-from juicer.pulp.PulpRepo import PulpRepo
+from juicer.pulp.Pulp import Pulp
+from juicer.pulp.Repo import Repo
 from pyrpm.rpm import RPM as PYRPM
 from pulp.bindings.upload import UploadAPI
 import os
 
 
-class PulpUpload(PulpInterface):
+class Upload(Pulp):
     def __init__(self, connection):
-        super(PulpUpload, self).__init__(connection)
+        super(Upload, self).__init__(connection)
 
     def upload(self, path, repo, environment):
         pulp = UploadAPI(self.connection)
@@ -92,7 +92,7 @@ class PulpUpload(PulpInterface):
         ################################################################
         # Publish the repo
         ################################################################
-        pulp_repo = PulpRepo(self.connection)
+        pulp_repo = Repo(self.connection)
         pulp_repo.publish(name=repo,
                           environment=environment)
 

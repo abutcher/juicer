@@ -16,15 +16,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.common import Constants
-from juicer.pulp.PulpInterface import PulpInterface
+from juicer.pulp.Pulp import Pulp
 
 import pulp.bindings.repository
 import pulp.bindings.exceptions
 
 
-class PulpRepo(PulpInterface):
+class Repo(Pulp):
     def __init__(self, connection):
-        super(PulpRepo, self).__init__(connection)
+        super(Repo, self).__init__(connection)
 
     def create(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)

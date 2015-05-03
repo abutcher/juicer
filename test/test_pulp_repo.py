@@ -23,7 +23,7 @@ from juicer.parser.Parser import Parser
 import pulp.bindings.exceptions
 
 
-class TestPulpRepo(TestCase):
+class TestRepo(TestCase):
     def setUp(self):
         pass
 
@@ -38,7 +38,7 @@ class TestPulpRepo(TestCase):
             # (pulp.bindings).repository.RepositoryAPI
             repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
 
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             created = pulp_repo.create(name='test-repo',
                                        environment='re')
             # true for the case where repo created
@@ -52,7 +52,7 @@ class TestPulpRepo(TestCase):
 
             mock_pulp = mock.Mock(create_and_configure=mock.MagicMock(side_effect=pulp.bindings.exceptions.ConflictException({'_href': 'oh no'})))
             repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             # false for the case where repo not created due to a conflict
             created = pulp_repo.create(name='test-repo',
                                        environment='re')
@@ -68,7 +68,7 @@ class TestPulpRepo(TestCase):
 
             # (pulp.bindings).repository.RepositoryAPI
             repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             deleted = pulp_repo.delete(name='test-repo',
                                    environment='re')
             # true for the case where repo deleted
@@ -82,7 +82,7 @@ class TestPulpRepo(TestCase):
 
             mock_pulp = mock.Mock(delete=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
             repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             # false for the case where repo not deleted because it didn't exist
             deleted = pulp_repo.delete(name='test-repo',
                                        environment='re')
@@ -99,7 +99,7 @@ class TestPulpRepo(TestCase):
 
             # (pulp.bindings).repository.RepositoryAPI
             repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             listed = pulp_repo.list(environment='re')
             # true for the case where repo listed
             self.assertTrue(listed)
@@ -119,7 +119,7 @@ class TestPulpRepo(TestCase):
 
             # (pulp.bindings).repository.RepositoryActionsAPI
             repository.RepositoryActionsAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             published = pulp_repo.publish(name='test-repo',
                                           environment='re')
             # true for the case where repo published
@@ -133,7 +133,7 @@ class TestPulpRepo(TestCase):
 
             mock_pulp = mock.Mock(publish=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
             repository.RepositoryActionsAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             # false for the case where repo not published because it didn't exist
             published = pulp_repo.publish(name='test-repo',
                                           environment='re')
@@ -151,7 +151,7 @@ class TestPulpRepo(TestCase):
 
             # (pulp.bindings).repository.RepositoryActionsAPI
             repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             shown = pulp_repo.show(name='test-repo',
                                    environment='re')
             # true for the case where repo shown
@@ -171,7 +171,7 @@ class TestPulpRepo(TestCase):
 
             mock_pulp = mock.Mock(repository=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
             repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
-            pulp_repo = juicer.pulp.PulpRepo.PulpRepo(None)
+            pulp_repo = juicer.pulp.Repo.Repo(None)
             # false for the case where repo not shown because it didn't exist
             shown = pulp_repo.show(name='test-repo',
                                    environment='re')

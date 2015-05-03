@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.command.JuicerCommand import JuicerCommand
-from juicer.pulp.PulpUser import PulpUser
+from juicer.pulp.User import User
 
 
 class UserDeleteCommand(JuicerCommand):
@@ -25,6 +25,6 @@ class UserDeleteCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_user = PulpUser(self.connections[environment])
+            pulp_user = User(self.connections[environment])
             pulp_user.delete(login=self.args.login,
                              environment=environment)

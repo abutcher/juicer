@@ -19,26 +19,29 @@ import argparse
 import juicer.parser
 from juicer.parser.PromptAction import PromptAction
 
-from juicer.command.CartCreateCommand import CartCreateCommand
-from juicer.command.CartDeleteCommand import CartDeleteCommand
-from juicer.command.CartShowCommand import CartShowCommand
+from juicer.command.cart.CartCreateCommand import CartCreateCommand
+from juicer.command.cart.CartDeleteCommand import CartDeleteCommand
+from juicer.command.cart.CartShowCommand import CartShowCommand
 
 from juicer.command.HelloCommand import HelloCommand
 
-from juicer.command.RepoCreateCommand import RepoCreateCommand
-from juicer.command.RepoDeleteCommand import RepoDeleteCommand
-from juicer.command.RepoListCommand import RepoListCommand
-from juicer.command.RepoPublishCommand import RepoPublishCommand
-from juicer.command.RepoShowCommand import RepoShowCommand
+from juicer.command.repo.RepoCreateCommand import RepoCreateCommand
+from juicer.command.repo.RepoDeleteCommand import RepoDeleteCommand
+from juicer.command.repo.RepoListCommand import RepoListCommand
+from juicer.command.repo.RepoPublishCommand import RepoPublishCommand
+from juicer.command.repo.RepoShowCommand import RepoShowCommand
 
-from juicer.command.RPMDeleteCommand import RPMDeleteCommand
-from juicer.command.RPMUploadCommand import RPMUploadCommand
+from juicer.command.rpm.RPMDeleteCommand import RPMDeleteCommand
+from juicer.command.rpm.RPMUploadCommand import RPMUploadCommand
 
-from juicer.command.UserCreateCommand import UserCreateCommand
-from juicer.command.UserDeleteCommand import UserDeleteCommand
-from juicer.command.UserListCommand import UserListCommand
-from juicer.command.UserShowCommand import UserShowCommand
-from juicer.command.UserUpdateCommand import UserUpdateCommand
+from juicer.command.role.RoleAddCommand import RoleAddCommand
+from juicer.command.role.RoleListCommand import RoleListCommand
+
+from juicer.command.user.UserCreateCommand import UserCreateCommand
+from juicer.command.user.UserDeleteCommand import UserDeleteCommand
+from juicer.command.user.UserListCommand import UserListCommand
+from juicer.command.user.UserShowCommand import UserShowCommand
+from juicer.command.user.UserUpdateCommand import UserUpdateCommand
 
 import logging
 
@@ -86,6 +89,13 @@ class Parser(object):
                                             help='repo operations')
 
         subparser_repo = parser_repo.add_subparsers(dest='sub_command')
+
+        ##################################################################
+        # Create the 'role' sub-parser
+        parser_role = subparsers.add_parser('role',
+                                            help='role operations')
+
+        subparser_role = parser_role.add_subparsers(dest='sub_command')
 
         ##################################################################
         # Create the 'user' sub-parser
@@ -376,6 +386,40 @@ class Parser(object):
                                       help='The environments in which to show your repository')
 
         parser_repo_show.set_defaults(cmd=RepoShowCommand)
+
+        ##################################################################
+        # Create the 'role add' sub-parser
+        parser_role_add = subparser_role.add_parser('add',
+                                                    help='Add user to role')
+
+        parser_role_add.add_argument('--login', metavar='login',
+                                     help='Login user id for user',
+                                     required=True)
+
+        parser_role_add.add_argument('--role', metavar='role',
+                                     help='Role to add user to',
+                                     required=True)
+
+        parser_role_add.add_argument('--in', metavar='envs',
+                                     nargs="+",
+                                     dest='environment',
+                                     default=self._default_envs,
+                                     help='The environments in which to add user to role')
+
+        parser_role_add.set_defaults(cmd=RoleAddCommand)
+
+        ##################################################################
+        # Create the 'role list' sub-parser
+        parser_role_list = subparser_role.add_parser('list',
+                                                     help='List all roles')
+
+        parser_role_list.add_argument('--in', metavar='envs',
+                                      nargs="+",
+                                      dest='environment',
+                                      default=self._default_envs,
+                                      help='The environments in which to list roles')
+
+        parser_role_list.set_defaults(cmd=RoleListCommand)
 
         ##################################################################
         # Create the 'user create' sub-parser

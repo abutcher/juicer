@@ -29,7 +29,6 @@ setup(name='juicer',
           'juicer.command.user',
           'juicer.common',
           'juicer.config',
-          'juicer.juicer',
           'juicer.parser',
           'juicer.pulp',
           'juicer.rpm'

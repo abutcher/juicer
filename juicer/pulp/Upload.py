@@ -73,6 +73,9 @@ class Upload(Pulp):
             if total_seeked < self.pbar.maxval:
                 self.pbar.update(int(total_seeked))
 
+        # Finished with that.
+        self.pbar.finish()
+
         # Import upload.
         self.import_upload(upload_id, repo_id, 'rpm', unit_key, unit_metadata)
 

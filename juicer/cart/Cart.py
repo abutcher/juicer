@@ -15,12 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.common import Constants
-from juicer.pulp.Upload import Upload
-from juicer.rpm.RPM import RPM
 import json
 import logging
 import os
+from pymongo import MongoClient
+from pymongo import errors as MongoErrors
+
+from juicer.common import Constants
+from juicer.config.Config import Config
+from juicer.pulp.Upload import Upload
+from juicer.rpm.RPM import RPM
 
 
 class Cart(object):
@@ -30,6 +34,7 @@ class Cart(object):
         self.cart_file = os.path.join(Constants.CART_LOCATION, "%s.json" % self.name)
         self.repo_items_hash = {}
         self.remotes_storage = os.path.expanduser(os.path.join(Constants.CART_LOCATION, "%s-remotes" % self.name))
+        self.config = Config()
 
         if autoload:
             self.output.notice("[CART:%s] Auto-loading cart items" % self.name)
@@ -111,7 +116,12 @@ class Cart(object):
         if self.is_empty():
             self.output.error('Cart is empty, not saving anything')
             return None
+        self.save_local()
+        self.save_remote()
+        self.output.info("Saved cart '%s'." % self.name)
+        return True
 
+    def save_local(self):
         json_body = json.dumps(self._cart_dict())
         if os.path.exists(self.cart_file):
             self.output.warn("Cart file '%s' already exists, overwriting with new data." % self.cart_file)
@@ -119,7 +129,16 @@ class Cart(object):
         f.write(json_body)
         f.flush()
         f.close()
-        self.output.info("Saved cart '%s'." % self.name)
+
+    def save_remote(self):
+        cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
+        connection_str = 'mongodb://' + cart_seeds
+        mongo = MongoClient(connection_str)
+        db = mongo.carts
+        try:
+            db['carts'].save(self._cart_dict())
+        except MongoErrors.AutoReconnect:
+            self.output.error("failed to save cart %s on remote" % self.name)
 
     def load(self):
         """

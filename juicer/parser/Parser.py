@@ -560,7 +560,9 @@ def main():  # pragma: no cover
     juicer_stream_handler = logging.StreamHandler()
     # More items you can put into log records are here:
     # https://docs.python.org/2/library/logging.html#logrecord-attributes
-    log_string = "%(asctime)s - %(message)s"
+    # We will use message for now. TODO: Add time or other items to debug output.
+    # log_string = "%(asctime)s - %(message)s"
+    log_string = "%(message)s"
     juicer_stream_formatter = logging.Formatter(log_string)
     juicer_stream_handler.setFormatter(juicer_stream_formatter)
     juicer_stream_handler.setLevel(log_level)
@@ -569,7 +571,7 @@ def main():  # pragma: no cover
     # We have a stream handler, and it has a formatting string set,
     # now we join all the things together
     juicer_logger.addHandler(juicer_stream_handler)
-    juicer_logger.info("initialized juicer-logging at level: %s" % log_level)
+    juicer_logger.debug("initialized juicer-logging at level: %s" % log_level)
 
     ######################################################################
     parser = Parser()

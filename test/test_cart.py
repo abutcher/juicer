@@ -15,6 +15,7 @@
 
 from . import TestCase, unittest
 from contextlib import nested
+import mock
 import os
 
 from juicer.cart.Cart import Cart
@@ -25,14 +26,18 @@ class TestCart(TestCase):
 
     def test_cart_without_provided_description(self):
         """A cart without items is empty"""
-        cart = Cart('test-cart')
-        self.assertEqual(cart.is_empty(), True)
-        self.assertEqual(cart.repo_items_hash, {})
+        with mock.patch('juicer.common.Constants') as constants:
+            constants.USER_CONFIG = './config'
+            cart = Cart('test-cart')
+            self.assertEqual(cart.is_empty(), True)
+            self.assertEqual(cart.repo_items_hash, {})
 
     def test_cart_with_provided_description(self):
         """A cart with items is not empty"""
-        cart = Cart('test-cart', [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
-        self.assertEqual(cart.repos(), ['test-repo'])
-        self.assertEqual(cart.keys(), ['test-repo'])
-        self.assertEqual(cart.is_empty(), False)
-        self.assertIsInstance(str(cart), str)
+        with mock.patch('juicer.common.Constants') as constants:
+            constants.USER_CONFIG = './config'
+            cart = Cart('test-cart', [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
+            self.assertEqual(cart.repos(), ['test-repo'])
+            self.assertEqual(cart.keys(), ['test-repo'])
+            self.assertEqual(cart.is_empty(), False)
+            self.assertIsInstance(str(cart), str)

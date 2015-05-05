@@ -37,7 +37,7 @@ class Cart(object):
         self.config = Config()
 
         if autoload:
-            self.output.notice("[CART:%s] Auto-loading cart items" % self.name)
+            self.output.debug("[CART:%s] Auto-loading cart items" % self.name)
             self.load()
 
         if description is not None:
@@ -139,6 +139,25 @@ class Cart(object):
             db['carts'].save(self._cart_dict())
         except MongoErrors.AutoReconnect:
             self.output.error("failed to save cart %s on remote" % self.name)
+
+    def pull(self):
+        cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
+        connection_str = 'mongodb://' + cart_seeds
+        mongo = MongoClient(connection_str)
+        db = mongo.carts
+        try:
+            json_body = json.dumps(db['carts'].find_one({'_id': self.name}))
+            if json_body == 'null':
+                self.output.error("cart %s does not exist on remote" % self.name)
+            else:
+                if os.path.exists(self.cart_file):
+                    self.output.warn("Cart file '%s' already exists, overwriting with new data." % self.cart_file)
+                f = open(self.cart_file, 'w')
+                f.write(json_body)
+                f.flush()
+                f.close()
+        except MongoErrors.AutoReconnect:
+            self.output.error("failed to find cart %s on remote" % self.name)
 
     def load(self):
         """

@@ -21,6 +21,7 @@ from juicer.parser.PromptAction import PromptAction
 
 from juicer.command.cart.CartCreateCommand import CartCreateCommand
 from juicer.command.cart.CartDeleteCommand import CartDeleteCommand
+from juicer.command.cart.CartPullCommand import CartPullCommand
 from juicer.command.cart.CartShowCommand import CartShowCommand
 
 from juicer.command.HelloCommand import HelloCommand
@@ -178,7 +179,7 @@ class Parser(object):
         parser_cart_pull.add_argument('cartname', metavar='cartname',
                                       help='The name of your release cart')
 
-        # parser_cart_pull.set_defaults(command=juicer.command.cart_pull)
+        parser_cart_pull.set_defaults(cmd=CartPullCommand)
 
         ##################################################################
         # Create the 'cart push' sub-parser

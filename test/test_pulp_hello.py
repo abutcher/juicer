@@ -17,17 +17,15 @@ from . import TestCase, unittest
 from contextlib import nested
 import mock
 
-from juicer.command.HelloCommand import HelloCommand
-from juicer.parser.Parser import Parser
+import juicer.pulp
 
 
-class TestJuicerHello(TestCase):
+class TestPulp(TestCase):
     def setUp(self):
-        parser = Parser()
-        self.args = parser.parser.parse_args(['hello'])
+        pass
 
-    def test_juicer_hello(self):
-        """Verify that hello can be ran"""
+    def test_pulp_hello(self):
+        """Verify pulp hello"""
         with nested(
                 mock.patch('pulp.bindings.server_info'),
                 mock.patch('juicer.common.Constants')) as (
@@ -43,12 +41,13 @@ class TestJuicerHello(TestCase):
 
             # (pulp.bindings).server_info.ServerInfoAPI
             server_info.ServerInfoAPI = mock.Mock(return_value=mock_pulp)
-            hello = HelloCommand(self.args).run()
+            _pulp = juicer.pulp.Pulp.Pulp(None)
+            responded = _pulp.hello(environment='re')
 
             # true for the case where connection made
-            self.assertTrue(hello)
+            self.assertTrue(responded)
 
             mock_response.response_code = 400
-            hello = HelloCommand(self.args).run()
+            responded = _pulp.hello(environment='re')
             # true for the case where connection failed
-            self.assertFalse(hello)
+            self.assertFalse(responded)

@@ -22,6 +22,7 @@ from juicer.parser.PromptAction import PromptAction
 from juicer.command.cart.CartCreateCommand import CartCreateCommand
 from juicer.command.cart.CartDeleteCommand import CartDeleteCommand
 from juicer.command.cart.CartPullCommand import CartPullCommand
+from juicer.command.cart.CartPushCommand import CartPushCommand
 from juicer.command.cart.CartShowCommand import CartShowCommand
 
 from juicer.command.HelloCommand import HelloCommand
@@ -196,7 +197,7 @@ class Parser(object):
                                       help='The environments to push into.',
                                       dest='environment')
 
-        # parser_cart_push.set_defaults(command=juicer.command.cart_push)
+        parser_cart_push.set_defaults(cmd=CartPushCommand)
 
         ##################################################################
         # Create the 'cart delete' sub-parser

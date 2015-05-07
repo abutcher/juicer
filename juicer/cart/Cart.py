@@ -117,7 +117,10 @@ class Cart(object):
             self.output.error('Cart is empty, not saving anything')
             return None
         self.save_local()
-        self.save_remote()
+        if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
+            self.save_remote()
+        else:
+            self.output.warn('No cart_seeds found in config file. Cart not saved on remote.')
         self.output.info("Saved cart '%s'." % self.name)
         return True
 

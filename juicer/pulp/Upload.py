@@ -44,7 +44,7 @@ class Upload(Pulp):
         unit_key, unit_metadata = self.generate_upload_data(path)
 
         # An array of widgets to design our progress bar.
-        widgets = ['%s ' % self.name,
+        widgets = ['Uploading %s ' % self.name,
                    progressbar.Percentage(), ' ',
                    progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
                    progressbar.ETA(), ' ',

@@ -63,7 +63,9 @@ PULP_OPTIONS_OK = 200
 # MISC. MAGIC NUMBERS
 #
 # Amount of data to upload at a time
-UPLOAD_AT_ONCE = 10485760
+UPLOAD_AT_ONCE = 5242880
+# Amount of data to download at a time
+DOWNLOAD_AT_ONCE = 5242880
 
 ######################################################################
 # Locations we may reference a few times.

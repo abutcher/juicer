@@ -21,10 +21,10 @@ import os
 from pymongo import MongoClient
 from pymongo import errors as MongoErrors
 
+from juicer.cart.CartItem import CartItem
 from juicer.common import Constants
 from juicer.config.Config import Config
 from juicer.pulp.Upload import Upload
-from juicer.rpm.RPM import RPM
 
 
 class Cart(object):
@@ -78,8 +78,8 @@ class Cart(object):
         cart_items = []
         for item in items:
             self.output.debug("Creating CartObject for %s" % item)
-            rpm = RPM(item)
-            cart_items.append(rpm)
+            new_item = CartItem(item)
+            cart_items.append(new_item)
         self.repo_items_hash[repo_name] = cart_items
 
     def keys(self):
@@ -203,7 +203,7 @@ class Cart(object):
         for repo, items in self.iterrepos():
             for item in items:
                 if not item.synced:
-                    item.sync()
+                    item.sync(self.remotes_storage)
                 pulp_upload.upload(item.path, repo, environment)
 
     def __str__(self):

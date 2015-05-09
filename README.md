@@ -3,23 +3,25 @@
 Juicer
 ------
 ```
-usage: juicer [-h] [-v] [-V] {repo,rpm,hello,cart} ...
+usage: juicer [-h] [-v] [-V] {cart,rpm,repo,role,user,hello} ...
 
 Manage release carts
 
 optional arguments:
--h, --help            show this help message and exit
--v                    increase the verbosity (up to 3x)
--V, --version         show program's version number and exit
+  -h, --help            show this help message and exit
+  -v                    show verbose output
+  -V, --version         show program's version number and exit
 
 Commands:
-'juicer COMMAND -h' for individual help topics
+  'juicer COMMAND -h' for individual help topics
 
-{repo,rpm,hello,cart}
-cart                cart operations
-rpm                 rpm operations
-repo                repo operations
-hello               test your connection to the pulp server
+  {cart,rpm,repo,role,user,hello}
+   cart                cart operations
+   rpm                 rpm operations
+   repo                repo operations
+   role                role operations
+   user                user operations
+   hello               test your connection to the pulp server
 ```
 
 Config
@@ -33,6 +35,7 @@ verify_ssl: False
 ca_path: PATH_TO_CA
 cert_filename: PATH_TO_CERT
 start_in: re
+cart_seeds: localhost:27017
 
 [re]
 hostname: HOSTNAME

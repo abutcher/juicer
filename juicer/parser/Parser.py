@@ -58,9 +58,9 @@ class Parser(object):
         self._default_start_in = 're'
         self._default_envs = ['re', 'qa']
 
-        self.parser.add_argument('-v', action='count',
-                                 default=1,
-                                 help='increase the verbosity (up to 3x)')
+        self.parser.add_argument('-v', action='store_true',
+                                 default=False,
+                                 help='show verbose output')
 
         self.parser.add_argument('-V', '--version', action='version',
                                  version='juicer-1.0.0')
@@ -548,11 +548,14 @@ class Parser(object):
 def main():  # pragma: no cover
 
     ######################################################################
+    parser = Parser()
+    args = parser.parser.parse_args()
+
+    ######################################################################
     # Create the logger object. Right now it is useless, we have no
     # handlers or formatters configurd
-    #
-    # TODO: Probably set log level from a CLI param or smth
-    log_level = logging.INFO
+
+    log_level = logging.DEBUG if args.v else logging.INFO
     juicer_logger = logging.getLogger('juicer')
     juicer_logger.setLevel(log_level)
 
@@ -576,8 +579,6 @@ def main():  # pragma: no cover
     juicer_logger.debug("initialized juicer-logging at level: %s" % log_level)
 
     ######################################################################
-    parser = Parser()
-    args = parser.parser.parse_args()
     args.cmd(args).run()
 
 if __name__ == '__main__':  # pragma: no cover

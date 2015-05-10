@@ -21,9 +21,11 @@ from juicer.parser.PromptAction import PromptAction
 
 from juicer.command.cart.CartCreateCommand import CartCreateCommand
 from juicer.command.cart.CartDeleteCommand import CartDeleteCommand
+from juicer.command.cart.CartListCommand import CartListCommand
 from juicer.command.cart.CartPullCommand import CartPullCommand
 from juicer.command.cart.CartPushCommand import CartPushCommand
 from juicer.command.cart.CartShowCommand import CartShowCommand
+from juicer.command.cart.CartUpdateCommand import CartUpdateCommand
 
 from juicer.command.HelloCommand import HelloCommand
 
@@ -150,13 +152,13 @@ class Parser(object):
                                       nargs='*', default=['*'],
                                       help='A pattern to match cart names against (default: *)')
 
-        # parser_cart_list.set_defaults(command=juicer.command.cart_list)
+        parser_cart_list.set_defaults(cmd=CartListCommand)
 
         ##################################################################
         # Create the 'cart update' sub-parser
         parser_cart_update = subparser_cart.add_parser('update',
                                                        help='Update a release cart with items.',
-                                                       usage='%(prog)s CARTNAME [-f rpm-manifest] ... [-r REPONAME items ... [-r REPONAME items...]]')
+                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [-r REPONAME items...]]')
 
         parser_cart_update.add_argument('cartname', metavar='cartname',
                                         help='The name of your release cart')
@@ -166,11 +168,7 @@ class Parser(object):
                                         nargs='+',
                                         help='Destination repo name')
 
-        parser_cart_update.add_argument('-f', metavar='rpm-manifest',
-                                        action='append',
-                                        help='RPM manifest for cart')
-
-        # parser_cart_update.set_defaults(command=juicer.command.cart_update)
+        parser_cart_update.set_defaults(cmd=CartUpdateCommand)
 
         ##################################################################
         # Create the 'cart pull' sub-parser

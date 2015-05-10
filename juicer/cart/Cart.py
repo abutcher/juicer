@@ -198,6 +198,17 @@ class Cart(object):
             self.output.debug("removing %s's cart file" % self.name)
             os.remove(self.cart_file)
 
+    def update(self, description):
+        for repo_items in description:
+            (repo, items) = (repo_items[0], repo_items[1:])
+            if repo not in self.keys():
+                self[repo] = items
+            else:
+                for item in items:
+                    self[repo].append(CartItem(item))
+        self.save()
+        return True
+
     def upload_items(self, environment, connection):
         pulp_upload = Upload(connection)
         for repo, items in self.iterrepos():

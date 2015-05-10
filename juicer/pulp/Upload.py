@@ -81,6 +81,7 @@ class Upload(Pulp):
 
         # Finished with that.
         self.pbar.finish()
+        fd.close()
 
         # Import upload.
         self.import_upload(upload_id, repo_id, item_type, unit_key, unit_metadata)

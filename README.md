@@ -58,29 +58,29 @@ prod.
 
 ```
 [DEFAULT]
-username: USERNAME
-password: PASSWORD
+username: admin
+password: admin
 port: 443
-verify_ssl: False
-ca_path: PATH_TO_CA
-cert_filename: PATH_TO_CERT
+verify_ssl: True
+ca_path: /etc/pki/pulp/ca.crt
+cert_filename: /etc/pki/pulp/pulp.crt
 start_in: devel
 cart_seeds: localhost:27017
 
 [devel]
-hostname: HOSTNAME
+hostname: localhost
 promotes_to: qa
 
 [qa]
-hostname: HOSTNAME
+hostname: localhost
 promotes_to: stage
 
 [stage]
-hostname: HOSTNAME
+hostname: localhost
 promotes_to: prod
 
 [prod]
-hostname: HOSTNAME
+hostname: localhost
 ```
 
 ## Running Locally

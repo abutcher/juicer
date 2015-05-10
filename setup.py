@@ -31,7 +31,7 @@ setup(name='juicer',
           'juicer.config',
           'juicer.parser',
           'juicer.pulp',
-          'juicer.rpm'
+          'juicer.types'
       ],
       entry_points={
           'console_scripts': [

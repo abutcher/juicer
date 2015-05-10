@@ -204,7 +204,7 @@ class Cart(object):
             for item in items:
                 if not item.synced:
                     item.sync(self.remotes_storage)
-                pulp_upload.upload(item.path, repo, environment)
+                pulp_upload.upload(item.path, repo, item.item_type, environment)
 
     def __str__(self):
         return json.dumps(self._cart_dict(), indent=4)

@@ -17,6 +17,7 @@
 
 import bitmath
 import logging
+import magic
 import os.path
 import progressbar
 import re
@@ -42,6 +43,15 @@ class CartItem(object):
         if url_regex.match(self.source):
             self.path = None
             self.synced = False
+
+        self.item_type = self._set_item_type() if self.path else None
+
+    def _set_item_type(self):
+        mime_type = magic.from_file(self.path).lower()
+        item_type = None
+        if 'rpm' in mime_type:
+            item_type = 'rpm'
+        return item_type
 
     def sync(self, destination):
         dest_file = os.path.join(destination, self.name)
@@ -84,6 +94,7 @@ class CartItem(object):
 
         self.modified = True
         self.synced = True
+        self.item_type = self._set_item_type()
 
     def __str__(self):
         return self.path if self.path else self.source

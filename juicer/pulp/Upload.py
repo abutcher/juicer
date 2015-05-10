@@ -20,13 +20,13 @@ import bitmath.integrations
 import hashlib
 import os
 import progressbar
-from pyrpm.rpm import RPM as PYRPM
 
 import pulp.bindings.upload
 
 from juicer.common import Constants
 import juicer.pulp
 from juicer.pulp.Pulp import Pulp
+from juicer.types.RPM import RPM
 
 
 class Upload(Pulp):
@@ -36,12 +36,18 @@ class Upload(Pulp):
         self.name = None
         self.pbar = None
 
-    def upload(self, path, repo, environment):
+    def upload(self, path, repo, item_type, environment):
         self.name = os.path.basename(path)
         self.environment = environment
         repo_id = "{0}-{1}".format(repo, environment)
         size = os.path.getsize(path)
-        unit_key, unit_metadata = self.generate_upload_data(path)
+
+        if item_type == 'rpm':
+            item = RPM(path)
+        else:
+            item = None
+
+        unit_key, unit_metadata = item.generate_upload_data()
 
         # An array of widgets to design our progress bar.
         widgets = ['Uploading %s ' % self.name,
@@ -59,11 +65,11 @@ class Upload(Pulp):
         upload_id = self.initialize_upload()
 
         # Upload chunks w/ Constants.UPLOAD_AT_ONCE size.
-        rpm_fd = open(path, 'rb')
+        fd = open(path, 'rb')
         total_seeked = 0
-        rpm_fd.seek(0)
+        fd.seek(0)
         while total_seeked < size:
-            chunk = rpm_fd.read(Constants.UPLOAD_AT_ONCE)
+            chunk = fd.read(Constants.UPLOAD_AT_ONCE)
             last_offset = total_seeked
             total_seeked += len(chunk)
             self.output.debug("Seeked %s data... (total seeked: %s)" %
@@ -77,7 +83,7 @@ class Upload(Pulp):
         self.pbar.finish()
 
         # Import upload.
-        self.import_upload(upload_id, repo_id, 'rpm', unit_key, unit_metadata)
+        self.import_upload(upload_id, repo_id, item_type, unit_key, unit_metadata)
 
         # Finalize upload by cleaning up request on server.
         self.delete_upload(upload_id)
@@ -125,24 +131,3 @@ class Upload(Pulp):
         if response.response_code != Constants.PULP_DELETE_OK:
             self.output.error("Failed to clean up upload for %s" % self.name)
             raise SystemError("Failed to clean up upload for %s" % self.name)
-
-    def generate_upload_data(self, path, checksumtype='sha256'):
-        rpm = PYRPM(file(path))
-        name = os.path.basename(path)
-        unit_key = {
-            'checksumtype': checksumtype,
-            'checksum': getattr(hashlib, checksumtype)(path).hexdigest(),
-            'epoch': str(rpm.header.epoch),
-            'version': str(rpm.header.version),
-            'release': str(rpm.header.release),
-            'arch': str(rpm.header.architecture)
-        }
-        unit_metadata = {
-            'vendor': None if str(rpm.header.vendor) == '' else str(rpm.header.vendor),
-            'description': str(rpm.header.description),
-            'license': str(rpm.header.license),
-            'relativepath': name,
-            'buildhost': str(rpm.header.build_host),
-            'filename': name
-        }
-        return unit_key, unit_metadata

@@ -17,27 +17,19 @@ from . import TestCase, unittest
 from contextlib import nested
 import os
 
-from juicer.rpm.RPM import RPM
+from juicer.cart.CartItem import CartItem
 
-class TestRPM(TestCase):
+class TestCartItem(TestCase):
     def setUp(self):
-        self.local_rpm = RPM('share/juicer/empty-0.1-1.noarch.rpm')
-        self.remote_rpm = RPM('http://somesite.com/some-rpm-0.0.1-1.noarch.rpm')
+        self.local_rpm = CartItem('share/juicer/empty-0.1-1.noarch.rpm')
+        self.remote_rpm = CartItem('http://somesite.com/some-rpm-0.0.1-1.noarch.rpm')
 
     def test_local_rpm(self):
         """Local rpm registers as local"""
         self.assertEqual(self.local_rpm.path, os.path.abspath('share/juicer/empty-0.1-1.noarch.rpm'))
         self.assertTrue(self.local_rpm.synced)
 
-    def test_local_rpm_verify(self):
-        """A valid, local rpm is valid"""
-        self.assertTrue(self.local_rpm.verify())
-
     def test_remote_rpm(self):
         """Remote rpm registers as remote"""
         self.assertEqual(self.remote_rpm.path, None)
         self.assertFalse(self.remote_rpm.synced)
-
-    def test_remote_rpm_verify(self):
-        """A valid(?), remote rpm is valid"""
-        self.assertTrue(self.remote_rpm.verify())

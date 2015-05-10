@@ -243,32 +243,6 @@ class Parser(object):
         parser_hello.set_defaults(cmd=HelloCommand)
 
         ##################################################################
-        # create the 'cart promote' sub-parser
-        parser_cart_promote = subparser_cart.add_parser('promote',
-                                                        help='Promote a cart to the next environment')
-
-        parser_cart_promote.add_argument('cartname', metavar='cart',
-                                         help='The name of the cart to promote')
-
-        # parser_cart_promote.set_defaults(command=juicer.command.promote)
-
-        ##################################################################
-        # create the 'cart merge' sub-parser
-        parser_cart_merge = subparser_cart.add_parser('merge',
-                                                      help='Merge the contents of two carts',
-                                                      usage='%(prog)s merge CART1 CART2 [CARTN ...]]] --into NEWCART')
-
-        parser_cart_merge.add_argument('carts', nargs="+",
-                                       metavar='carts',
-                                       help='Two or more carts to merge')
-
-        parser_cart_merge.add_argument('--into', '-i',
-                                       metavar='new_cart_name',
-                                       help='Name of resultant cart, defaults to updating CART1')
-
-        # parser_cart_merge.set_defaults(command=juicer.command.merge)
-
-        ##################################################################
         # create the 'rpm delete' sub-parser
         parser_rpm_delete = subparser_rpm.add_parser('delete',
                                                      help='Remove rpm(s) from repositories',

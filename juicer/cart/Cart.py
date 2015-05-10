@@ -198,6 +198,17 @@ class Cart(object):
             self.output.debug("removing %s's cart file" % self.name)
             os.remove(self.cart_file)
 
+        # rm in mongo
+        if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
+            cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
+            connection_str = 'mongodb://' + cart_seeds
+            mongo = MongoClient(connection_str)
+            db = mongo.carts
+            try:
+                db['carts'].remove({'_id': self.name})
+            except MongoErrors.AutoReconnect:
+                self.output.error("failed to save cart %s on remote" % self.name)
+
     def update(self, description):
         for repo_items in description:
             (repo, items) = (repo_items[0], repo_items[1:])

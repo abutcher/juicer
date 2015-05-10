@@ -7,8 +7,8 @@ which provides a 'shopping cart' style approach to uploading and
 promoting groups of packages through multiple environments.
 
 This particular repository is a fork of the original
-[Juicer](https://github.com/juicer/juicer) which I hope to improve
-upon.
+[Juicer](https://github.com/juicer/juicer) project which I hope to
+improve upon by leveraging use of the existing Pulp libraries.
 
 ## Usage
 ```

@@ -46,7 +46,7 @@ sudo python ./setup.py install
 ```
 
 ## Configuration
-Juicer is configured through a ~/.config/juicer/config file. The
+Juicer is configured through a `~/.config/juicer/config` file. The
 config is broken into sections by environment and may also contain an
 optional DEFAULT section, from which the defaults for all following
 sections are supplied.

@@ -53,7 +53,7 @@ class Parser(object):
     def __init__(self):
 
         self.parser = argparse.ArgumentParser(
-            description='Manage release carts')
+            description='manage pulp and release carts')
         juicer.command.parser = self.parser
 
         self._default_start_in = 're'
@@ -68,7 +68,7 @@ class Parser(object):
 
         ##################################################################
         # Keep the different commands separate
-        subparsers = self.parser.add_subparsers(title='Commands',
+        subparsers = self.parser.add_subparsers(title='commands',
                                                 dest='command',
                                                 description='\'%(prog)s COMMAND -h\' for individual help topics')
 
@@ -110,8 +110,8 @@ class Parser(object):
         ##################################################################
         # Create the 'cart create' sub-parser
         parser_cart_create = subparser_cart.add_parser('create',
-                                                       help='create cart with target repos and items',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [ -r REPONAME items ...]] [-h]')
+                                                       help='create cart with destination repositories and items',
+                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [-r REPONAME items ...]] [-h]')
 
         parser_cart_create.add_argument('cartname', metavar='cart-name',
                                         help='cart name')
@@ -121,7 +121,7 @@ class Parser(object):
         cgroup.add_argument('-r', metavar=('reponame', 'item'),
                             action='append',
                             nargs='+',
-                            help='repo name')
+                            help='destination repo name, items')
 
         parser_cart_create.set_defaults(cmd=CartCreateCommand)
 
@@ -139,12 +139,12 @@ class Parser(object):
         ##################################################################
         # Create the 'cart list' sub-parser
         parser_cart_list = subparser_cart.add_parser('list',
-                                                     usage='%(prog)s [-h]',
+                                                     usage='%(prog)s [GLOB] [-h]',
                                                      help='list local carts')
 
         parser_cart_list.add_argument('cart_glob', metavar='cart_glob',
                                       nargs='*', default=['*'],
-                                      help='a pattern to match cart names against (default: *)')
+                                      help='pattern to match cart names against (default: *)')
 
         parser_cart_list.set_defaults(cmd=CartListCommand)
 
@@ -152,7 +152,7 @@ class Parser(object):
         # Create the 'cart update' sub-parser
         parser_cart_update = subparser_cart.add_parser('update',
                                                        help='update cart with new items',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [-r REPONAME items...]] [-h]')
+                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [-r REPONAME items ...]] [-h]')
 
         parser_cart_update.add_argument('cartname', metavar='cartname',
                                         help='cart name')
@@ -160,7 +160,7 @@ class Parser(object):
         parser_cart_update.add_argument('-r', metavar=('reponame', 'item'),
                                         action='append',
                                         nargs='+',
-                                        help='repo name')
+                                        help='destination repo name, items')
 
         parser_cart_update.set_defaults(cmd=CartUpdateCommand)
 
@@ -179,7 +179,7 @@ class Parser(object):
         # Create the 'cart push' sub-parser
         parser_cart_push = subparser_cart.add_parser('push',
                                                      help='upload cart items to pulp',
-                                                     usage='%(prog)s CARTNAME [--in [environment [environment ...]]] [-h]')
+                                                     usage='%(prog)s CARTNAME [--in ENV ...] [-h]')
 
         parser_cart_push.add_argument('cartname', metavar='cartname',
                                       help='cart name')
@@ -206,19 +206,19 @@ class Parser(object):
         ##################################################################
         # create the 'rpm upload' sub-parser
         parser_rpm_upload = subparser_rpm.add_parser('upload',
-                                                     help='Upload the items specified into repos.',
-                                                     usage='%(prog)s -r REPONAME items ... [ -r REPONAME items ...] [--in ENV ...]')
+                                                     help='upload rpms to repositories',
+                                                     usage='%(prog)s -r REPONAME items ... [ -r REPONAME items ...] [--in ENV ...] [-h]')
 
         parser_rpm_upload.add_argument('-r', metavar=('reponame', 'item'),
                                        action='append',
                                        nargs='+',
                                        required=True,
-                                       help='Destination repo name, items...')
+                                       help='destination repo name, items...')
 
         parser_rpm_upload.add_argument('--in', nargs='*',
                                        metavar='environment',
                                        default=[self._default_start_in],
-                                       help='The environments to upload into.',
+                                       help='environments to upload to',
                                        dest='environment')
 
         parser_rpm_upload.set_defaults(cmd=RPMUploadCommand)
@@ -227,11 +227,11 @@ class Parser(object):
         # create the 'hello' sub-parser
         parser_hello = subparsers.add_parser('hello',
                                              help='test your connection to the pulp server',
-                                             usage='%(prog)s [--in env ...]')
+                                             usage='%(prog)s [--in ENV ...]')
 
         parser_hello.add_argument('--in', nargs='*',
                                   metavar='environment',
-                                  help='The environments to test the connection to.',
+                                  help='environments to test agsint',
                                   default=self._default_envs,
                                   dest='environment')
 
@@ -240,18 +240,18 @@ class Parser(object):
         ##################################################################
         # create the 'rpm delete' sub-parser
         parser_rpm_delete = subparser_rpm.add_parser('delete',
-                                                     help='Remove rpm(s) from repositories',
-                                                     usage='%(prog)s -r REPO-NAME ITEM ITEM ... --in [ENV ...]')
+                                                     help='delete rpms from repositories',
+                                                     usage='%(prog)s -r REPONAME items ... [-r REPONAME items ...] [--in ENV ...] [-h]')
 
         parser_rpm_delete.add_argument('-r', metavar=('reponame', 'item'),
                                        required=True,
                                        action='append',
                                        nargs='+',
-                                       help='Target repo filename, filename...')
+                                       help='target repo name, items')
 
         parser_rpm_delete.add_argument('--in', nargs='*',
                                        metavar='environment',
-                                       help='The environments to test the connection to',
+                                       help='environments to delete from',
                                        default=self._default_envs,
                                        dest='environment')
 
@@ -260,31 +260,32 @@ class Parser(object):
         ##################################################################
         # Create the 'repo delete' sub-parser
         parser_repo_delete = subparser_repo.add_parser('delete',
-                                                       help='Delete pulp repository')
+                                                       usage='%(prog)s REPONAME [--in ENV ...] [-h]',
+                                                       help='delete a repository')
 
         parser_repo_delete.add_argument('repo', metavar='reponame',
-                                        help='Target repo to delete.')
+                                        help='repo name')
 
         parser_repo_delete.add_argument('--in', metavar='envs',
                                         nargs="+",
                                         dest='environment',
                                         default=self._default_envs,
-                                        help='The environments in which to delete your repository')
+                                        help='environments to delete from')
 
         parser_repo_delete.set_defaults(cmd=RepoDeleteCommand)
 
         ##################################################################
         # create the 'repo publish' sub-parser
         parser_repo_publish = subparser_repo.add_parser('publish',
-                                                        help='Publish a repository, this will regenerate metadata.',
-                                                        usage='%(prog)s publish REPONAME --in [ENV ...]')
+                                                        help='publish a repository (this will regenerate metadata)',
+                                                        usage='%(prog)s REPONAME [--in ENV ...] [-h]')
 
         parser_repo_publish.add_argument('repo', metavar='reponame',
-                                         help='Target repo to publish.')
+                                         help='repo name')
 
         parser_repo_publish.add_argument('--in', nargs='*',
                                          metavar='environment',
-                                         help='The environments to publish repository in.',
+                                         help='environments to publish in',
                                          default=self._default_envs,
                                          dest='environment')
 
@@ -293,43 +294,40 @@ class Parser(object):
         ##################################################################
         # Create the 'repo create' sub-parser
         parser_repo_create = subparser_repo.add_parser('create',
-                                                       help='Create pulp repository',
-                                                       usage='%(prog)s REPONAME [--feed FEED] [--checksum-type CHECKSUM-TYPE] [--in ENV [...]]')
+                                                       help='create a repository',
+                                                       usage='%(prog)s REPONAME [--checksum-type CHECKSUM-TYPE] [--in ENV ...] [-h]')
 
         parser_repo_create.add_argument('repo', metavar='reponame',
-                                        help='The name of your repo')
-
-        parser_repo_create.add_argument('--feed', metavar='feed',
-                                        default=None,
-                                        help='A feed repo for your repo')
+                                        help='repo name')
 
         parser_repo_create.add_argument('--checksum-type', metavar='checksum_type',
                                         default='sha256',
                                         choices=['sha26', 'sha'],
-                                        help='Checksum-type used for meta-data generation (one of: sha26, sha)')
+                                        help='checksum-type used for metadata generation (one of: sha26, sha)')
 
         parser_repo_create.add_argument('--in', metavar='environment',
                                         nargs="+",
                                         dest='environment',
                                         default=self._default_envs,
-                                        help='The environments in which to create your repository')
+                                        help='environments to create in')
 
         parser_repo_create.set_defaults(cmd=RepoCreateCommand)
 
         ##################################################################
         # Create the 'repo list' sub-parser
         parser_repo_list = subparser_repo.add_parser('list',
-                                                     help='List all repos')
+                                                     usage='%(prog)s [--json] [--in ENV ...] [-h]',
+                                                     help='list repositories')
 
         parser_repo_list.add_argument('--in', metavar='envs',
                                       nargs="+",
                                       dest='environment',
                                       default=self._default_envs,
-                                      help='The environments in which to list repos')
+                                      help='environments to list from')
 
         parser_repo_list.add_argument('--json',
                                       action='store_true', default=False,
-                                      help='Dump everything in JSON format')
+                                      help='output json')
 
         parser_repo_list.set_defaults(cmd=RepoListCommand)
 
@@ -337,177 +335,179 @@ class Parser(object):
         # Create the 'repo show' sub-parser
 
         parser_repo_show = subparser_repo.add_parser('show',
-                                                     usage='%(prog)s REPONAME [...] [--json] --in [ENV ...]',
-                                                     help='Show pulp repository(s)')
+                                                     usage='%(prog)s REPONAME ... [--json] [--in ENV ...] [-h]',
+                                                     help='show one or more repositories')
 
         parser_repo_show.add_argument('repo', metavar='reponame',
                                       nargs="+",
-                                      help='The name of your repo(s)')
+                                      help='repo name')
 
         parser_repo_show.add_argument('--json',
                                       action='store_true', default=False,
-                                      help='Dump everything in JSON format')
+                                      help='output json')
 
         parser_repo_show.add_argument('--in', metavar='envs',
                                       nargs="+",
                                       dest='environment',
                                       default=self._default_envs,
-                                      help='The environments in which to show your repository')
+                                      help='environments to show from')
 
         parser_repo_show.set_defaults(cmd=RepoShowCommand)
 
         ##################################################################
         # Create the 'role add' sub-parser
         parser_role_add = subparser_role.add_parser('add',
-                                                    help='Add user to role')
+                                                    usage='%(prog)s --login LOGIN --role ROLE [--in ENV ...] [-h]',
+                                                    help='add user to role')
 
         parser_role_add.add_argument('--login', metavar='login',
-                                     help='Login user id for user',
+                                     help='user\'s login',
                                      required=True)
 
         parser_role_add.add_argument('--role', metavar='role',
-                                     help='Role to add user to',
+                                     help='role to add user to',
                                      required=True)
 
         parser_role_add.add_argument('--in', metavar='envs',
                                      nargs="+",
                                      dest='environment',
                                      default=self._default_envs,
-                                     help='The environments in which to add user to role')
+                                     help='environments to add roles in')
 
         parser_role_add.set_defaults(cmd=RoleAddCommand)
 
         ##################################################################
         # Create the 'role list' sub-parser
         parser_role_list = subparser_role.add_parser('list',
-                                                     help='List all roles')
+                                                     usage='%(prog)s [--in ENV ...] [-h]',
+                                                     help='list roles')
 
         parser_role_list.add_argument('--in', metavar='envs',
                                       nargs="+",
                                       dest='environment',
                                       default=self._default_envs,
-                                      help='The environments in which to list roles')
+                                      help='environments to list from')
 
         parser_role_list.set_defaults(cmd=RoleListCommand)
 
         ##################################################################
         # Create the 'user create' sub-parser
         parser_user_create = subparser_user.add_parser('create',
-                                                       help='Create pulp user',
-                                                       usage='%(prog)s LOGIN --name FULLNAME --password PASSWORD \
-                       \n\nYou will be prompted if the PASSWORD argument not supplied.')
+                                                       help='create a user',
+                                                       usage='%(prog)s LOGIN --name \"FULL NAME\" [--password [\"PASSWORD\"]] [--roles ROLE ...] [--in ENV ...] [-h]')
 
         parser_user_create.add_argument('login', metavar='login',
-                                        help='Login user id for user')
+                                        help='login id for user')
 
         parser_user_create.add_argument('--name', metavar='name',
                                         dest='name',
                                         required=True,
                                         default=None,
-                                        help='Full name of user')
+                                        help='full name')
 
         parser_user_create.add_argument('--password', metavar='password',
                                         dest='password',
                                         nargs='*',
                                         required=True,
                                         action=PromptAction,
-                                        help='Plain text password for user')
+                                        help='password (prompted if not argument not supplied)')
 
         parser_user_create.add_argument('--roles', metavar='roles',
                                         nargs="+",
                                         dest='roles',
                                         required=False,
                                         default=None,
-                                        help='Roles to apply to the user.')
+                                        help='roles to apply to user (defaults to None)')
 
         parser_user_create.add_argument('--in', metavar='envs',
                                         nargs="+",
                                         dest='environment',
                                         default=self._default_envs,
-                                        help='The environments in which to create pulp user')
+                                        help='environments to create in')
 
         parser_user_create.set_defaults(cmd=UserCreateCommand)
 
         ##################################################################
         # Create the 'user delete' sub-parser
         parser_user_delete = subparser_user.add_parser('delete',
-                                                       help='Delete pulp user')
+                                                       usage='%(prog)s LOGIN [--in ENV ...] [-h]',
+                                                       help='delete a user')
 
         parser_user_delete.add_argument('login', metavar='login',
-                                        help='Login user id for user')
+                                        help='login id for user')
 
         parser_user_delete.add_argument('--in', metavar='envs',
                                         nargs="+",
                                         dest='environment',
                                         default=self._default_envs,
-                                        help='The environments in which to delete user')
+                                        help='environments to delete from')
 
         parser_user_delete.set_defaults(cmd=UserDeleteCommand)
 
         ##################################################################
         # Create the 'user show' sub-parser
         parser_user_show = subparser_user.add_parser('show',
-                                                     usage='%(prog)s LOGIN --in [ENV ...]',
-                                                     help='Show pulp user')
+                                                     usage='%(prog)s LOGIN [--in ENV ...] [-h]',
+                                                     help='show a user')
 
         parser_user_show.add_argument('login', metavar='login',
-                                      help='Login user id for user')
+                                      help='login id for user')
 
         parser_user_show.add_argument('--in', metavar='envs',
                                       nargs="+",
                                       dest='environment',
                                       default=self._default_envs,
-                                      help='The environments in which to show user')
+                                      help='environments to show from')
 
         parser_user_show.set_defaults(cmd=UserShowCommand)
 
         ##################################################################
         # Create the 'user update' sub-parser
         parser_user_update = subparser_user.add_parser('update',
-                                                       help='Change user information',
-                                                       usage='%(prog)s LOGIN --name FULLNAME --password PASSWORD \
-                       \n\nYou will be prompted if the PASSWORD argument not supplied.')
+                                                       help='change user information',
+                                                       usage='%(prog)s LOGIN [--name \"FULL NAME\"] [--password [\"PASSWORD\"]] [--roles ROLE ...] [--in ENV ...] [-h]')
 
         parser_user_update.add_argument('login', metavar='login',
-                                        help='Login user id for user to update')
+                                        help='login id for user')
 
         parser_user_update.add_argument('--name', metavar='name',
                                         dest='name',
                                         required=False,
-                                        help='Updated name of user')
+                                        help='updated full name')
 
         parser_user_update.add_argument('--password', metavar='password',
                                         dest='password',
                                         nargs='*',
                                         required=False,
                                         action=PromptAction,
-                                        help='Updated password for user')
+                                        help='updated password (prompted if argument not supplied)')
 
         parser_user_update.add_argument('--roles', metavar='roles',
                                         nargs="+",
                                         dest='roles',
                                         required=False,
                                         default=None,
-                                        help='Roles to apply to the user.')
+                                        help='updated roles')
 
         parser_user_update.add_argument('--in', metavar='envs',
                                         nargs="+",
                                         dest='environment',
                                         default=self._default_envs,
-                                        help='The environments in which to create pulp user')
+                                        help='environments to update in')
 
         parser_user_update.set_defaults(cmd=UserUpdateCommand)
 
         ##################################################################
         # Create the 'user list' sub-parser
         parser_user_list = subparser_user.add_parser('list',
-                                                     help='List all users')
+                                                     usage='%(prog)s [--in ENV ...] [-h]',
+                                                     help='list users')
 
         parser_user_list.add_argument('--in', metavar='envs',
                                       nargs="+",
                                       dest='environment',
                                       default=self._default_envs,
-                                      help='The environments in which to list users')
+                                      help='environments to list from')
 
         parser_user_list.set_defaults(cmd=UserListCommand)
 

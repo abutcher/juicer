@@ -35,7 +35,6 @@ from juicer.command.repo.RepoListCommand import RepoListCommand
 from juicer.command.repo.RepoPublishCommand import RepoPublishCommand
 from juicer.command.repo.RepoShowCommand import RepoShowCommand
 
-from juicer.command.rpm.RPMDeleteCommand import RPMDeleteCommand
 from juicer.command.rpm.RPMUploadCommand import RPMUploadCommand
 
 from juicer.command.role.RoleAddCommand import RoleAddCommand
@@ -111,88 +110,84 @@ class Parser(object):
         ##################################################################
         # Create the 'cart create' sub-parser
         parser_cart_create = subparser_cart.add_parser('create',
-                                                       help='Create a cart with the items specified.',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [ -r REPONAME items ...]]')
+                                                       help='create cart with target repos and items',
+                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [ -r REPONAME items ...]] [-h]')
 
         parser_cart_create.add_argument('cartname', metavar='cart-name',
-                                        help='Cart name')
+                                        help='cart name')
 
         cgroup = parser_cart_create.add_mutually_exclusive_group(required=True)
 
         cgroup.add_argument('-r', metavar=('reponame', 'item'),
                             action='append',
                             nargs='+',
-                            help='Destination repo name')
+                            help='repo name')
 
         parser_cart_create.set_defaults(cmd=CartCreateCommand)
 
         ##################################################################
         # Create the 'cart show' sub-parser
         parser_cart_show = subparser_cart.add_parser('show',
-                                                     usage='%(prog)s CARTNAME [--in [environment [environment ...]]] [-h]',
-                                                     help='Print the contents of a cart.')
+                                                     usage='%(prog)s CARTNAME [-h]',
+                                                     help='show the contents of a cart')
 
         parser_cart_show.add_argument('cartname', metavar='name',
-                                      help='The name of your cart')
-
-        parser_cart_show.add_argument('--in', nargs='*',
-                                      metavar='environment',
-                                      default=self._default_envs,
-                                      help='Only show carts pushed to the given environment.',
-                                      dest='environment')
+                                      help='cart name')
 
         parser_cart_show.set_defaults(cmd=CartShowCommand)
 
         ##################################################################
         # Create the 'cart list' sub-parser
         parser_cart_list = subparser_cart.add_parser('list',
-                                                     help='List all of your carts.')
+                                                     usage='%(prog)s [-h]',
+                                                     help='list local carts')
 
         parser_cart_list.add_argument('cart_glob', metavar='cart_glob',
                                       nargs='*', default=['*'],
-                                      help='A pattern to match cart names against (default: *)')
+                                      help='a pattern to match cart names against (default: *)')
 
         parser_cart_list.set_defaults(cmd=CartListCommand)
 
         ##################################################################
         # Create the 'cart update' sub-parser
         parser_cart_update = subparser_cart.add_parser('update',
-                                                       help='Update a release cart with items.',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [-r REPONAME items...]]')
+                                                       help='update cart with new items',
+                                                       usage='%(prog)s CARTNAME [-r REPONAME items ... [-r REPONAME items...]] [-h]')
 
         parser_cart_update.add_argument('cartname', metavar='cartname',
-                                        help='The name of your release cart')
+                                        help='cart name')
 
         parser_cart_update.add_argument('-r', metavar=('reponame', 'item'),
                                         action='append',
                                         nargs='+',
-                                        help='Destination repo name')
+                                        help='repo name')
 
         parser_cart_update.set_defaults(cmd=CartUpdateCommand)
 
         ##################################################################
         # Create the 'cart pull' sub-parser
         parser_cart_pull = subparser_cart.add_parser('pull',
-                                                     help='Pull a release cart from remote.')
+                                                     usage='%(prog)s CARTNAME [-h]',
+                                                     help='pull cart from remote')
 
         parser_cart_pull.add_argument('cartname', metavar='cartname',
-                                      help='The name of your release cart')
+                                      help='cart name')
 
         parser_cart_pull.set_defaults(cmd=CartPullCommand)
 
         ##################################################################
         # Create the 'cart push' sub-parser
         parser_cart_push = subparser_cart.add_parser('push',
-                                                     help='Pushes/Updates a cart on the pulp server.',
+                                                     help='upload cart items to pulp',
                                                      usage='%(prog)s CARTNAME [--in [environment [environment ...]]] [-h]')
 
         parser_cart_push.add_argument('cartname', metavar='cartname',
-                                      help='The name of your new release cart')
+                                      help='cart name')
 
         parser_cart_push.add_argument('--in', nargs='*',
                                       metavar='environment',
                                       default=[self._default_start_in],
-                                      help='The environments to push into.',
+                                      help='environments to push to',
                                       dest='environment')
 
         parser_cart_push.set_defaults(cmd=CartPushCommand)
@@ -200,11 +195,11 @@ class Parser(object):
         ##################################################################
         # Create the 'cart delete' sub-parser
         parser_cart_delete = subparser_cart.add_parser('delete',
-                                                       help='Delete a cart locally and on the pulp server.',
+                                                       help='delete cart locally and on remote',
                                                        usage='%(prog)s CARTNAME [-h]')
 
         parser_cart_delete.add_argument('cartname', metavar='cartname',
-                                        help='The name of the release cart to delete')
+                                        help='cart name')
 
         parser_cart_delete.set_defaults(cmd=CartDeleteCommand)
 

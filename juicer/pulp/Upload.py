@@ -17,7 +17,6 @@
 
 import bitmath
 import bitmath.integrations
-import hashlib
 import os
 import progressbar
 

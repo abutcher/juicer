@@ -47,7 +47,7 @@ class Role(Pulp):
             response = _pulp.create(
                 {'role_id': name,
                  'display_name': name,
-                 'description': desription})
+                 'description': description})
             if response.response_code == Constants.PULP_POST_CREATED:
                 self.output.info("role %s created in %s" % (name, environment))
                 return True

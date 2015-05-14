@@ -20,7 +20,6 @@ import os.path
 
 from juicer.command.JuicerCommand import JuicerCommand
 from juicer.common import Constants
-from juicer.cart.Cart import Cart
 
 
 class CartListCommand(JuicerCommand):

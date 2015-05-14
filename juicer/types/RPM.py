@@ -16,12 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import hashlib
-import logging
 import os.path
 from pyrpm.rpm import RPM as PYRPM
-import re
-
-from juicer.common import Constants
 
 
 class RPM(object):

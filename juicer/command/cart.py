@@ -18,8 +18,27 @@
 import fnmatch
 import os.path
 
-from juicer.command.JuicerCommand import JuicerCommand
 from juicer.common import Constants
+from juicer.command.JuicerCommand import JuicerCommand
+from juicer.cart.Cart import Cart
+
+
+class CartCreateCommand(JuicerCommand):
+    def __init__(self, args):
+        super(CartCreateCommand, self).__init__(args)
+
+    def run(self):
+        Cart(self.args.cartname, self.args.r, autosave=True)
+
+
+class CartDeleteCommand(JuicerCommand):
+    def __init__(self, args):
+        super(CartDeleteCommand, self).__init__(args)
+
+    def run(self):
+        cart = Cart(self.args.cartname)
+        cart.delete()
+        self.output.info("successfully deleted cart %s" % cart.name)
 
 
 class CartListCommand(JuicerCommand):
@@ -50,3 +69,40 @@ class CartListCommand(JuicerCommand):
             for root, dirs, files in os.walk(search_base):
                 for filename in fnmatch.filter(files, pattern):
                     yield os.path.join(root, filename)
+
+
+class CartPullCommand(JuicerCommand):
+    def __init__(self, args):
+        super(CartPullCommand, self).__init__(args)
+
+    def run(self):
+        cart = Cart(self.args.cartname, autoload=False, autosave=False, autosync=False)
+        cart.pull()
+
+
+class CartPushCommand(JuicerCommand):
+    def __init__(self, args):
+        super(CartPushCommand, self).__init__(args)
+
+    def run(self):
+        cart = Cart(self.args.cartname, autoload=True, autosave=True, autosync=False)
+        for environment in self.args.environment:
+            cart.upload_items(environment, self.connections[environment])
+
+
+class CartShowCommand(JuicerCommand):
+    def __init__(self, args):
+        super(CartShowCommand, self).__init__(args)
+
+    def run(self):
+        cart = Cart(self.args.cartname, autoload=True)
+        self.output.info(str(cart))
+
+
+class CartUpdateCommand(JuicerCommand):
+    def __init__(self, args):
+        super(CartUpdateCommand, self).__init__(args)
+
+    def run(self):
+        cart = Cart(self.args.cartname, autoload=True)
+        cart.update(self.args.r)

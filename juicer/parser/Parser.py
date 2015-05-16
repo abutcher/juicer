@@ -16,37 +16,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+import logging
+
+import juicer.command.cart
+import juicer.command.hello
+import juicer.command.repo
+import juicer.command.rpm
+import juicer.command.role
+import juicer.command.user
 import juicer.parser
 from juicer.parser.PromptAction import PromptAction
-
-from juicer.command.cart.CartCreateCommand import CartCreateCommand
-from juicer.command.cart.CartDeleteCommand import CartDeleteCommand
-from juicer.command.cart.CartListCommand import CartListCommand
-from juicer.command.cart.CartPullCommand import CartPullCommand
-from juicer.command.cart.CartPushCommand import CartPushCommand
-from juicer.command.cart.CartShowCommand import CartShowCommand
-from juicer.command.cart.CartUpdateCommand import CartUpdateCommand
-
-from juicer.command.HelloCommand import HelloCommand
-
-from juicer.command.repo.RepoCreateCommand import RepoCreateCommand
-from juicer.command.repo.RepoDeleteCommand import RepoDeleteCommand
-from juicer.command.repo.RepoListCommand import RepoListCommand
-from juicer.command.repo.RepoPublishCommand import RepoPublishCommand
-from juicer.command.repo.RepoShowCommand import RepoShowCommand
-
-from juicer.command.rpm.RPMUploadCommand import RPMUploadCommand
-
-from juicer.command.role.RoleAddCommand import RoleAddCommand
-from juicer.command.role.RoleListCommand import RoleListCommand
-
-from juicer.command.user.UserCreateCommand import UserCreateCommand
-from juicer.command.user.UserDeleteCommand import UserDeleteCommand
-from juicer.command.user.UserListCommand import UserListCommand
-from juicer.command.user.UserShowCommand import UserShowCommand
-from juicer.command.user.UserUpdateCommand import UserUpdateCommand
-
-import logging
 
 
 class Parser(object):
@@ -123,7 +102,7 @@ class Parser(object):
                             nargs='+',
                             help='destination repo name, items')
 
-        parser_cart_create.set_defaults(cmd=CartCreateCommand)
+        parser_cart_create.set_defaults(cmd=juicer.command.cart.CartCreateCommand)
 
         ##################################################################
         # Create the 'cart show' sub-parser
@@ -134,7 +113,7 @@ class Parser(object):
         parser_cart_show.add_argument('cartname', metavar='name',
                                       help='cart name')
 
-        parser_cart_show.set_defaults(cmd=CartShowCommand)
+        parser_cart_show.set_defaults(cmd=juicer.command.cart.CartShowCommand)
 
         ##################################################################
         # Create the 'cart list' sub-parser
@@ -146,7 +125,7 @@ class Parser(object):
                                       nargs='*', default=['*'],
                                       help='pattern to match cart names against (default: *)')
 
-        parser_cart_list.set_defaults(cmd=CartListCommand)
+        parser_cart_list.set_defaults(cmd=juicer.command.cart.CartListCommand)
 
         ##################################################################
         # Create the 'cart update' sub-parser
@@ -162,7 +141,7 @@ class Parser(object):
                                         nargs='+',
                                         help='destination repo name, items')
 
-        parser_cart_update.set_defaults(cmd=CartUpdateCommand)
+        parser_cart_update.set_defaults(cmd=juicer.command.cart.CartUpdateCommand)
 
         ##################################################################
         # Create the 'cart pull' sub-parser
@@ -173,7 +152,7 @@ class Parser(object):
         parser_cart_pull.add_argument('cartname', metavar='cartname',
                                       help='cart name')
 
-        parser_cart_pull.set_defaults(cmd=CartPullCommand)
+        parser_cart_pull.set_defaults(cmd=juicer.command.cart.CartPullCommand)
 
         ##################################################################
         # Create the 'cart push' sub-parser
@@ -190,7 +169,7 @@ class Parser(object):
                                       help='environments to push to',
                                       dest='environment')
 
-        parser_cart_push.set_defaults(cmd=CartPushCommand)
+        parser_cart_push.set_defaults(cmd=juicer.command.cart.CartPushCommand)
 
         ##################################################################
         # Create the 'cart delete' sub-parser
@@ -201,7 +180,7 @@ class Parser(object):
         parser_cart_delete.add_argument('cartname', metavar='cartname',
                                         help='cart name')
 
-        parser_cart_delete.set_defaults(cmd=CartDeleteCommand)
+        parser_cart_delete.set_defaults(cmd=juicer.command.cart.CartDeleteCommand)
 
         ##################################################################
         # create the 'rpm upload' sub-parser
@@ -221,7 +200,7 @@ class Parser(object):
                                        help='environments to upload to',
                                        dest='environment')
 
-        parser_rpm_upload.set_defaults(cmd=RPMUploadCommand)
+        parser_rpm_upload.set_defaults(cmd=juicer.command.rpm.RPMUploadCommand)
 
         ##################################################################
         # create the 'hello' sub-parser
@@ -235,7 +214,7 @@ class Parser(object):
                                   default=self._default_envs,
                                   dest='environment')
 
-        parser_hello.set_defaults(cmd=HelloCommand)
+        parser_hello.set_defaults(cmd=juicer.command.hello.HelloCommand)
 
         ##################################################################
         # create the 'rpm delete' sub-parser
@@ -255,7 +234,7 @@ class Parser(object):
                                        default=self._default_envs,
                                        dest='environment')
 
-        # parser_rpm_delete.set_defaults(command=juicer.command.delete_rpm)
+        parser_rpm_delete.set_defaults(command=juicer.command.rpm.RPMDeleteCommand)
 
         ##################################################################
         # Create the 'repo delete' sub-parser
@@ -272,7 +251,7 @@ class Parser(object):
                                         default=self._default_envs,
                                         help='environments to delete from')
 
-        parser_repo_delete.set_defaults(cmd=RepoDeleteCommand)
+        parser_repo_delete.set_defaults(cmd=juicer.command.repo.RepoDeleteCommand)
 
         ##################################################################
         # create the 'repo publish' sub-parser
@@ -289,7 +268,7 @@ class Parser(object):
                                          default=self._default_envs,
                                          dest='environment')
 
-        parser_repo_publish.set_defaults(cmd=RepoPublishCommand)
+        parser_repo_publish.set_defaults(cmd=juicer.command.repo.RepoPublishCommand)
 
         ##################################################################
         # Create the 'repo create' sub-parser
@@ -311,7 +290,7 @@ class Parser(object):
                                         default=self._default_envs,
                                         help='environments to create in')
 
-        parser_repo_create.set_defaults(cmd=RepoCreateCommand)
+        parser_repo_create.set_defaults(cmd=juicer.command.repo.RepoCreateCommand)
 
         ##################################################################
         # Create the 'repo list' sub-parser
@@ -329,7 +308,7 @@ class Parser(object):
                                       action='store_true', default=False,
                                       help='output json')
 
-        parser_repo_list.set_defaults(cmd=RepoListCommand)
+        parser_repo_list.set_defaults(cmd=juicer.command.repo.RepoListCommand)
 
         ##################################################################
         # Create the 'repo show' sub-parser
@@ -352,7 +331,7 @@ class Parser(object):
                                       default=self._default_envs,
                                       help='environments to show from')
 
-        parser_repo_show.set_defaults(cmd=RepoShowCommand)
+        parser_repo_show.set_defaults(cmd=juicer.command.repo.RepoShowCommand)
 
         ##################################################################
         # Create the 'role add' sub-parser
@@ -374,7 +353,7 @@ class Parser(object):
                                      default=self._default_envs,
                                      help='environments to add roles in')
 
-        parser_role_add.set_defaults(cmd=RoleAddCommand)
+        parser_role_add.set_defaults(cmd=juicer.command.role.RoleAddCommand)
 
         ##################################################################
         # Create the 'role list' sub-parser
@@ -388,7 +367,7 @@ class Parser(object):
                                       default=self._default_envs,
                                       help='environments to list from')
 
-        parser_role_list.set_defaults(cmd=RoleListCommand)
+        parser_role_list.set_defaults(cmd=juicer.command.role.RoleListCommand)
 
         ##################################################################
         # Create the 'user create' sub-parser
@@ -425,7 +404,7 @@ class Parser(object):
                                         default=self._default_envs,
                                         help='environments to create in')
 
-        parser_user_create.set_defaults(cmd=UserCreateCommand)
+        parser_user_create.set_defaults(cmd=juicer.command.user.UserCreateCommand)
 
         ##################################################################
         # Create the 'user delete' sub-parser
@@ -442,7 +421,7 @@ class Parser(object):
                                         default=self._default_envs,
                                         help='environments to delete from')
 
-        parser_user_delete.set_defaults(cmd=UserDeleteCommand)
+        parser_user_delete.set_defaults(cmd=juicer.command.user.UserDeleteCommand)
 
         ##################################################################
         # Create the 'user show' sub-parser
@@ -459,7 +438,7 @@ class Parser(object):
                                       default=self._default_envs,
                                       help='environments to show from')
 
-        parser_user_show.set_defaults(cmd=UserShowCommand)
+        parser_user_show.set_defaults(cmd=juicer.command.user.UserShowCommand)
 
         ##################################################################
         # Create the 'user update' sub-parser
@@ -495,7 +474,7 @@ class Parser(object):
                                         default=self._default_envs,
                                         help='environments to update in')
 
-        parser_user_update.set_defaults(cmd=UserUpdateCommand)
+        parser_user_update.set_defaults(cmd=juicer.command.user.UserUpdateCommand)
 
         ##################################################################
         # Create the 'user list' sub-parser
@@ -509,7 +488,7 @@ class Parser(object):
                                       default=self._default_envs,
                                       help='environments to list from')
 
-        parser_user_list.set_defaults(cmd=UserListCommand)
+        parser_user_list.set_defaults(cmd=juicer.command.user.UserListCommand)
 
 
 def main():  # pragma: no cover

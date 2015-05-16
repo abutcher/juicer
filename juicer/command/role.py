@@ -16,11 +16,26 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from juicer.command.JuicerCommand import JuicerCommand
+from juicer.pulp.Role import Role
 
 
-class RPMDeleteCommand(JuicerCommand):
+class RoleAddCommand(JuicerCommand):
     def __init__(self, args):
-        super(RPMDeleteCommand, self).__init__(args)
+        super(RoleAddCommand, self).__init__(args)
 
     def run(self):
-        pass
+        for environment in self.args.environment:
+            pulp_role = Role(self.connections[environment])
+            pulp_role.add_user(name=self.args.role,
+                               environment=environment,
+                               login=self.args.login)
+
+
+class RoleListCommand(JuicerCommand):
+    def __init__(self, args):
+        super(RoleListCommand, self).__init__(args)
+
+    def run(self):
+        for environment in self.args.environment:
+            pulp_role = Role(self.connections[environment])
+            pulp_role.list(environment=environment)

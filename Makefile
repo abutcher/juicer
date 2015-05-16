@@ -31,6 +31,13 @@ RPMSPEC := $(RPMSPECDIR)/juicer.spec
 
 PULPTAG := "2.6-release"
 
+# Upload sources to pypi/pypi-test
+pypi:
+	python ./setup.py sdist upload
+
+pypitest:
+	python ./setup.py sdist upload -r test
+
 sdist: clean
 	python setup.py sdist
 	rm -fR $(SHORTNAME).egg-info

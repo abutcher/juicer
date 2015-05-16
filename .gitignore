@@ -17,6 +17,7 @@ rpm-build
 juicer.spec
 juicerenv
 pulp
+!juicer/pulp
 pyrpm
 .coverage
 cover/

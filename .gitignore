@@ -21,3 +21,4 @@ pulp
 pyrpm
 .coverage
 cover/
+juicer.egg-info

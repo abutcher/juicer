@@ -40,12 +40,14 @@ class TestRepo(TestCase):
 
             pulp_repo = juicer.pulp.Repo.Repo(None)
             created = pulp_repo.create(name='test-repo',
+                                       repotype='rpm',
                                        environment='re')
             # true for the case where repo created
             self.assertTrue(created)
 
             mock_response.response_code = 400
             created = pulp_repo.create(name='test-repo',
+                                       repotype='rpm',
                                        environment='re')
             # true for the case where repo not created
             self.assertFalse(created)
@@ -55,6 +57,7 @@ class TestRepo(TestCase):
             pulp_repo = juicer.pulp.Repo.Repo(None)
             # false for the case where repo not created due to a conflict
             created = pulp_repo.create(name='test-repo',
+                                       repotype='rpm',
                                        environment='re')
             self.assertFalse(created)
 
@@ -121,12 +124,14 @@ class TestRepo(TestCase):
             repository.RepositoryActionsAPI = mock.Mock(return_value=mock_pulp)
             pulp_repo = juicer.pulp.Repo.Repo(None)
             published = pulp_repo.publish(name='test-repo',
+                                          repotype='rpm',
                                           environment='re')
             # true for the case where repo published
             self.assertTrue(published)
 
             mock_response.response_code = 400
             published = pulp_repo.publish(name='test-repo',
+                                          repotype='rpm',
                                           environment='re')
             # false for the case where repo not published
             self.assertFalse(published)
@@ -136,6 +141,7 @@ class TestRepo(TestCase):
             pulp_repo = juicer.pulp.Repo.Repo(None)
             # false for the case where repo not published because it didn't exist
             published = pulp_repo.publish(name='test-repo',
+                                          repotype='rpm',
                                           environment='re')
             self.assertFalse(published)
 

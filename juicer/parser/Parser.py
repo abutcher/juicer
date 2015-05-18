@@ -274,10 +274,15 @@ class Parser(object):
         # Create the 'repo create' sub-parser
         parser_repo_create = subparser_repo.add_parser('create',
                                                        help='create a repository',
-                                                       usage='%(prog)s REPONAME [--checksum-type CHECKSUM-TYPE] [--in ENV ...] [-h]')
+                                                       usage='%(prog)s REPONAME [-t,--type TYPE] [--checksum-type CHECKSUM-TYPE] [--in ENV ...] [-h]')
 
         parser_repo_create.add_argument('repo', metavar='reponame',
                                         help='repo name')
+
+        parser_repo_create.add_argument('-t', '--type', metavar='repotype',
+                                        default='rpm',
+                                        choices=['rpm', 'docker'],
+                                        help='type used for repository creation (one of: rpm, docker)(default: rpm)')
 
         parser_repo_create.add_argument('--checksum-type', metavar='checksum_type',
                                         default='sha256',

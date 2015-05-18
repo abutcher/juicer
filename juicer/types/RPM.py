@@ -21,8 +21,31 @@ from pyrpm.rpm import RPM as PYRPM
 
 
 class RPM(object):
-    def __init__(self, path):
+    def __init__(self, path=None):
         self.path = path
+
+    def generate_repo_data(self, name, environment, checksumtype='sha256'):
+        repo_id = "{0}-{1}".format(name, environment)
+        relative_url = "/{0}/{1}/".format(environment, name)
+        repo_data = {}
+        repo_data['id'] = repo_id
+        repo_data['display_name'] = name
+        repo_data['description'] = repo_id
+        repo_data['notes'] = {'_repo-type': 'rpm-repo'}
+        repo_data['importer_type_id'] = 'yum_importer'
+        repo_data['importer_config'] = {}
+        repo_data['distributors'] = [{'distributor_id': 'yum_distributor',
+                                      'distributor_type_id': 'yum_distributor',
+                                      'distributor_config': {
+                                          'relative_url': relative_url,
+                                          'http': True,
+                                          'https': True,
+                                          'checksum_type': checksumtype
+                                      },
+                                      'auto_publish': True,
+                                      'relative_path': relative_url
+        }]
+        return repo_data
 
     def generate_upload_data(self, checksumtype='sha256'):
         rpm = PYRPM(file(self.path))

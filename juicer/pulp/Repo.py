@@ -17,6 +17,7 @@
 
 from juicer.common import Constants
 from juicer.pulp.Pulp import Pulp
+import juicer.types
 
 import pulp.bindings.repository
 import pulp.bindings.exceptions
@@ -26,31 +27,25 @@ class Repo(Pulp):
     def __init__(self, connection):
         super(Repo, self).__init__(connection)
 
-    def create(self, name, environment, checksumtype='sha256'):
-        repo_id = "{0}-{1}".format(name, environment)
-        relative_url = "/{0}/{1}/".format(environment, name)
-        checksumtype = checksumtype
-
+    def create(self, name, repotype, environment, checksumtype='sha256'):
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
+
+        if repotype is 'rpm':
+            rpm = juicer.types.RPM.RPM()
+            repo_data = rpm.generate_repo_data(name, environment, checksumtype)
+        elif repotype is 'docker':
+            docker = juicer.types.Docker.Docker()
+            repo_data = docker.generate_repo_data(name, environment, checksumtype)
+
         try:
             response = _pulp.create_and_configure(
-                id=repo_id,
-                display_name=name,
-                description=repo_id,
-                notes={'_repo-type': 'rpm-repo'},
-                importer_type_id='yum_importer',
-                importer_config={},
-                distributors=[{'distributor_id': 'yum_distributor',
-                               'distributor_type_id': 'yum_distributor',
-                               'distributor_config': {
-                                   'relative_url': relative_url,
-                                   'http': True,
-                                   'https': True,
-                                   'checksum_type': checksumtype
-                               },
-                               'auto_publish': True,
-                               'relative_path': relative_url
-                           }]
+                id=repo_data['id'],
+                display_name=repo_data['display_name'],
+                description=repo_data['description'],
+                notes=repo_data['notes'],
+                importer_type_id=repo_data['importer_type_id'],
+                importer_config=repo_data['importer_config'],
+                distributors=repo_data['distributors']
             )
 
             if response.response_code == Constants.PULP_POST_CREATED:
@@ -94,11 +89,18 @@ class Repo(Pulp):
             self.output.debug(response)
             return False
 
-    def publish(self, name, environment):
-        repo_id = "{0}-{1}".format(name, environment)
+    def publish(self, name, repotype, environment):
         _pulp = pulp.bindings.repository.RepositoryActionsAPI(self.connection)
+
+        if repotype is 'rpm':
+            rpm = juicer.types.RPM.RPM()
+            repo_data = rpm.generate_repo_data(name, environment)
+        elif repotype is 'docker':
+            docker = juicer.types.Docker.Docker()
+            repo_data = docker.generate_repo_data(name, environment)
+
         try:
-            response = _pulp.publish(repo_id, 'yum_distributor', {})
+            response = _pulp.publish(repo_data['id'], repo_data['importer_type_id'], {})
             if response.response_code == Constants.PULP_POST_ACCEPTED:
                 self.output.info("repo %s published in %s" % (name, environment))
                 return True

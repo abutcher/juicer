@@ -27,9 +27,11 @@ class RepoCreateCommand(JuicerCommand):
         for environment in self.args.environment:
             pulp_repo = Repo(self.connections[environment])
             pulp_repo.create(name=self.args.repo,
+                             repotype=self.args.repotype,
                              environment=environment,
                              checksumtype=self.args.checksum_type)
             pulp_repo.publish(name=self.args.repo,
+                              repotype=self.args.repotype,
                               environment=environment)
 
 

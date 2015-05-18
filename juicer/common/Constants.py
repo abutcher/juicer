@@ -78,17 +78,3 @@ EXAMPLE_SYSTEM_CONFIG = '/usr/share/juicer/juicer.conf'
 ######################################################################
 # The version the server should be running
 EXPECTED_SERVER_VERSION = '2.6'
-
-######################################################################
-# Repo def file defaults/attributes
-REPO_DEF_DEFAULTS = {
-    'name': None,
-    'feed': None,
-    'env': [],
-    'checksum_type': 'sha256',
-}
-
-REPO_DEF_REQ_KEYS = ['name']
-REPO_DEF_OPT_KEYS = ['checksum_type', 'feed', 'env']
-REPO_DEF_CHECKSUM_TYPES = ['sha', 'sha256']
-REPO_DEF_LEGACY_CHECKSUM_TYPES = ['sha1']

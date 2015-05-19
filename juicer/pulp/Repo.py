@@ -30,14 +30,15 @@ class Repo(Pulp):
     def create(self, name, repotype, environment, checksumtype='sha256'):
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
 
-        if repotype is 'rpm':
+        if repotype == 'rpm':
             rpm = juicer.types.RPM.RPM()
             repo_data = rpm.generate_repo_data(name, environment, checksumtype)
-        elif repotype is 'docker':
+        elif repotype == 'docker':
             docker = juicer.types.Docker.Docker()
             repo_data = docker.generate_repo_data(name, environment, checksumtype)
 
         try:
+            print repo_data
             response = _pulp.create_and_configure(
                 id=repo_data['id'],
                 display_name=repo_data['display_name'],
@@ -92,15 +93,15 @@ class Repo(Pulp):
     def publish(self, name, repotype, environment):
         _pulp = pulp.bindings.repository.RepositoryActionsAPI(self.connection)
 
-        if repotype is 'rpm':
+        if repotype == 'rpm':
             rpm = juicer.types.RPM.RPM()
             repo_data = rpm.generate_repo_data(name, environment)
-        elif repotype is 'docker':
+        elif repotype == 'docker':
             docker = juicer.types.Docker.Docker()
             repo_data = docker.generate_repo_data(name, environment)
 
         try:
-            response = _pulp.publish(repo_data['id'], repo_data['importer_type_id'], {})
+            response = _pulp.publish(repo_data['id'], repo_data['distributors'][0]['distributor_id'], {})
             if response.response_code == Constants.PULP_POST_ACCEPTED:
                 self.output.info("repo %s published in %s" % (name, environment))
                 return True

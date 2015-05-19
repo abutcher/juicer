@@ -64,6 +64,7 @@ class RepoPublishCommand(JuicerCommand):
         for environment in self.args.environment:
             pulp_repo = Repo(self.connections[environment])
             pulp_repo.publish(name=self.args.repo,
+                              repotype=self.args.repotype,
                               environment=environment)
 
 

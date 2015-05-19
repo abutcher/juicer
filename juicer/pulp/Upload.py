@@ -26,6 +26,7 @@ from juicer.common import Constants
 import juicer.pulp
 from juicer.pulp.Pulp import Pulp
 from juicer.types.RPM import RPM
+from juicer.types.Docker import Docker
 
 
 class Upload(Pulp):
@@ -43,8 +44,8 @@ class Upload(Pulp):
 
         if item_type == 'rpm':
             item = RPM(path)
-        else:
-            item = None
+        elif item_type == 'docker':
+            item = Docker(path)
 
         unit_key, unit_metadata = item.generate_upload_data()
 
@@ -91,6 +92,7 @@ class Upload(Pulp):
         # Publish the repo.
         pulp_repo = juicer.pulp.Repo.Repo(self.connection)
         pulp_repo.publish(name=repo,
+                          repotype=item_type,
                           environment=environment)
 
         # FIN

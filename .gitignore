@@ -18,6 +18,7 @@ juicer.spec
 juicerenv
 pulp
 !juicer/pulp
+pulp_docker
 pyrpm
 .coverage
 cover/

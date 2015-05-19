@@ -257,10 +257,16 @@ class Parser(object):
         # create the 'repo publish' sub-parser
         parser_repo_publish = subparser_repo.add_parser('publish',
                                                         help='publish a repository (this will regenerate metadata)',
-                                                        usage='%(prog)s REPONAME [--in ENV ...] [-h]')
+                                                        usage='%(prog)s REPONAME [-t, --type TYPE] [--in ENV ...] [-h]')
 
         parser_repo_publish.add_argument('repo', metavar='reponame',
                                          help='repo name')
+
+        parser_repo_publish.add_argument('-t', '--type', metavar='repotype',
+                                         dest='repotype',
+                                         default='rpm',
+                                         choices=['rpm', 'docker'],
+                                         help='type used for repository publication (one of: rpm, docker)(default: rpm)')
 
         parser_repo_publish.add_argument('--in', nargs='*',
                                          metavar='environment',
@@ -280,6 +286,7 @@ class Parser(object):
                                         help='repo name')
 
         parser_repo_create.add_argument('-t', '--type', metavar='repotype',
+                                        dest='repotype',
                                         default='rpm',
                                         choices=['rpm', 'docker'],
                                         help='type used for repository creation (one of: rpm, docker)(default: rpm)')

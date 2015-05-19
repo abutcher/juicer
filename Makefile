@@ -30,6 +30,7 @@ RPMSPECDIR := ./contrib/rpm/
 RPMSPEC := $(RPMSPECDIR)/juicer.spec
 
 PULPTAG := "2.6-release"
+PULPDOCKERTAG := "pulp-docker-1.0.1-0.2.beta"
 
 # Upload sources to pypi/pypi-test
 pypi:
@@ -56,6 +57,10 @@ virtualenv:
 	. $(NAME)env/bin/activate && cd pulp && git checkout $(PULPTAG)
 	. $(NAME)env/bin/activate && cd pulp/bindings && pip install .
 	. $(NAME)env/bin/activate && cd pulp/common && pip install .
+# Install pulp_docker in the virtualenv, only clone if it doesn't exist
+	if [ ! -d "pulp_docker" ]; then git clone https://github.com/pulp/pulp_docker.git; fi
+	. $(NAME)env/bin/activate && cd pulp_docker && git checkout $(PULPDOCKERTAG)
+	. $(NAME)env/bin/activate && cd pulp_docker/common && pip install .
 # Install pyrpm in the virtualenv, only clone if it doesn't exist
 	if [ ! -d "pyrpm" ]; then git clone https://github.com/02strich/pyrpm.git; fi
 	. $(NAME)env/bin/activate && cd pyrpm && pip install .

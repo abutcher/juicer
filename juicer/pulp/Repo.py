@@ -38,7 +38,6 @@ class Repo(Pulp):
             repo_data = docker.generate_repo_data(name, environment, checksumtype)
 
         try:
-            print repo_data
             response = _pulp.create_and_configure(
                 id=repo_data['id'],
                 display_name=repo_data['display_name'],

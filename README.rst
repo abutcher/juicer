@@ -6,10 +6,11 @@
 
 Juicer
 ======
-Juicer is a command-line interface to the `Pulp REST
-API <https://pulp.readthedocs.org/en/2.6-release/dev-guide/integration/rest-api/index.html>`_
+Juicer is a command-line interface to the `Pulp REST API
+<https://pulp.readthedocs.org/en/2.6-release/dev-guide/integration/rest-api/index.html>`_
 which provides a 'shopping cart' style approach to uploading and
-promoting groups of packages through multiple environments.
+promoting groups of packages or docker images through multiple
+environments.
 
 This project is a fork of the original `Juicer
 <https://github.com/juicer/juicer>`_ project which I hope to improve

@@ -44,7 +44,7 @@ class Upload(Pulp):
 
         if item_type == 'rpm':
             item = RPM(path)
-        elif item_type == 'docker':
+        elif item_type == 'docker_image':
             item = Docker(path)
 
         unit_key, unit_metadata = item.generate_upload_data()
@@ -119,7 +119,7 @@ class Upload(Pulp):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
         response = _pulp.import_upload(upload_id,
                                        repo_id,
-                                       'rpm',
+                                       unit_type,
                                        unit_key,
                                        unit_metadata)
         if response.response_code not in [Constants.PULP_POST_OK,

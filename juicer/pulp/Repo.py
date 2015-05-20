@@ -95,7 +95,7 @@ class Repo(Pulp):
         if repotype == 'rpm':
             rpm = juicer.types.RPM.RPM()
             repo_data = rpm.generate_repo_data(name, environment)
-        elif repotype == 'docker':
+        elif 'docker' in repotype:
             docker = juicer.types.Docker.Docker()
             repo_data = docker.generate_repo_data(name, environment)
 

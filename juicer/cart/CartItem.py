@@ -52,7 +52,7 @@ class CartItem(object):
         if 'rpm' in mime_type:
             item_type = 'rpm'
         elif 'tar' in mime_type:
-            item_type = 'docker'
+            item_type = 'docker_image'
         return item_type
 
     def sync(self, destination):

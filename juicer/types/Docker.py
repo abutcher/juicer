@@ -36,22 +36,12 @@ class Docker(object):
         repo_data['importer_config'] = {}
         repo_data['distributors'] = [{'distributor_id': 'docker_web_distributor_name_cli',
                                       'distributor_type_id': 'docker_distributor_web',
-                                      'distributor_config': {
-                                          'relative_url': relative_url,
-                                          'http': True,
-                                          'https': True,
-                                          'checksum_type': checksumtype
-                                      },
+                                      'distributor_config': {},
                                       'auto_publish': True,
                                       'relative_path': relative_url},
-                                     {'distributor_id': 'docker_distributor_web',
-                                      'distributor_type_id': 'docker_distributor_web',
-                                      'distributor_config': {
-                                          'relative_url': relative_url,
-                                          'http': True,
-                                          'https': True,
-                                          'checksum_type': checksumtype
-                                      },
+                                     {'distributor_id': 'docker_export_distributor_name_cli',
+                                      'distributor_type_id': 'docker_distributor_export',
+                                      'distributor_config': {},
                                       'auto_publish': True,
                                       'relative_path': relative_url
                                      }]

@@ -99,15 +99,19 @@ class Repo(Pulp):
             docker = juicer.types.Docker.Docker()
             repo_data = docker.generate_repo_data(name, environment)
 
+        published = []
         try:
-            response = _pulp.publish(repo_data['id'], repo_data['distributors'][0]['distributor_id'], {})
-            if response.response_code == Constants.PULP_POST_ACCEPTED:
+            for distributor in repo_data['distributors']:
+                response = _pulp.publish(repo_data['id'], distributor['distributor_id'], {})
+                if response.response_code == Constants.PULP_POST_ACCEPTED:
+                    published.append(True)
+                else:
+                    self.output.debug("failed to publish repo %s in %s" % (name, environment))
+                    self.output.debug(response)
+                    published.append(False)
+            if any(published):
                 self.output.info("repo %s published in %s" % (name, environment))
-                return True
-            else:
-                self.output.debug("failed to publish repo %s in %s" % (name, environment))
-                self.output.debug(response)
-                return False
+            return any(published)
         except pulp.bindings.exceptions.NotFoundException:
             self.output.error("repo %s does not exist in %s" % (name, environment))
             return False

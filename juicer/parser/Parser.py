@@ -311,9 +311,9 @@ class Parser(object):
                                                      usage='%(prog)s [--json] [--in ENV [ENV ...]] [-h]',
                                                      help='list repositories')
 
-        parser_repo_list.add_argument('--in', metavar='envs',
+        parser_repo_list.add_argument('--in', metavar='ENV',
                                       nargs="+",
-                                      dest='ENV',
+                                      dest='environment',
                                       default=self._default_envs,
                                       help='environments to list from')
 

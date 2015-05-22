@@ -232,7 +232,9 @@ class Cart(object):
                 if not item.synced:
                     item.sync(self.remotes_storage)
                 pulp_upload.upload(item.path, repo, item.item_type, environment)
-                item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
+                # Only update path to remote path if the item is an rpm
+                if item.item_type == 'rpm':
+                    item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
         self.save()
 
     def __str__(self):

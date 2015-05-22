@@ -23,3 +23,6 @@ pyrpm
 .coverage
 cover/
 juicer.egg-info
+docsite/build/html/
+docsite/build/doctrees/
+docsite/source/conf.py

@@ -24,10 +24,33 @@ import pulp.bindings.exceptions
 
 
 class Repo(Pulp):
+    """Pulp repository operations.
+
+    :param connection: An instance of pulp.bindings.server.PulpConnection
+    :type connection: pulp.bindings.server.PulpConnection
+
+    :return: None
+    """
     def __init__(self, connection):
         super(Repo, self).__init__(connection)
 
     def create(self, name, repotype, environment, checksumtype='sha256'):
+        """Create a pulp repository.
+
+        :param name: Repository name.
+        :type name: str
+        :param repotype: Repository type. One of ['rpm', 'docker'].
+        :type repotype: str
+        :param environment: Environment in which to create the repository.
+        :type environment: str
+
+        :param checksumtype: Checksum type used for repository
+                             metadata. One of ['sha', 'sha1', 'sha256']
+        :type checksumtype: str
+
+        :return: True if repository created.
+        :rtype: boolean
+        """
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
 
         if repotype == 'rpm':
@@ -60,6 +83,16 @@ class Repo(Pulp):
             return False
 
     def delete(self, name, environment):
+        """Delete a pulp repository.
+
+        :param name: Repository name.
+        :type name: str
+        :param environment: Environment in which to delete repository.
+        :type environment: str
+
+        :return: True if repository deleted.
+        :rtype: boolean
+        """
         repo_id = "{0}-{1}".format(name, environment)
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
         try:
@@ -76,6 +109,11 @@ class Repo(Pulp):
             return False
 
     def list(self, environment):
+        """List pulp repositories.
+
+        :param environment: Environment repositories reside in.
+        :type environment: str
+        """
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
         response = _pulp.repositories()
         if response.response_code == Constants.PULP_GET_OK:

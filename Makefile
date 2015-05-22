@@ -32,6 +32,16 @@ RPMSPEC := $(RPMSPECDIR)/juicer.spec
 PULPTAG := "2.6-release"
 PULPDOCKERTAG := "pulp-docker-1.0.1-0.2.beta"
 
+# VERSION file provides one place to update the software version.
+VERSION := $(shell cat VERSION)
+
+# Create sphinx docs
+docs: conf.py
+	cd docsite; make html; cd -
+
+conf.py: docsite/source/conf.py.in
+	sed "s/%VERSION%/$(VERSION)/" $< > docsite/source/conf.py
+
 # Upload sources to pypi/pypi-test
 pypi:
 	python ./setup.py sdist upload
@@ -116,6 +126,7 @@ clean:
 	@find . -type f \( -name "*~" -or -name "#*" \) -delete
 	@rm -fR build dist rpm-build MANIFEST htmlcov .coverage $(SHORTNAME).egg-info
 	@rm -rf $(NAME)env cover
+	@rm -fR docsite/build/html/ docsite/build/doctrees/
 
 pep8:
 	@echo "#############################################"

@@ -18,7 +18,7 @@ upon by leveraging use of the existing Pulp libraries.
 
 Usage
 -----
-.. code-block::
+.. code::
 
   usage: juicer [-h] [-v] [-V] {cart,rpm,repo,role,user,hello} ...
 
@@ -48,7 +48,7 @@ available `here <https://pulp.readthedocs.org/en/2.6-release/user-guide/installa
 Currently the only supported method is installing from source while
 we're under construction.
 
-.. code-block::
+.. code::
 
   sudo python ./setup.py install
 
@@ -64,7 +64,7 @@ prod; meaning that we upload our packages to devel and test them
 accordingly in our development environment before we promote them to
 prod.
 
-.. code-block::
+.. code::
 
   [DEFAULT]
   username: admin
@@ -101,7 +101,7 @@ checkout. This will create an isolated Python `virtualenv
 also runs our tests and checks `PEP8
 <http://www.python.org/dev/peps/pep-0008>`_ style formatting.
 
-.. code-block::
+.. code::
 
   make ci
 

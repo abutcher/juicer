@@ -23,6 +23,13 @@ import pulp.bindings.exceptions
 
 
 class Role(Pulp):
+    """Pulp role operations.
+
+    :param connection: An instance of pulp.bindings.server.PulpConnection
+    :type connection: pulp.bindings.server.PulpConnection
+
+    :return: None
+    """
     def __init__(self, connection):
         super(Role, self).__init__(connection)
 

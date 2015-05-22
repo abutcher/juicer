@@ -170,7 +170,7 @@ class Parser(object):
                                       help='environments to push to',
                                       dest='environment')
 
-        parser_cart_push.add_argument('-f','--force',
+        parser_cart_push.add_argument('-f', '--force',
                                       action='store_true', default=False,
                                       help='force push')
 

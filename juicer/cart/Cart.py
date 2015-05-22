@@ -227,6 +227,8 @@ class Cart(object):
                 if not item.synced:
                     item.sync(self.remotes_storage)
                 pulp_upload.upload(item.path, repo, item.item_type, environment)
+                item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
+        self.save()
 
     def __str__(self):
         return json.dumps(self._cart_dict(), indent=4)

@@ -47,7 +47,7 @@ class Cart(object):
                                   % (len(items), repo))
                 self[repo] = items
             if autosave:
-                self.save()
+                self.save(remote_save=False)
 
     def __getitem__(self, repo):
         """ Return the items in the given repo """
@@ -112,15 +112,16 @@ class Cart(object):
                 return False
         return True
 
-    def save(self):
+    def save(self, remote_save=True):
         if self.is_empty():
             self.output.error('Cart is empty, not saving anything')
             return None
         self.save_local()
-        if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
-            self.save_remote()
-        else:
-            self.output.warn('No cart_seeds found in config file. Cart not saved on remote.')
+        if remote_save:
+            if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
+                self.save_remote()
+            else:
+                self.output.warn('No cart_seeds found in config file. Cart not saved on remote.')
         self.output.info("Saved cart '%s'." % self.name)
         return True
 

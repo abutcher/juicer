@@ -221,7 +221,11 @@ class Cart(object):
         self.save()
         return True
 
-    def upload_items(self, environment, connection):
+    def upload_items(self, environment, connection, force):
+        if not force:
+            if not self.verify_remote():
+                self.output.warning("Cart differs from remote, use -f to force the push")
+                raise SystemError("Cart differs from remote, use -f to force the push")
         pulp_upload = Upload(connection)
         for repo, items in self.iterrepos():
             for item in items:
@@ -244,3 +248,22 @@ class Cart(object):
 
         output['repos_items'] = repos_items
         return output
+
+    def verify_remote(self):
+        if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
+            cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
+            connection_str = 'mongodb://' + cart_seeds
+            mongo = MongoClient(connection_str)
+            db = mongo.carts
+            try:
+                json_body = json.dumps(db['carts'].find_one({'_id': self.name}))
+                if json_body == 'null':
+                    return True
+                else:
+                    if json_body == json.dumps(self._cart_dict()):
+                        return True
+                    else:
+                        return False
+            except MongoErrors.AutoReconnect:
+                self.output.error("failed to find cart %s on remote" % self.name)
+                return False

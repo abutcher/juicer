@@ -87,7 +87,7 @@ class CartPushCommand(JuicerCommand):
     def run(self):
         cart = Cart(self.args.cartname, autoload=True, autosave=True, autosync=False)
         for environment in self.args.environment:
-            cart.upload_items(environment, self.connections[environment])
+            cart.upload_items(environment, self.connections[environment], self.args.f)
 
 
 class CartShowCommand(JuicerCommand):

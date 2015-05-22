@@ -159,7 +159,7 @@ class Parser(object):
         # Create the 'cart push' sub-parser
         parser_cart_push = subparser_cart.add_parser('push',
                                                      help='upload cart items to pulp',
-                                                     usage='%(prog)s CARTNAME [--in ENV [ENV ...]] [-h]')
+                                                     usage='%(prog)s CARTNAME [--in ENV [ENV ...]] [-f] [-h]')
 
         parser_cart_push.add_argument('cartname', metavar='CARTNAME',
                                       help='cart name')
@@ -169,6 +169,10 @@ class Parser(object):
                                       default=[self._default_start_in],
                                       help='environments to push to',
                                       dest='environment')
+
+        parser_cart_push.add_argument('-f','--force',
+                                      action='store_true', default=False,
+                                      help='force push')
 
         parser_cart_push.set_defaults(cmd=juicer.command.cart.CartPushCommand)
 

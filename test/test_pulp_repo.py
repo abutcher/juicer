@@ -145,6 +145,32 @@ class TestRepo(TestCase):
                                           environment='re')
             self.assertFalse(published)
 
+    def test_pulp_repo_remove(self):
+        """Verify pulp repo remove"""
+        with mock.patch('pulp.bindings.repository') as repository:
+            # Return value for the remove() method call (RepositoryUnitAPI Class method)
+            mock_response = mock.MagicMock()
+            mock_response.response_code = 202
+            mock_pulp = mock.Mock(remove=mock.MagicMock(return_value=mock_response))
+
+            # (pulp.bindings).repository.RepositoryUnitAPI
+            repository.RepositoryUnitAPI = mock.Mock(return_value=mock_pulp)
+            pulp_repo = juicer.pulp.Repo(None)
+            removed = pulp_repo.remove(name='test-repo',
+                                       environment='re',
+                                       item_type='rpm',
+                                       glob="empty")
+            # true for the case where units removed
+            self.assertTrue(removed)
+
+            mock_response.response_code = 400
+            removed = pulp_repo.remove(name='test-repo',
+                                       environment='re',
+                                       item_type='rpm',
+                                       glob="empty")
+            # false for the case where units not removed
+            self.assertFalse(removed)
+
     def test_pulp_repo_show(self):
         """Verify pulp repo show"""
         with mock.patch('pulp.bindings.repository') as repository:

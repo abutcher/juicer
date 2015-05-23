@@ -383,7 +383,7 @@ class Upload(Pulp):
         self.delete_upload(upload_id)
 
         # Publish the repo.
-        pulp_repo = juicer.pulp.Repo.Repo(self.connection)
+        pulp_repo = juicer.pulp.Repo(self.connection)
         pulp_repo.publish(name=repo,
                           repotype=item_type,
                           environment=environment)

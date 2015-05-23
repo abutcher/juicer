@@ -171,7 +171,9 @@ class Parser(object):
                                       dest='environment')
 
         parser_cart_push.add_argument('-f', '--force',
-                                      action='store_true', default=False,
+                                      action='store_true',
+                                      default=False,
+                                      dest='force',
                                       help='force push')
 
         parser_cart_push.set_defaults(cmd=juicer.command.cart.CartPushCommand)

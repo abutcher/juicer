@@ -17,7 +17,7 @@
 
 import hashlib
 import os.path
-from pulp_docker.common import tarutils
+import pulp_docker.common.tarutils
 from pyrpm.rpm import RPM as PYRPM
 
 
@@ -49,7 +49,7 @@ class Docker(object):
         return repo_data
 
     def generate_upload_data(self, checksumtype='sha256'):
-        unit_metadata = tarutils.get_metadata(self.path)
+        unit_metadata = pulp_docker.common.tarutils.get_metadata(self.path)
         unit_key = {'image_id': unit_metadata.keys()[0]}
         return unit_key, unit_metadata
 

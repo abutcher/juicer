@@ -231,7 +231,7 @@ class Parser(object):
                                        required=True,
                                        action='append',
                                        nargs='+',
-                                       help='target repo name, items')
+                                       help='target repo name, items (partial or full package names)')
 
         parser_rpm_delete.add_argument('--in', nargs='*',
                                        metavar='ENV',

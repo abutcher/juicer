@@ -180,6 +180,19 @@ class Repo(Pulp):
             self.output.error("repo %s does not exist in %s" % (name, environment))
             return False
 
+    def remove(self, name, environment, item_type, glob):
+        repo_id = "{0}-{1}".format(name, environment)
+        _pulp = pulp.bindings.repository.RepositoryUnitAPI(self.connection)
+        criteria = {'type_ids': [item_type],
+                    'filters': {'filename': {'$regex': glob}}}
+        response = _pulp.remove(repo_id, type_ids=item_type, filters={'filename': {'$regex': glob}})
+        if response.response_code == Constants.PULP_POST_ACCEPTED:
+            self.output.info("call to delete %s from repo %s accepted" % (glob, name))
+            return True
+        else:
+            self.output.error("call to delete %s from repo %s failed" % (glob, name))
+            return False
+
     def show(self, name, environment, json=False):
         repo_id = "{0}-{1}".format(name, environment)
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)

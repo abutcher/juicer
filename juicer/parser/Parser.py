@@ -239,7 +239,7 @@ class Parser(object):
                                        default=self._default_envs,
                                        dest='environment')
 
-        parser_rpm_delete.set_defaults(command=juicer.command.rpm.RPMDeleteCommand)
+        parser_rpm_delete.set_defaults(cmd=juicer.command.rpm.RPMDeleteCommand)
 
         ##################################################################
         # Create the 'repo delete' sub-parser

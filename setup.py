@@ -23,7 +23,7 @@ setup(name='juicer',
           'juicer.command',
           'juicer.common',
           'juicer.parser',
-          'juicer.pulp',
+          'juicer.pulp'
       ],
       entry_points={
           'console_scripts': [

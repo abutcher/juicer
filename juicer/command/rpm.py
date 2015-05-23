@@ -16,6 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import juicer.cart
+import juicer.pulp
 from juicer.command import JuicerCommand
 
 
@@ -24,7 +25,14 @@ class RPMDeleteCommand(JuicerCommand):
         super(RPMDeleteCommand, self).__init__(args)
 
     def run(self):
-        pass
+        for environment in self.args.environment:
+            pulp_repo = juicer.pulp.Repo(self.connections[environment])
+            for repo, item in self.args.r:
+                pulp_repo.remove(name=repo,
+                                 environment=environment,
+                                 item_type='rpm',
+                                 glob=item)
+                pulp_repo.publish(repo, 'rpm', environment)
 
 
 class RPMUploadCommand(JuicerCommand):

@@ -17,11 +17,11 @@ from . import TestCase, unittest
 from contextlib import nested
 import os.path
 
-from juicer.types.RPM import RPM
+import juicer.types
 
 class TestTypeRPM(TestCase):
     def setUp(self):
-        self.rpm = RPM('share/juicer/empty-0.1-1.noarch.rpm')
+        self.rpm = juicer.types.RPM('share/juicer/empty-0.1-1.noarch.rpm')
 
     def test_upload_metadata(self):
         """Ensure RPM type upload data is sane"""

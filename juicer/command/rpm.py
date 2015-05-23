@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.cart.Cart import Cart
-from juicer.command.JuicerCommand import JuicerCommand
+import juicer.cart
+from juicer.command import JuicerCommand
 
 
 class RPMDeleteCommand(JuicerCommand):
@@ -34,5 +34,5 @@ class RPMUploadCommand(JuicerCommand):
     def run(self):
         for environment in self.args.environment:
             self.output.info("Starting upload for %s environment" % environment)
-            cart = Cart('upload-cart', self.args.r)
+            cart = juicer.cart.Cart('upload-cart', self.args.r)
             cart.upload_items(environment, self.connections[environment])

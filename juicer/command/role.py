@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.command.JuicerCommand import JuicerCommand
-from juicer.pulp.Role import Role
+from juicer.command import JuicerCommand
+import juicer.pulp
 
 
 class RoleAddCommand(JuicerCommand):
@@ -25,7 +25,7 @@ class RoleAddCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_role = Role(self.connections[environment])
+            pulp_role = juicer.pulp.Role(self.connections[environment])
             pulp_role.add_user(name=self.args.role,
                                environment=environment,
                                login=self.args.login)
@@ -37,5 +37,5 @@ class RoleListCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_role = Role(self.connections[environment])
+            pulp_role = juicer.pulp.Role(self.connections[environment])
             pulp_role.list(environment=environment)

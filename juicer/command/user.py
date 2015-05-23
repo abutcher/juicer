@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.command.JuicerCommand import JuicerCommand
-from juicer.pulp.User import User
+from juicer.command import JuicerCommand
+import juicer.pulp
 
 
 class UserCreateCommand(JuicerCommand):
@@ -25,7 +25,7 @@ class UserCreateCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_user = User(self.connections[environment])
+            pulp_user = juicer.pulp.User(self.connections[environment])
             pulp_user.create(login=self.args.login,
                              password=self.args.password,
                              environment=environment,
@@ -39,7 +39,7 @@ class UserDeleteCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_user = User(self.connections[environment])
+            pulp_user = juicer.pulp.User(self.connections[environment])
             pulp_user.delete(login=self.args.login,
                              environment=environment)
 
@@ -50,7 +50,7 @@ class UserListCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_user = User(self.connections[environment])
+            pulp_user = juicer.pulp.User(self.connections[environment])
             pulp_user.list(environment=environment)
 
 
@@ -60,7 +60,7 @@ class UserShowCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_user = User(self.connections[environment])
+            pulp_user = juicer.pulp.User(self.connections[environment])
             pulp_user.show(login=self.args.login,
                            environment=environment)
 
@@ -71,7 +71,7 @@ class UserUpdateCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp_user = User(self.connections[environment])
+            pulp_user = juicer.pulp.User(self.connections[environment])
             pulp_user.update(login=self.args.login,
                              password=self.args.password,
                              environment=environment,

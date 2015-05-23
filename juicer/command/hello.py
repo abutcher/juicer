@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.command.JuicerCommand import JuicerCommand
-from juicer.pulp.Pulp import Pulp
+from juicer.command import JuicerCommand
+import juicer.pulp
 
 
 class HelloCommand(JuicerCommand):
@@ -25,5 +25,5 @@ class HelloCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            pulp = Pulp(self.connections[environment])
+            pulp = juicer.pulp.Pulp(self.connections[environment])
             pulp.hello(environment)

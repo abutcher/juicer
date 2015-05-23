@@ -41,7 +41,7 @@ class TestPulp(TestCase):
 
             # (pulp.bindings).server_info.ServerInfoAPI
             server_info.ServerInfoAPI = mock.Mock(return_value=mock_pulp)
-            _pulp = juicer.pulp.Pulp.Pulp(None)
+            _pulp = juicer.pulp.Pulp(None)
             responded = _pulp.hello(environment='re')
 
             # true for the case where connection made

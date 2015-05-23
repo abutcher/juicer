@@ -20,13 +20,10 @@ setup(name='juicer',
       package_dir={ 'juicer': 'juicer' },
       packages=[
           'juicer',
-          'juicer.cart',
           'juicer.command',
           'juicer.common',
-          'juicer.config',
           'juicer.parser',
           'juicer.pulp',
-          'juicer.types'
       ],
       entry_points={
           'console_scripts': [

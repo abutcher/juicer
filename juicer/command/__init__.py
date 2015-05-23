@@ -14,3 +14,26 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+from juicer.config import Config
+from pulp.bindings.server import PulpConnection
+import logging
+
+
+class JuicerCommand(object):
+    def __init__(self, args):
+        self.args = args
+        self.config = Config()
+        self.output = logging.getLogger('juicer')
+
+        self.connections = {}
+        for environment in self.config.keys():
+            cfg = self.config.get(environment)
+            self.connections[environment] = PulpConnection(
+                cfg['hostname'],
+                int(cfg['port']),
+                username=cfg['username'],
+                password=cfg['password'],
+                cert_filename=cfg['cert_filename'],
+                verify_ssl=False,
+                ca_path=cfg['ca_path'])

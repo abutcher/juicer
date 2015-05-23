@@ -19,8 +19,8 @@ import fnmatch
 import os.path
 
 from juicer.common import Constants
-from juicer.command.JuicerCommand import JuicerCommand
-from juicer.cart.Cart import Cart
+from juicer.command import JuicerCommand
+import juicer.cart
 
 
 class CartCreateCommand(JuicerCommand):
@@ -28,7 +28,7 @@ class CartCreateCommand(JuicerCommand):
         super(CartCreateCommand, self).__init__(args)
 
     def run(self):
-        Cart(self.args.cartname, self.args.r, autosave=True)
+        juicer.cart.Cart(self.args.cartname, self.args.r, autosave=True)
 
 
 class CartDeleteCommand(JuicerCommand):
@@ -36,7 +36,7 @@ class CartDeleteCommand(JuicerCommand):
         super(CartDeleteCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart(self.args.cartname)
+        cart = juicer.cart.Cart(self.args.cartname)
         cart.delete()
         self.output.info("successfully deleted cart %s" % cart.name)
 
@@ -76,7 +76,7 @@ class CartPullCommand(JuicerCommand):
         super(CartPullCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart(self.args.cartname, autoload=False, autosave=False, autosync=False)
+        cart = juicer.cart.Cart(self.args.cartname, autoload=False, autosave=False, autosync=False)
         cart.pull()
 
 
@@ -85,7 +85,7 @@ class CartPushCommand(JuicerCommand):
         super(CartPushCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart(self.args.cartname, autoload=True, autosave=True, autosync=False)
+        cart = juicer.cart.Cart(self.args.cartname, autoload=True, autosave=True, autosync=False)
         for environment in self.args.environment:
             cart.upload_items(environment, self.connections[environment], self.args.f)
 
@@ -95,7 +95,7 @@ class CartShowCommand(JuicerCommand):
         super(CartShowCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart(self.args.cartname, autoload=True)
+        cart = juicer.cart.Cart(self.args.cartname, autoload=True)
         self.output.info(str(cart))
 
 
@@ -104,5 +104,5 @@ class CartUpdateCommand(JuicerCommand):
         super(CartUpdateCommand, self).__init__(args)
 
     def run(self):
-        cart = Cart(self.args.cartname, autoload=True)
+        cart = juicer.cart.Cart(self.args.cartname, autoload=True)
         cart.update(self.args.r)

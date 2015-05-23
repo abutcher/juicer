@@ -12,14 +12,14 @@ The ``juicer`` Module
 Classes
 *******
 
-.. autoclass:: juicer.pulp.Repo.Repo
+.. autoclass:: juicer.pulp.Repo
    :members:
 
-.. autoclass:: juicer.pulp.Role.Role
+.. autoclass:: juicer.pulp.Role
    :members:
 
-.. autoclass:: juicer.pulp.Upload.Upload
+.. autoclass:: juicer.pulp.Upload
    :members:
 
-.. autoclass:: juicer.pulp.User.User
+.. autoclass:: juicer.pulp.User
    :members:

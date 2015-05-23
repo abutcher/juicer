@@ -15,17 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from juicer.command.JuicerCommand import JuicerCommand
-from juicer.pulp.Repo import Repo
+from juicer.command import JuicerCommand
+import juicer.pulp
 
 
 class RepoCreateCommand(JuicerCommand):
     def __init__(self, args):
-        super(RepoCreateCommand, self).__init__(args)
+        super(juicer.pulp.RepoCreateCommand, self).__init__(args)
 
     def run(self):
         for environment in self.args.environment:
-            pulp_repo = Repo(self.connections[environment])
+            pulp_repo = juicer.pulp.Repo(self.connections[environment])
             pulp_repo.create(name=self.args.repo,
                              repotype=self.args.repotype,
                              environment=environment,
@@ -37,32 +37,32 @@ class RepoCreateCommand(JuicerCommand):
 
 class RepoDeleteCommand(JuicerCommand):
     def __init__(self, args):
-        super(RepoDeleteCommand, self).__init__(args)
+        super(juicer.pulp.RepoDeleteCommand, self).__init__(args)
 
     def run(self):
         for environment in self.args.environment:
-            pulp_repo = Repo(self.connections[environment])
+            pulp_repo = juicer.pulp.Repo(self.connections[environment])
             pulp_repo.delete(name=self.args.repo,
                              environment=environment)
 
 
 class RepoListCommand(JuicerCommand):
     def __init__(self, args):
-        super(RepoListCommand, self).__init__(args)
+        super(juicer.pulp.RepoListCommand, self).__init__(args)
 
     def run(self):
         for environment in self.args.environment:
-            pulp_repo = Repo(self.connections[environment])
+            pulp_repo = juicer.pulp.Repo(self.connections[environment])
             pulp_repo.list(environment=environment)
 
 
 class RepoPublishCommand(JuicerCommand):
     def __init__(self, args):
-        super(RepoPublishCommand, self).__init__(args)
+        super(juicer.pulp.RepoPublishCommand, self).__init__(args)
 
     def run(self):
         for environment in self.args.environment:
-            pulp_repo = Repo(self.connections[environment])
+            pulp_repo = juicer.pulp.Repo(self.connections[environment])
             pulp_repo.publish(name=self.args.repo,
                               repotype=self.args.repotype,
                               environment=environment)
@@ -70,12 +70,12 @@ class RepoPublishCommand(JuicerCommand):
 
 class RepoShowCommand(JuicerCommand):
     def __init__(self, args):
-        super(RepoShowCommand, self).__init__(args)
+        super(juicer.pulp.RepoShowCommand, self).__init__(args)
 
     def run(self):
         for environment in self.args.environment:
             for repo in self.args.repo:
-                pulp_repo = Repo(self.connections[environment])
+                pulp_repo = juicer.pulp.Repo(self.connections[environment])
                 pulp_repo.show(name=repo,
                                environment=environment,
                                json=self.args.json)

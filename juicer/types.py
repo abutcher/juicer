@@ -17,7 +17,41 @@
 
 import hashlib
 import os.path
+from pulp_docker.common import tarutils
 from pyrpm.rpm import RPM as PYRPM
+
+
+class Docker(object):
+    def __init__(self, path=None):
+        self.path = path
+
+    def generate_repo_data(self, name, environment, checksumtype='sha256'):
+        repo_id = "{0}-{1}".format(name, environment)
+        relative_url = "/{0}/{1}/".format(environment, name)
+        repo_data = {}
+        repo_data['id'] = repo_id
+        repo_data['display_name'] = name
+        repo_data['description'] = repo_id
+        repo_data['notes'] = {'_repo-type': 'docker-repo'}
+        repo_data['importer_type_id'] = 'docker_importer'
+        repo_data['importer_config'] = {}
+        repo_data['distributors'] = [{'distributor_id': 'docker_web_distributor_name_cli',
+                                      'distributor_type_id': 'docker_distributor_web',
+                                      'distributor_config': {},
+                                      'auto_publish': True,
+                                      'relative_path': relative_url},
+                                     {'distributor_id': 'docker_export_distributor_name_cli',
+                                      'distributor_type_id': 'docker_distributor_export',
+                                      'distributor_config': {},
+                                      'auto_publish': True,
+                                      'relative_path': relative_url
+                                     }]
+        return repo_data
+
+    def generate_upload_data(self, checksumtype='sha256'):
+        unit_metadata = tarutils.get_metadata(self.path)
+        unit_key = {'image_id': unit_metadata.keys()[0]}
+        return unit_key, unit_metadata
 
 
 class RPM(object):

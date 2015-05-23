@@ -18,7 +18,7 @@ from contextlib import nested
 import os
 
 import mock
-import juicer.config.Config
+import juicer.config
 
 # When the config file is read in and parsed it will turn into a dict
 # like this
@@ -55,7 +55,7 @@ class TestConfig(TestCase):
         # object.
         with mock.patch('juicer.common.Constants') as constants:
             constants.USER_CONFIG = './config'
-            c = juicer.config.Config.Config()
+            c = juicer.config.Config()
 
             # We've read in the config, now let's verify it has what
             # we expect. The sample config file has two environments
@@ -79,13 +79,13 @@ class TestConfig(TestCase):
         with mock.patch('juicer.common.Constants') as constants:
             constants.USER_CONFIG = './doesnt-exist-config'
             with self.assertRaises(SystemError):
-                c = juicer.config.Config.Config()
+                c = juicer.config.Config()
 
     def test_get_missing_config_section(self):
         """KeyError raises if an invalid config section is requested"""
         with mock.patch('juicer.common.Constants') as constants:
             constants.USER_CONFIG = './config'
-            c = juicer.config.Config.Config()
+            c = juicer.config.Config()
 
             with self.assertRaises(KeyError):
                 bad = c.get('badbadbad')

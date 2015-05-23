@@ -17,12 +17,12 @@ from . import TestCase, unittest
 from contextlib import nested
 import os
 
-from juicer.cart.CartItem import CartItem
+import juicer.cart
 
 class TestCartItem(TestCase):
     def setUp(self):
-        self.local_rpm = CartItem('share/juicer/empty-0.1-1.noarch.rpm')
-        self.remote_rpm = CartItem('http://somesite.com/some-rpm-0.0.1-1.noarch.rpm')
+        self.local_rpm = juicer.cart.CartItem('share/juicer/empty-0.1-1.noarch.rpm')
+        self.remote_rpm = juicer.cart.CartItem('http://somesite.com/some-rpm-0.0.1-1.noarch.rpm')
 
     def test_local_rpm(self):
         """Local rpm registers as local"""

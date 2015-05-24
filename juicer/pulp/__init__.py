@@ -24,6 +24,8 @@ import pulp.bindings.auth
 import pulp.bindings.server_info
 import pulp.bindings.repository
 import pulp.bindings.exceptions
+import pulp.bindings.responses
+import pulp.bindings.tasks
 import pulp.bindings.upload
 
 from juicer.common import Constants
@@ -376,14 +378,21 @@ class Upload(Pulp):
         self.pbar.finish()
         fd.close()
 
-        # Import upload.
-        self.import_upload(upload_id, repo_id, item_type, unit_key, unit_metadata)
+        # Import upload. The import task returned will have a list of
+        # spawned_tasks that we need to keep track of.
+        import_task = self.import_upload(upload_id,
+                                         repo_id,
+                                         item_type,
+                                         unit_key,
+                                         unit_metadata)
+
+        # Wait for the import to complete before we delete the upload
+        # request. Use the first spawned task in the list of tasks.
+        pulp_task = juicer.pulp.Task(self.connection)
+        pulp_task.wait_for(import_task.spawned_tasks[0].task_id)
 
         # Finalize upload by cleaning up request on server.
         self.delete_upload(upload_id)
-
-        # FIN
-        self.output.info("successfully uploaded %s" % self.name)
 
     def initialize_upload(self):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
@@ -413,6 +422,8 @@ class Upload(Pulp):
                                           Constants.PULP_POST_ACCEPTED]:
             self.output.error("Failed to import upload for %s" % self.name)
             raise SystemError("Failed to import upload for %s" % self.name)
+        # This is an instance of pulp.bindings.responses.Task
+        return response.response_body
 
     def delete_upload(self, upload_id):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
@@ -516,3 +527,20 @@ class User(Pulp):
         except pulp.bindings.exceptions.NotFoundException:
             self.output.error("user %s does not exist in %s" % (login, environment))
             return False
+
+
+class Task(Pulp):
+    def __init__(self, connection):
+        super(Task, self).__init__(connection)
+
+    def get_task(self, task_id):
+        _pulp = pulp.bindings.tasks.TasksAPI(self.connection)
+        response = _pulp.get_task(task_id)
+        if response.response_code == Constants.PULP_GET_OK:
+            return response.response_body
+        else:
+            return None
+
+    def wait_for(self, task_id):
+        while not self.get_task(task_id).is_completed():
+            pass

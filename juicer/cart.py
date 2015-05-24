@@ -302,18 +302,14 @@ class CartItem(object):
     def _set_item_type(self):
         mime_type = magic.from_file(self.path).lower()
         item_type = None
-        if 'rpm' in mime_type:
+        if 'rpm' in mime_type.lower():
             item_type = 'rpm'
-        elif 'tar' in mime_type:
+        elif 'tar' in mime_type.lower():
             item_type = 'docker_image'
         return item_type
 
     def sync(self, destination):
         dest_file = os.path.join(destination, self.name)
-
-        # This is the case with stuff that already exists locally
-        if self.synced and self.source:
-            pass
 
         if not os.path.exists(destination):
             os.mkdir(destination)

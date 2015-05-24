@@ -117,11 +117,11 @@ class Cart(object):
                 return False
         return True
 
-    def save(self, remote_save=True):
+    def save(self, remote_save=True, warning=False):
         if self.is_empty():
             self.output.error('Cart is empty, not saving anything')
             return None
-        self.save_local()
+        self.save_local(warning=warning)
         if remote_save:
             if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
                 self.save_remote()
@@ -130,9 +130,9 @@ class Cart(object):
         self.output.info("Saved cart '%s'." % self.name)
         return True
 
-    def save_local(self):
+    def save_local(self, warning=False):
         json_body = json.dumps(self._cart_dict())
-        if os.path.exists(self.cart_file):
+        if warning and os.path.exists(self.cart_file):
             self.output.warn("Cart file '%s' already exists, overwriting with new data." % self.cart_file)
         f = open(self.cart_file, 'w')
         f.write(json_body)
@@ -243,7 +243,7 @@ class Cart(object):
         for repo, items in self.iterrepos():
             pulp_repo = juicer.pulp.Repo(connection)
             pulp_repo.publish(repo, items[0].item_type, environment)
-        self.save()
+        self.save(warning=False)
 
     def __str__(self):
         return json.dumps(self._cart_dict(), indent=4)

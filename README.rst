@@ -77,7 +77,7 @@ A cart is composed of repositories and packages.
 
    juicer cart create my-cart -r my-repository ~/rpmbuild/RPMS/noarch/*.rpm
 
-Multiple items and repositories can be specified.
+Multiple packages and repositories can be specified.
 
 .. code:: bash
 

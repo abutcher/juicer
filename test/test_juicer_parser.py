@@ -13,9 +13,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import mock
 from . import TestCase, unittest
 from contextlib import nested
 
+import juicer.config
 from juicer.parser.Parser import Parser
 
 
@@ -25,4 +27,6 @@ class TestJuicerParser(TestCase):
 
     def test_parser(self):
         """Verify the argument parser can be created"""
-        parser = Parser()
+        with mock.patch('juicer.common.Constants') as constants:
+            constants.USER_CONFIG = './config'
+            parser = Parser()

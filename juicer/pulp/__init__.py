@@ -67,7 +67,7 @@ class Repo(Pulp):
 
         :param name: Repository name.
         :type name: str
-        :param repotype: Repository type. One of ['rpm', 'docker'].
+        :param repotype: Repository type. One of ['rpm', 'docker', 'iso'].
         :type repotype: str
         :param environment: Environment in which to create the repository.
         :type environment: str
@@ -87,6 +87,9 @@ class Repo(Pulp):
         elif repotype == 'docker':
             docker = juicer.types.Docker()
             repo_data = docker.generate_repo_data(name, environment, checksumtype)
+        elif repotype == 'iso':
+            iso = juicer.types.Iso()
+            repo_data = iso.generate_repo_data(name, environment, checksumtype)
 
         try:
             response = _pulp.create_and_configure(
@@ -164,6 +167,9 @@ class Repo(Pulp):
         elif 'docker' in repotype:
             docker = juicer.types.Docker()
             repo_data = docker.generate_repo_data(name, environment)
+        elif 'iso' in repotype:
+            iso = juicer.types.Iso()
+            repo_data = iso.generate_repo_data(name, environment)
 
         published = []
         try:
@@ -341,6 +347,8 @@ class Upload(Pulp):
             item = juicer.types.RPM(path)
         elif item_type == 'docker_image':
             item = juicer.types.Docker(path)
+        elif item_type == 'iso':
+            item = juicer.types.Iso(path)
 
         unit_key, unit_metadata = item.generate_upload_data()
 

@@ -10,7 +10,7 @@ The ``juicer`` Module
    :local:
 
 Classes
-*******
+-------
 
 .. autoclass:: juicer.pulp.Repo
    :members:

@@ -25,18 +25,19 @@ import juicer.command.rpm
 import juicer.command.role
 import juicer.command.user
 import juicer.parser
+from juicer.config import Config
 from juicer.parser.PromptAction import PromptAction
 
 
 class Parser(object):
     def __init__(self):
-
+        self.config = Config()
         self.parser = argparse.ArgumentParser(
             description='manage pulp and release carts')
         juicer.command.parser = self.parser
 
-        self._default_start_in = 're'
-        self._default_envs = ['re', 'qa']
+        self._default_start_in = self.config.get(self.config.keys()[0])['start_in']
+        self._default_envs = self.config.environments()
 
         self.parser.add_argument('-v', '--verbose', action='store_true',
                                  dest='verbose',

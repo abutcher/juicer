@@ -43,3 +43,14 @@ class Config(object):
 
     def keys(self):
         return self.config.keys()
+
+    def environments(self):
+        environments = []
+        start_in = self.get(self.keys()[0])['start_in']
+        environments.append(start_in)
+
+        current = start_in
+        while 'promotes_to' in self.get(current).keys():
+            current = self.get(current)['promotes_to']
+            environments.append(current)
+        return environments

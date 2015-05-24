@@ -290,6 +290,7 @@ class Parser(object):
                                                        usage='%(prog)s REPONAME [-t,--type TYPE] [--checksum-type CHECKSUM-TYPE] [--in ENV [ENV ...]] [-h]')
 
         parser_repo_create.add_argument('repo', metavar='REPONAME',
+                                        type=str.lower,
                                         help='repo name')
 
         parser_repo_create.add_argument('-t', '--type', metavar='TYPE',

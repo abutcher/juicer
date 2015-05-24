@@ -382,12 +382,6 @@ class Upload(Pulp):
         # Finalize upload by cleaning up request on server.
         self.delete_upload(upload_id)
 
-        # Publish the repo.
-        pulp_repo = juicer.pulp.Repo(self.connection)
-        pulp_repo.publish(name=repo,
-                          repotype=item_type,
-                          environment=environment)
-
         # FIN
         self.output.info("successfully uploaded %s" % self.name)
 

@@ -240,7 +240,7 @@ class Cart(object):
                 # Only update path to remote path if the item is an rpm
                 if item.item_type == 'rpm':
                     item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
-        for repo, items in self.itterepos():
+        for repo, items in self.iterrepos():
             pulp_repo = juicer.pulp.Repo(connection)
             pulp_repo.publish(repo, items[0].item_type, environment)
         self.save()

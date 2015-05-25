@@ -213,10 +213,9 @@ class Repo(Pulp):
                     repo = response.response_body
                     self.output.info(environment)
                     self.output.info("  name: {0}".format(repo['display_name']))
-                    if repo['content_unit_counts']:
-                        self.output.info("  rpms: {0}".format(repo['content_unit_counts']['rpm']))
-                    else:
-                        self.output.info("  rpms: {0}".format(0))
+                    if repo['content_unit_counts'] != {}:
+                        for key in repo['content_unit_counts'].keys():
+                            self.output.info("  {0}: {1}".format(key, repo['content_unit_counts'][key]))
                 return True
             else:
                 self.output.error("failed to show repo %s in %s" % (name, environment))

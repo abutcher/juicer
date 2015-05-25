@@ -21,6 +21,44 @@ import pulp_docker.common.tarutils
 from pyrpm.rpm import RPM as PYRPM
 
 
+class Iso(object):
+    def __init__(self, path=None):
+        self.path = path
+
+    def generate_repo_data(self, name, environment, checksumtype='sha256'):
+        repo_id = "{0}-{1}".format(name, environment)
+        relative_url = "/{0}/{1}/".format(environment, name)
+        repo_data = {}
+        repo_data['id'] = repo_id
+        repo_data['display_name'] = name
+        repo_data['description'] = repo_id
+        repo_data['notes'] = {'_repo-type': 'iso-repo'}
+        repo_data['importer_type_id'] = 'iso_importer'
+        repo_data['importer_config'] = {}
+        repo_data['distributors'] = [{'distributor_id': 'iso_distributor',
+                                      'distributor_type_id': 'iso_distributor',
+                                      'distributor_config': {
+                                          'http': True,
+                                          'https': True,
+                                      },
+                                      'auto_publish': True,
+                                      'relative_path': relative_url
+                                     }]
+        return repo_data
+
+    def generate_upload_data(self, checksumtype='sha256'):
+        name = os.path.basename(self.path)
+        size = os.path.getsize(self.path)
+        checksum = getattr(hashlib, checksumtype)(open(self.path, 'rb').read()).hexdigest()
+        unit_key = {
+            'name': name,
+            'checksum': checksum,
+            'size': size,
+        }
+        unit_metadata = {}
+        return unit_key, unit_metadata
+
+
 class Docker(object):
     def __init__(self, path=None):
         self.path = path

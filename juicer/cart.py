@@ -302,10 +302,14 @@ class CartItem(object):
     def _set_item_type(self):
         mime_type = magic.from_file(self.path).lower()
         item_type = None
+        # Replace this with a call to /pulp/api/v2/repositories/<reponame>/distributors/
+        # Grab item_type from the repo we are trying to push cart to.
         if 'rpm' in mime_type.lower():
             item_type = 'rpm'
         elif 'tar' in mime_type.lower():
             item_type = 'docker_image'
+        else:
+            item_type = 'iso'
         return item_type
 
     def sync(self, destination):

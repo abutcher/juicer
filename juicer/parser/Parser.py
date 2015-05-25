@@ -278,8 +278,8 @@ class Parser(object):
         parser_repo_publish.add_argument('-t', '--type', metavar='TYPE',
                                          dest='repotype',
                                          default='rpm',
-                                         choices=['rpm', 'docker'],
-                                         help='type used for repository publication (one of: rpm, docker)(default: rpm)')
+                                         choices=['rpm', 'docker', 'iso'],
+                                         help='type used for repository publication (one of: rpm, docker, iso)(default: rpm)')
 
         parser_repo_publish.add_argument('--in', nargs='*',
                                          metavar='ENV',
@@ -302,8 +302,8 @@ class Parser(object):
         parser_repo_create.add_argument('-t', '--type', metavar='TYPE',
                                         dest='repotype',
                                         default='rpm',
-                                        choices=['rpm', 'docker'],
-                                        help='type used for repository creation (one of: rpm, docker)(default: rpm)')
+                                        choices=['rpm', 'docker', 'iso'],
+                                        help='type used for repository creation (one of: rpm, docker, iso)(default: rpm)')
 
         parser_repo_create.add_argument('--checksum-type', metavar='CHECKSUM-TYPE',
                                         default='sha256',

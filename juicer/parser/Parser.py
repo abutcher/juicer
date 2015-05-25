@@ -532,14 +532,13 @@ def main():  # pragma: no cover
     # handlers or formatters configurd
 
     log_level = logging.DEBUG if args.verbose else logging.INFO
-    log_level = log_level if not args.quiet else logging.CRITICAL
     juicer_logger = logging.getLogger('juicer')
     juicer_logger.setLevel(log_level)
 
     ######################################################################
     # Now create the stdout 'stream' handler for printing to the
     # console
-    juicer_stream_handler = logging.StreamHandler()
+    juicer_stream_handler = logging.StreamHandler() if not args.quiet else logging.NullHandler()
     # More items you can put into log records are here:
     # https://docs.python.org/2/library/logging.html#logrecord-attributes
     # We will use message for now. TODO: Add time or other items to debug output.

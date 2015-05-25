@@ -19,6 +19,8 @@ import ConfigParser
 import juicer.common.Constants
 import os
 
+from juicer.exceptions import JuicerConfigError
+
 
 class Config(object):
     def __init__(self):
@@ -46,7 +48,7 @@ class Config(object):
 
     def environments(self):
         environments = []
-        start_in = self.get(self.keys()[0])['start_in']
+        start_in = self.start_in()
         environments.append(start_in)
 
         current = start_in
@@ -54,3 +56,33 @@ class Config(object):
             current = self.get(current)['promotes_to']
             environments.append(current)
         return environments
+
+    def start_in(self):
+        return self.get(self.keys()[0])['start_in']
+
+    def test(self):
+        """
+        confirm the provided config has the required attributes and
+        has a valid promotion path
+        """
+        required_keys = set(['username',
+                             'password',
+                             'hostname',
+                             'port',
+                             'verify_ssl',
+                             'ca_path',
+                             'cert_filename',
+                             'start_in'])
+
+        for environment in self.config.keys():
+            cfg = self.config.get(environment)
+
+            # ensure required keys are present in each section
+            if not required_keys.issubset(set(cfg.keys())):
+                raise JuicerConfigError("Missing values in config file: %s" %
+                                        ", ".join(list(required_keys - set(cfg.keys()))))
+
+            # ensure promotion path exists
+            if 'promotes_to' in cfg and cfg['promotes_to'] not in self.config.keys():
+                raise JuicerConfigError("promotion_path: %s is not a config section"
+                                        % cfg['promotes_to'])

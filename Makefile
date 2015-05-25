@@ -53,7 +53,10 @@ sdist: clean
 	python setup.py sdist
 	rm -fR $(SHORTNAME).egg-info
 
-virtualenv:
+__init__.py: juicer/__init__.py.in
+	sed "s/%VERSION%/$(VERSION)/" $< > juicer/__init__.py
+
+virtualenv: __init__.py
 	@echo "#############################################"
 	@echo "# Creating a virtualenv"
 	@echo "#############################################"

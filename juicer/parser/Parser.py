@@ -18,6 +18,7 @@
 import argparse
 import logging
 
+import juicer
 import juicer.command.cart
 import juicer.command.hello
 import juicer.command.repo
@@ -53,7 +54,7 @@ class Parser(object):
                                  help='show verbose output')
 
         self.parser.add_argument('-V', '--version', action='version',
-                                 version='juicer-1.0.0')
+                                 version="juicer-{0}".format(juicer.__version__))
 
         ##################################################################
         # Keep the different commands separate

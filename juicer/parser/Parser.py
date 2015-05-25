@@ -39,6 +39,11 @@ class Parser(object):
         self._default_start_in = self.config.get(self.config.keys()[0])['start_in']
         self._default_envs = self.config.environments()
 
+        self.parser.add_argument('-q', '--quiet', action='store_true',
+                                 dest='quiet',
+                                 default=False,
+                                 help='show no output')
+
         self.parser.add_argument('-v', '--verbose', action='store_true',
                                  dest='verbose',
                                  default=False,
@@ -523,6 +528,7 @@ def main():  # pragma: no cover
     # handlers or formatters configurd
 
     log_level = logging.DEBUG if args.verbose else logging.INFO
+    log_level = log_level if not args.quiet else logging.CRITICAL
     juicer_logger = logging.getLogger('juicer')
     juicer_logger.setLevel(log_level)
 

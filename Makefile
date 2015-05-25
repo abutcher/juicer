@@ -49,7 +49,7 @@ pypi:
 pypitest:
 	python ./setup.py sdist upload -r test
 
-sdist: clean
+sdist: clean __init__.py
 	python setup.py sdist
 	rm -fR $(SHORTNAME).egg-info
 

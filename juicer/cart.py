@@ -30,6 +30,7 @@ import urllib2
 from juicer.common import Constants
 from juicer.config import Config
 import juicer.pulp
+import juicer.remotes
 
 
 class Cart(object):
@@ -79,10 +80,10 @@ class Cart(object):
         """
         self.output.debug("[CART:%s] Adding %s items to repo '%s'" %
                           (self.name, len(items), repo_name))
-        # Is some sort of validation required here?
+        items = self.filter_items(items)
         cart_items = []
         for item in items:
-            self.output.debug("Creating CartObject for %s" % item)
+            self.output.debug("Creating Cart for %s" % item)
             new_item = CartItem(item)
             cart_items.append(new_item)
         self.repo_items_hash[repo_name] = cart_items
@@ -277,6 +278,24 @@ class Cart(object):
             except MongoErrors.AutoReconnect:
                 self.output.error("failed to find cart %s on remote" % self.name)
                 return False
+
+    def filter_items(self, items):
+        """
+        Filter a list of packages into local and remotes.
+        """
+        remote_items = []
+
+        possible_remotes = filter(lambda i: not os.path.exists(i), items)
+        self.output.debug("Considering %s possible remotes" % len(possible_remotes))
+
+        for item in possible_remotes:
+            remote_items.extend(juicer.remotes.assemble_remotes(item))
+            self.output.debug("Remote packages: %s" % str(remote_items))
+
+        local_items = filter(os.path.exists, items)
+
+        filtered_items = list(set(remote_items + local_items))
+        return filtered_items
 
 
 class CartItem(object):

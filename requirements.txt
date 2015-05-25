@@ -1,3 +1,4 @@
+BeautifulSoup
 bitmath
 M2Crypto
 progressbar

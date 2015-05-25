@@ -40,6 +40,7 @@ class Iso(object):
                                       'distributor_config': {
                                           'http': True,
                                           'https': True,
+                                          'serve_http': True,
                                       },
                                       'auto_publish': True,
                                       'relative_path': relative_url

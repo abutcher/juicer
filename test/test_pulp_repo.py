@@ -27,6 +27,32 @@ class TestRepo(TestCase):
     def setUp(self):
         pass
 
+    def test_pulp_repo_exists(self):
+        """Verify pulp repo ensure exists"""
+        with mock.patch('pulp.bindings.repository') as repository:
+            # Return value for the repository() method call (RepositoryAPI Class method)
+            mock_response = mock.MagicMock()
+            mock_response.response_code = 200
+            mock_response.response_body = {'display_name':'test-repo',
+                                           'content_unit_counts':{'rpm': 0}}
+            mock_pulp = mock.Mock(repository=mock.MagicMock(return_value=mock_response))
+
+            # (pulp.bindings).repository.RepositoryActionsAPI
+            repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
+            pulp_repo = juicer.pulp.Repo(None)
+            exists = pulp_repo.exists(name='test-repo',
+                                      environment='re')
+            # true for the case where repo exists
+            self.assertTrue(exists)
+
+            mock_pulp = mock.Mock(repository=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
+            repository.RepositoryAPI = mock.Mock(return_value=mock_pulp)
+            pulp_repo = juicer.pulp.Repo(None)
+            # false for the case where repo doesn't exist
+            exists = pulp_repo.exists(name='test-repo',
+                                      environment='re')
+            self.assertFalse(exists)
+
     def test_pulp_repo_create(self):
         """Verify pulp repo create"""
         with mock.patch('pulp.bindings.repository') as repository:
@@ -41,6 +67,20 @@ class TestRepo(TestCase):
             pulp_repo = juicer.pulp.Repo(None)
             created = pulp_repo.create(name='test-repo',
                                        repotype='rpm',
+                                       environment='re')
+            # true for the case where repo created
+            self.assertTrue(created)
+
+            pulp_repo = juicer.pulp.Repo(None)
+            created = pulp_repo.create(name='test-repo',
+                                       repotype='docker',
+                                       environment='re')
+            # true for the case where repo created
+            self.assertTrue(created)
+
+            pulp_repo = juicer.pulp.Repo(None)
+            created = pulp_repo.create(name='test-repo',
+                                       repotype='iso',
                                        environment='re')
             # true for the case where repo created
             self.assertTrue(created)
@@ -116,32 +156,37 @@ class TestRepo(TestCase):
         """Verify pulp repo publish"""
         with mock.patch('pulp.bindings.repository') as repository:
             # Return value for the publish() method call (RepositoryActionsAPI Class method)
-            mock_response = mock.MagicMock()
-            mock_response.response_code = 202
-            mock_pulp = mock.Mock(publish=mock.MagicMock(return_value=mock_response))
+            mock_publish_response = mock.MagicMock()
+            mock_publish_response.response_code = 202
+            mock_publish = mock.Mock(publish=mock.MagicMock(return_value=mock_publish_response))
+
+            mock_distributor_response = mock.MagicMock()
+            mock_distributor_response.response_code = 200
+            mock_distributor_response.response_body = [{'id': 'test_distributor'}]
+            mock_distributor = mock.Mock(distributors=mock.MagicMock(return_value=mock_distributor_response))
 
             # (pulp.bindings).repository.RepositoryActionsAPI
-            repository.RepositoryActionsAPI = mock.Mock(return_value=mock_pulp)
+            repository.RepositoryActionsAPI = mock.Mock(return_value=mock_publish)
+            # (pulp.bindings).repository.RepositoryActionsAPI
+            repository.RepositoryDistributorAPI = mock.Mock(return_value=mock_distributor)
+
             pulp_repo = juicer.pulp.Repo(None)
             published = pulp_repo.publish(name='test-repo',
-                                          repotype='rpm',
                                           environment='re')
             # true for the case where repo published
             self.assertTrue(published)
 
-            mock_response.response_code = 400
+            mock_publish_response.response_code = 400
             published = pulp_repo.publish(name='test-repo',
-                                          repotype='rpm',
                                           environment='re')
             # false for the case where repo not published
             self.assertFalse(published)
 
-            mock_pulp = mock.Mock(publish=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
-            repository.RepositoryActionsAPI = mock.Mock(return_value=mock_pulp)
+            mock_publish = mock.Mock(publish=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
+            repository.RepositoryActionsAPI = mock.Mock(return_value=mock_publish)
             pulp_repo = juicer.pulp.Repo(None)
             # false for the case where repo not published because it didn't exist
             published = pulp_repo.publish(name='test-repo',
-                                          repotype='rpm',
                                           environment='re')
             self.assertFalse(published)
 

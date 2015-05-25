@@ -31,7 +31,6 @@ class RepoCreateCommand(JuicerCommand):
                              environment=environment,
                              checksumtype=self.args.checksum_type)
             pulp_repo.publish(name=self.args.repo,
-                              repotype=self.args.repotype,
                               environment=environment)
 
 
@@ -64,7 +63,6 @@ class RepoPublishCommand(JuicerCommand):
         for environment in self.args.environment:
             pulp_repo = juicer.pulp.Repo(self.connections[environment])
             pulp_repo.publish(name=self.args.repo,
-                              repotype=self.args.repotype,
                               environment=environment)
 
 

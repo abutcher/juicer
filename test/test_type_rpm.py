@@ -26,7 +26,7 @@ class TestTypeRPM(TestCase):
     def test_upload_metadata(self):
         """Ensure RPM type upload data is sane"""
         expected_unit_key = {'checksumtype': 'sha256',
-                             'checksum': '320fda3ff8a6435e4eefae940e0823fbd14a93e9e2188d1a72bb40808ec04806',
+                             'checksum': '9c9da0caa35238d0bc6f29c2bda2c385598b9e48f5903fd12393f47a03645aab',
                              'epoch': '0',
                              'version': '0.1',
                              'release': '1',

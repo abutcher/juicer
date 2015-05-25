@@ -123,9 +123,10 @@ class RPM(object):
     def generate_upload_data(self, checksumtype='sha256'):
         rpm = PYRPM(file(self.path))
         name = os.path.basename(self.path)
+        checksum = getattr(hashlib, checksumtype)(open(self.path, 'rb').read()).hexdigest()
         unit_key = {
             'checksumtype': checksumtype,
-            'checksum': getattr(hashlib, checksumtype)(self.path).hexdigest(),
+            'checksum': checksum,
             'epoch': str(rpm.header.epoch),
             'version': str(rpm.header.version),
             'release': str(rpm.header.release),

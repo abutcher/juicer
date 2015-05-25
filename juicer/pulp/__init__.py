@@ -62,6 +62,15 @@ class Repo(Pulp):
     def __init__(self, connection):
         super(Repo, self).__init__(connection)
 
+    def exists(self, name, environment):
+        repo_id = "{0}-{1}".format(name, environment)
+        _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
+        try:
+            _pulp.repository(repo_id)
+            return True
+        except pulp.bindings.exceptions.NotFoundException:
+            return False
+
     def create(self, name, repotype, environment, checksumtype='sha256'):
         """Create a pulp repository.
 
@@ -139,6 +148,21 @@ class Repo(Pulp):
             self.output.error("repo %s does not exist in %s" % (name, environment))
             return False
 
+    def distributors(self, name, environment):
+        repo_id = "{0}-{1}".format(name, environment)
+        _pulp = pulp.bindings.repository.RepositoryDistributorAPI(self.connection)
+        try:
+            response = _pulp.distributors(repo_id)
+            if response.response_code == Constants.PULP_GET_OK:
+                return response.response_body
+            else:
+                self.output.error("failed to get distributors for repo %s in %s" % (name, environment))
+                self.output.debug(response)
+                return []
+        except pulp.bindings.exceptions.NotFoundException:
+            self.output.error("repo %s does not exist in %s" % (name, environment))
+            return []
+
     def list(self, environment):
         """List pulp repositories.
 
@@ -158,23 +182,16 @@ class Repo(Pulp):
             self.output.debug(response)
             return False
 
-    def publish(self, name, repotype, environment):
+    def publish(self, name, environment):
         _pulp = pulp.bindings.repository.RepositoryActionsAPI(self.connection)
 
-        if repotype == 'rpm':
-            rpm = juicer.types.RPM()
-            repo_data = rpm.generate_repo_data(name, environment)
-        elif 'docker' in repotype:
-            docker = juicer.types.Docker()
-            repo_data = docker.generate_repo_data(name, environment)
-        elif 'iso' in repotype:
-            iso = juicer.types.Iso()
-            repo_data = iso.generate_repo_data(name, environment)
+        repo_id = "{0}-{1}".format(name, environment)
+        distributors = self.distributors(name, environment)
 
         published = []
         try:
-            for distributor in repo_data['distributors']:
-                response = _pulp.publish(repo_data['id'], distributor['distributor_id'], {})
+            for distributor in distributors:
+                response = _pulp.publish(repo_id, distributor['id'], {})
                 if response.response_code == Constants.PULP_POST_ACCEPTED:
                     published.append(True)
                 else:
@@ -191,8 +208,6 @@ class Repo(Pulp):
     def remove(self, name, environment, item_type, glob):
         repo_id = "{0}-{1}".format(name, environment)
         _pulp = pulp.bindings.repository.RepositoryUnitAPI(self.connection)
-        criteria = {'type_ids': [item_type],
-                    'filters': {'filename': {'$regex': glob}}}
         response = _pulp.remove(repo_id, type_ids=item_type, filters={'filename': {'$regex': glob}})
         if response.response_code == Constants.PULP_POST_ACCEPTED:
             self.output.info("call to delete %s from repo %s accepted" % (glob, name))

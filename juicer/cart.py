@@ -232,6 +232,14 @@ class Cart(object):
             if not self.verify_remote():
                 self.output.warning("Cart differs from remote, use -f to force the push")
                 raise SystemError("Cart differs from remote, use -f to force the push")
+
+        pulp_repo = juicer.pulp.Repo(connection)
+        for repo, items in self.iterrepos():
+            # Make sure the repo exists before we upload items
+            exists = pulp_repo.exists(repo, environment)
+            if not exists:
+                raise SystemError("repo %s does not exist in %s" % (repo, environment))
+
         pulp_upload = juicer.pulp.Upload(connection)
         for repo, items in self.iterrepos():
             for item in items:
@@ -242,8 +250,7 @@ class Cart(object):
                 if item.item_type == 'rpm':
                     item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
         for repo, items in self.iterrepos():
-            pulp_repo = juicer.pulp.Repo(connection)
-            pulp_repo.publish(repo, items[0].item_type, environment)
+            pulp_repo.publish(repo, environment)
         self.save(warning=False)
 
     def __str__(self):

@@ -260,6 +260,7 @@ class Parser(object):
                                                        help='delete a repository')
 
         parser_repo_delete.add_argument('repo', metavar='REPONAME',
+                                        type=str.lower,
                                         help='repo name')
 
         parser_repo_delete.add_argument('--in', metavar='ENV',
@@ -277,13 +278,8 @@ class Parser(object):
                                                         usage='%(prog)s REPONAME [-t, --type TYPE] [--in ENV [ENV ...]] [-h]')
 
         parser_repo_publish.add_argument('repo', metavar='REPONAME',
+                                         type=str.lower,
                                          help='repo name')
-
-        parser_repo_publish.add_argument('-t', '--type', metavar='TYPE',
-                                         dest='repotype',
-                                         default='rpm',
-                                         choices=['rpm', 'docker', 'iso'],
-                                         help='type used for repository publication (one of: rpm, docker, iso)(default: rpm)')
 
         parser_repo_publish.add_argument('--in', nargs='*',
                                          metavar='ENV',
@@ -348,6 +344,7 @@ class Parser(object):
                                                      help='show one or more repositories')
 
         parser_repo_show.add_argument('repo', metavar='REPONAME',
+                                      type=str.lower,
                                       nargs="+",
                                       help='repo name')
 
@@ -370,10 +367,12 @@ class Parser(object):
                                                     help='add user to role')
 
         parser_role_add.add_argument('--login', metavar='LOGIN',
+                                     type=str.lower,
                                      help='user\'s login',
                                      required=True)
 
         parser_role_add.add_argument('--role', metavar='ROLE',
+                                     type=str.lower,
                                      help='role to add user to',
                                      required=True)
 
@@ -443,6 +442,7 @@ class Parser(object):
                                                        help='delete a user')
 
         parser_user_delete.add_argument('login', metavar='LOGIN',
+                                        type=str.lower,
                                         help='login id for user')
 
         parser_user_delete.add_argument('--in', metavar='ENV',
@@ -460,6 +460,7 @@ class Parser(object):
                                                      help='show a user')
 
         parser_user_show.add_argument('login', metavar='LOGIN',
+                                      type=str.lower,
                                       help='login id for user')
 
         parser_user_show.add_argument('--in', metavar='ENV',
@@ -477,6 +478,7 @@ class Parser(object):
                                                        usage='%(prog)s LOGIN [--name \"FULL NAME\"] [--password [\"PASSWORD\"]] [--roles ROLE ...] [--in ENV [ENV ...]] [-h]')
 
         parser_user_update.add_argument('login', metavar='LOGIN',
+                                        type=str.lower,
                                         help='login id for user')
 
         parser_user_update.add_argument('--name', metavar='FULL NAME',

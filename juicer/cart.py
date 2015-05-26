@@ -242,12 +242,22 @@ class Cart(object):
 
         pulp_upload = juicer.pulp.Upload(connection)
         for repo, items in self.iterrepos():
+            distributors = pulp_repo.distributors(repo, environment)
             for item in items:
                 if not item.synced:
                     item.sync(self.remotes_storage)
-                pulp_upload.upload(item.path, repo, item.item_type, environment)
+
+                distributor_ids = [distributor['id'] for distributor in distributors]
+                if 'yum_distributor' in distributor_ids:
+                    item_type = 'rpm'
+                elif 'docker_web_distributor_name_cli' in distributor_ids:
+                    item_type = 'docker_image'
+                elif 'iso_distributor' in distributor_ids:
+                    item_type = 'iso'
+
+                pulp_upload.upload(item.path, repo, item_type, environment)
                 # Only update path to remote path if the item is an rpm
-                if item.item_type == 'rpm':
+                if item_type == 'rpm':
                     item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
         for repo, items in self.iterrepos():
             pulp_repo.publish(repo, environment)

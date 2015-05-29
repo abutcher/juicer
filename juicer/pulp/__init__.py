@@ -198,8 +198,8 @@ class Repo(Pulp):
                     self.output.debug("failed to publish repo %s in %s" % (name, environment))
                     self.output.debug(response)
                     published.append(False)
-            if any(published):
-                self.output.info("repo %s published in %s" % (name, environment))
+            # if any(published):
+            #    self.output.info("repo %s published in %s" % (name, environment))
             return any(published)
         except pulp.bindings.exceptions.NotFoundException:
             self.output.error("repo %s does not exist in %s" % (name, environment))
@@ -348,13 +348,27 @@ class Upload(Pulp):
     def __init__(self, connection):
         super(Upload, self).__init__(connection)
         self.environment = None
-        self.name = None
-        self.pbar = None
 
-    def upload(self, path, repo, item_type, environment):
-        self.name = os.path.basename(path)
-        self.environment = environment
-        repo_id = "{0}-{1}".format(repo, environment)
+    def upload(self, upload_id, path, repo, item_type, callback):
+        """Upload an item to a repository.
+
+        This method does not initialize, import, or delete uploads. It
+        sends file chunks to pulp.
+
+        :param upload_id:
+        :type upload_id:
+        :param path:
+        :type path:
+        :param repo:
+        :type repo:
+        :param item_type:
+        :type item_type:
+        :param environment:
+        :type environment:
+        :param callback:
+        :type callback:
+        """
+        name = os.path.basename(path)
         size = os.path.getsize(path)
 
         if item_type == 'rpm':
@@ -363,23 +377,6 @@ class Upload(Pulp):
             item = juicer.types.Docker(path)
         elif item_type == 'iso':
             item = juicer.types.Iso(path)
-
-        unit_key, unit_metadata = item.generate_upload_data()
-
-        # An array of widgets to design our progress bar.
-        widgets = ['Uploading %s ' % self.name,
-                   progressbar.Percentage(), ' ',
-                   progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
-                   progressbar.ETA(), ' ',
-                   bitmath.integrations.BitmathFileTransferSpeed()]
-
-        # Set up the progress bar.
-        self.pbar = progressbar.ProgressBar(
-            widgets=widgets,
-            maxval=int(size)).start()
-
-        # Initialize upload.
-        upload_id = self.initialize_upload()
 
         # Upload chunks w/ Constants.UPLOAD_AT_ONCE size.
         fd = open(path, 'rb')
@@ -392,46 +389,21 @@ class Upload(Pulp):
             self.output.debug("Seeked %s data... (total seeked: %s)" %
                               (len(chunk), total_seeked))
             self.upload_segment(upload_id, last_offset, chunk)
-            # Update the progress bar as we go.
-            if total_seeked < self.pbar.maxval:
-                self.pbar.update(int(total_seeked))
-
-        # Finished with that.
-        self.pbar.finish()
-        fd.close()
-
-        # Import upload. The import task returned will have a list of
-        # spawned_tasks that we need to keep track of.
-        import_task = self.import_upload(upload_id,
-                                         repo_id,
-                                         item_type,
-                                         unit_key,
-                                         unit_metadata)
-
-        # Wait for the import to complete before we delete the upload
-        # request. Use the first spawned task in the list of tasks.
-        pulp_task = juicer.pulp.Task(self.connection)
-        pulp_task.wait_for(import_task.spawned_tasks[0].task_id)
-
-        # Finalize upload by cleaning up request on server.
-        self.delete_upload(upload_id)
+            callback.update(min(callback.currval + int(total_seeked), callback.maxval))
 
     def initialize_upload(self):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
         response = _pulp.initialize_upload()
-        if response.response_code == Constants.PULP_POST_CREATED:
-            self.output.debug("Initialized upload process for %s" % self.name)
-        else:
-            raise SystemError("Failed to initialize upload process for %s" %
-                              self.name)
+        if response.response_code != Constants.PULP_POST_CREATED:
+            raise SystemError("Failed to initialize upload")
         return response.response_body['upload_id']
 
     def upload_segment(self, upload_id, last_offset, chunk):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
         response = _pulp.upload_segment(upload_id, last_offset, chunk)
         if response.response_code is not Constants.PULP_PUT_OK:
-            self.output.error("Failed to upload %s" % self.name)
-            raise SystemError("Failed to upload %s" % self.name)
+            self.output.error("Failed to upload")
+            raise SystemError("Failed to upload")
 
     def import_upload(self, upload_id, repo_id, unit_type, unit_key, unit_metadata):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
@@ -442,8 +414,8 @@ class Upload(Pulp):
                                        unit_metadata)
         if response.response_code not in [Constants.PULP_POST_OK,
                                           Constants.PULP_POST_ACCEPTED]:
-            self.output.error("Failed to import upload for %s" % self.name)
-            raise SystemError("Failed to import upload for %s" % self.name)
+            self.output.error("Failed to import upload")
+            raise SystemError("Failed to import upload")
         # This is an instance of pulp.bindings.responses.Task
         return response.response_body
 
@@ -451,8 +423,8 @@ class Upload(Pulp):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
         response = _pulp.delete_upload(upload_id)
         if response.response_code != Constants.PULP_DELETE_OK:
-            self.output.error("Failed to clean up upload for %s" % self.name)
-            raise SystemError("Failed to clean up upload for %s" % self.name)
+            self.output.error("Failed to clean up upload")
+            raise SystemError("Failed to clean up upload")
 
 
 class User(Pulp):

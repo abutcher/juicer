@@ -18,6 +18,7 @@
 from pymongo import MongoClient
 from pymongo import errors as MongoErrors
 import bitmath
+import bitmath.integrations
 import json
 import logging
 import magic
@@ -99,6 +100,12 @@ class Cart(object):
         Return all list of the repos it cart will upload items into.
         """
         return self.repo_items_hash.keys()
+
+    def items(self):
+        item_list = []
+        for repo, items in self.repo_items_hash.iteritems():
+            item_list += items
+        return item_list
 
     def iterrepos(self):
         """
@@ -241,12 +248,46 @@ class Cart(object):
                 raise SystemError("repo %s does not exist in %s" % (repo, environment))
 
         pulp_upload = juicer.pulp.Upload(connection)
+
+        # Sync remote items before we do anything else
         for repo, items in self.iterrepos():
-            distributors = pulp_repo.distributors(repo, environment)
             for item in items:
                 if not item.synced:
                     item.sync(self.remotes_storage)
 
+        # Generate upload requests
+        widgets = ['Initializing ',
+                   progressbar.Percentage(), ' ',
+                   progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
+                   progressbar.ETA()]
+        initialize_pbar = progressbar.ProgressBar(
+            widgets=widgets,
+            maxval=len(self.items())).start()
+        item_count = 0
+        for repo, items in self.iterrepos():
+            for item in items:
+                item.upload_id = pulp_upload.initialize_upload()
+                item_count += 1
+                initialize_pbar.update(item_count)
+        initialize_pbar.finish()
+
+        # Upload items
+        # calculate total size and make a progress bar
+        total_size = 0
+        for repo, items in self.iterrepos():
+            for item in items:
+                total_size += os.path.getsize(item.path)
+        widgets = ['Uploading ',
+                   progressbar.Percentage(), ' ',
+                   progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
+                   progressbar.ETA(), ' ',
+                   bitmath.integrations.BitmathFileTransferSpeed()]
+        upload_pbar = progressbar.ProgressBar(
+            widgets=widgets,
+            maxval=len(self.items())).start()
+        for repo, items in self.iterrepos():
+            distributors = pulp_repo.distributors(repo, environment)
+            for item in items:
                 distributor_ids = [distributor['id'] for distributor in distributors]
                 if 'yum_distributor' in distributor_ids:
                     item_type = 'rpm'
@@ -255,12 +296,81 @@ class Cart(object):
                 elif 'iso_distributor' in distributor_ids:
                     item_type = 'iso'
 
-                pulp_upload.upload(item.path, repo, item_type, environment)
+                pulp_upload.upload(item.upload_id, item.path, repo, item_type, upload_pbar)
+        upload_pbar.finish()
+
+        # Import uploads
+        widgets = ['Importing ',
+                   progressbar.Percentage(), ' ',
+                   progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
+                   progressbar.ETA()]
+        import_pbar = progressbar.ProgressBar(
+            widgets=widgets,
+            maxval=len(self.items())).start()
+        item_count = 0
+        tasks = []
+        for repo, items in self.iterrepos():
+            repo_id = "{0}-{1}".format(repo, environment)
+            distributors = pulp_repo.distributors(repo, environment)
+            for item in items:
+                distributor_ids = [distributor['id'] for distributor in distributors]
+                if 'yum_distributor' in distributor_ids:
+                    item_type = 'rpm'
+                    rpm = juicer.types.RPM(item.path)
+                    unit_key, unit_metadata = rpm.generate_upload_data()
+                elif 'docker_web_distributor_name_cli' in distributor_ids:
+                    item_type = 'docker_image'
+                    docker = juicer.types.Docker(item.path)
+                    unit_key, unit_metadata = docker.generate_upload_data()
+                elif 'iso_distributor' in distributor_ids:
+                    item_type = 'iso'
+                    iso = juicer.types.Iso(item.path)
+                    unit_key, unit_metadata = iso.generate_upload_data()
+                tasks.append(pulp_upload.import_upload(item.upload_id, repo_id, item_type, unit_key, unit_metadata))
+                item_count += 1
+                import_pbar.update(item_count)
                 # Only update path to remote path if the item is an rpm
                 if item_type == 'rpm':
                     item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
+        import_pbar.finish()
+
+        # Wait for the imports to finish before we delete stuff.
+        pulp_task = juicer.pulp.Task(connection)
+        for task in tasks:
+            pulp_task.wait_for(task.spawned_tasks[0].task_id)
+
+        # Clean up upload requests
+        widgets = ['Cleaning ',
+                   progressbar.Percentage(), ' ',
+                   progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
+                   progressbar.ETA()]
+        cleanup_pbar = progressbar.ProgressBar(
+            widgets=widgets,
+            maxval=len(self.items())).start()
+        item_count = 0
+        for repo, items in self.iterrepos():
+            for item in items:
+                pulp_upload.delete_upload(item.upload_id)
+                item_count += 1
+                cleanup_pbar.update(item_count)
+        cleanup_pbar.finish()
+
+        # Publish repositories
+        widgets = ['Publishing ',
+                   progressbar.Percentage(), ' ',
+                   progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
+                   progressbar.ETA()]
+        publish_pbar = progressbar.ProgressBar(
+            widgets=widgets,
+            maxval=len(self.repos())).start()
+        repo_count = 0
         for repo, items in self.iterrepos():
             pulp_repo.publish(repo, environment)
+            repo_count += 1
+            publish_pbar.update(repo_count)
+        publish_pbar.finish()
+
+        # Save the cart.
         self.save(warning=False)
 
     def __str__(self):
@@ -319,6 +429,9 @@ class CartItem(object):
     def __init__(self, source):
         self.output = logging.getLogger('juicer')
         self.name = os.path.basename(source)
+
+        self.upload_id = None
+
         # Source is the original location of this file. That includes
         # both http://.... files and local /home/user/... files.
         self.source = source

@@ -15,11 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import bitmath
-import bitmath.integrations
 import logging
 import os
-import progressbar
 import pulp.bindings.auth
 import pulp.bindings.server_info
 import pulp.bindings.repository
@@ -349,47 +346,27 @@ class Upload(Pulp):
         super(Upload, self).__init__(connection)
         self.environment = None
 
-    def upload(self, upload_id, path, repo, item_type, callback):
+    def upload(self, upload_id, path, repo, callback):
         """Upload an item to a repository.
 
         This method does not initialize, import, or delete uploads. It
         sends file chunks to pulp.
-
-        :param upload_id:
-        :type upload_id:
-        :param path:
-        :type path:
-        :param repo:
-        :type repo:
-        :param item_type:
-        :type item_type:
-        :param environment:
-        :type environment:
-        :param callback:
-        :type callback:
         """
-        name = os.path.basename(path)
         size = os.path.getsize(path)
 
-        if item_type == 'rpm':
-            item = juicer.types.RPM(path)
-        elif item_type == 'docker_image':
-            item = juicer.types.Docker(path)
-        elif item_type == 'iso':
-            item = juicer.types.Iso(path)
-
         # Upload chunks w/ Constants.UPLOAD_AT_ONCE size.
+        # Report progress using callback
         fd = open(path, 'rb')
         total_seeked = 0
         fd.seek(0)
         while total_seeked < size:
-            chunk = fd.read(Constants.UPLOAD_AT_ONCE)
             last_offset = total_seeked
+            chunk = fd.read(Constants.UPLOAD_AT_ONCE)
             total_seeked += len(chunk)
             self.output.debug("Seeked %s data... (total seeked: %s)" %
                               (len(chunk), total_seeked))
             self.upload_segment(upload_id, last_offset, chunk)
-            callback.update(min(callback.currval + int(total_seeked), callback.maxval))
+            callback.update(min(callback.currval + len(chunk), callback.maxval))
 
     def initialize_upload(self):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)

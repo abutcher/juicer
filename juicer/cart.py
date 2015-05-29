@@ -240,6 +240,9 @@ class Cart(object):
                 self.output.warning("Cart differs from remote, use -f to force the push")
                 raise SystemError("Cart differs from remote, use -f to force the push")
 
+        ######################################################################
+        # Ensure repositories exist before we do any work
+        ######################################################################
         pulp_repo = juicer.pulp.Repo(connection)
         for repo, items in self.iterrepos():
             # Make sure the repo exists before we upload items
@@ -249,13 +252,17 @@ class Cart(object):
 
         pulp_upload = juicer.pulp.Upload(connection)
 
+        ######################################################################
         # Sync remote items before we do anything else
+        ######################################################################
         for repo, items in self.iterrepos():
             for item in items:
                 if not item.synced:
                     item.sync(self.remotes_storage)
 
+        ######################################################################
         # Generate upload requests
+        ######################################################################
         widgets = ['Initializing ',
                    progressbar.Percentage(), ' ',
                    progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
@@ -271,8 +278,9 @@ class Cart(object):
                 initialize_pbar.update(item_count)
         initialize_pbar.finish()
 
+        ######################################################################
         # Upload items
-        # calculate total size and make a progress bar
+        ######################################################################
         total_size = 0
         for repo, items in self.iterrepos():
             for item in items:
@@ -284,22 +292,15 @@ class Cart(object):
                    bitmath.integrations.BitmathFileTransferSpeed()]
         upload_pbar = progressbar.ProgressBar(
             widgets=widgets,
-            maxval=len(self.items())).start()
+            maxval=int(total_size)).start()
         for repo, items in self.iterrepos():
-            distributors = pulp_repo.distributors(repo, environment)
             for item in items:
-                distributor_ids = [distributor['id'] for distributor in distributors]
-                if 'yum_distributor' in distributor_ids:
-                    item_type = 'rpm'
-                elif 'docker_web_distributor_name_cli' in distributor_ids:
-                    item_type = 'docker_image'
-                elif 'iso_distributor' in distributor_ids:
-                    item_type = 'iso'
-
-                pulp_upload.upload(item.upload_id, item.path, repo, item_type, upload_pbar)
+                pulp_upload.upload(item.upload_id, item.path, repo, upload_pbar)
         upload_pbar.finish()
 
+        ######################################################################
         # Import uploads
+        ######################################################################
         widgets = ['Importing ',
                    progressbar.Percentage(), ' ',
                    progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
@@ -311,35 +312,39 @@ class Cart(object):
         tasks = []
         for repo, items in self.iterrepos():
             repo_id = "{0}-{1}".format(repo, environment)
+            # Pull repository distributors to determine what type of items we're going to upload
             distributors = pulp_repo.distributors(repo, environment)
             for item in items:
                 distributor_ids = [distributor['id'] for distributor in distributors]
                 if 'yum_distributor' in distributor_ids:
                     item_type = 'rpm'
-                    rpm = juicer.types.RPM(item.path)
-                    unit_key, unit_metadata = rpm.generate_upload_data()
+                    unit_key, unit_metadata = juicer.types.RPM(item.path).generate_upload_data()
                 elif 'docker_web_distributor_name_cli' in distributor_ids:
                     item_type = 'docker_image'
-                    docker = juicer.types.Docker(item.path)
-                    unit_key, unit_metadata = docker.generate_upload_data()
+                    unit_key, unit_metadata = juicer.types.Docker(item.path).generate_upload_data()
                 elif 'iso_distributor' in distributor_ids:
                     item_type = 'iso'
-                    iso = juicer.types.Iso(item.path)
-                    unit_key, unit_metadata = iso.generate_upload_data()
+                    unit_key, unit_metadata = juicer.types.Iso(item.path).generate_upload_data()
+                # Keep tasks returned from import upload so we can make sure they've finished
                 tasks.append(pulp_upload.import_upload(item.upload_id, repo_id, item_type, unit_key, unit_metadata))
                 item_count += 1
                 import_pbar.update(item_count)
-                # Only update path to remote path if the item is an rpm
-                if item_type == 'rpm':
+                # Only update path to remote path if the item is iso or rpm
+                if item_type in ['rpm', 'iso']:
                     item.path = "https://{0}/pulp/repos/{1}/{2}/{3}".format(connection.host, environment, repo, item.name)
         import_pbar.finish()
 
-        # Wait for the imports to finish before we delete stuff.
+        ######################################################################
+        # Wait for the imports to finish before we delete remote upload
+        ######################################################################
         pulp_task = juicer.pulp.Task(connection)
-        for task in tasks:
+        waiting_pbar = progressbar.ProgressBar(widgets=['Waiting for imports to finish ', progressbar.AnimatedMarker()])
+        for task in waiting_pbar(tasks):
             pulp_task.wait_for(task.spawned_tasks[0].task_id)
 
+        ######################################################################
         # Clean up upload requests
+        ######################################################################
         widgets = ['Cleaning ',
                    progressbar.Percentage(), ' ',
                    progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
@@ -355,7 +360,9 @@ class Cart(object):
                 cleanup_pbar.update(item_count)
         cleanup_pbar.finish()
 
+        ######################################################################
         # Publish repositories
+        ######################################################################
         widgets = ['Publishing ',
                    progressbar.Percentage(), ' ',
                    progressbar.Bar(marker=progressbar.RotatingMarker()), ' ',
@@ -370,7 +377,9 @@ class Cart(object):
             publish_pbar.update(repo_count)
         publish_pbar.finish()
 
-        # Save the cart.
+        ######################################################################
+        # Save the cart
+        ######################################################################
         self.save(warning=False)
 
     def __str__(self):

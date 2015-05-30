@@ -21,7 +21,6 @@ import bitmath
 import bitmath.integrations
 import json
 import logging
-import magic
 import os
 import os.path
 import progressbar
@@ -454,21 +453,6 @@ class CartItem(object):
         if url_regex.match(self.source):
             self.path = None
             self.synced = False
-
-        self.item_type = self._set_item_type() if self.path else None
-
-    def _set_item_type(self):
-        mime_type = magic.from_file(self.path).lower()
-        item_type = None
-        # Replace this with a call to /pulp/api/v2/repositories/<reponame>/distributors/
-        # Grab item_type from the repo we are trying to push cart to.
-        if 'rpm' in mime_type.lower():
-            item_type = 'rpm'
-        elif 'tar' in mime_type.lower():
-            item_type = 'docker_image'
-        else:
-            item_type = 'iso'
-        return item_type
 
     def sync(self, destination):
         dest_file = os.path.join(destination, self.name)

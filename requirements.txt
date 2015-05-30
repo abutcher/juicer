@@ -3,5 +3,4 @@ bitmath
 M2Crypto
 progressbar
 pyflakes
-python-magic
 pymongo

@@ -133,13 +133,13 @@ class Cart(object):
                 self.save_remote()
             else:
                 self.output.warn('No cart_seeds found in config file. Cart not saved on remote.')
-        self.output.info("Saved cart {}".format(self.name))
+        self.output.info("Saved cart '{}'".format(self.name))
         return True
 
     def save_local(self, warning=False):
         json_body = json.dumps(self._cart_dict())
         if warning and os.path.exists(self.cart_file):
-            self.output.warn("Cart file {} already exists, overwriting with new data.".format(self.cart_file))
+            self.output.warn("Cart file '{}' already exists, overwriting with new data".format(self.cart_file))
         f = open(self.cart_file, 'w')
         f.write(json_body)
         f.flush()
@@ -153,7 +153,7 @@ class Cart(object):
         try:
             db['carts'].save(self._cart_dict())
         except MongoErrors.AutoReconnect:
-            self.output.error("failed to save cart {} on remote".format(self.name))
+            self.output.error("Failed to save cart '{}' on remote".format(self.name))
 
     def pull(self):
         cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
@@ -163,16 +163,16 @@ class Cart(object):
         try:
             json_body = json.dumps(db['carts'].find_one({'_id': self.name}))
             if json_body == 'null':
-                self.output.error("cart {} does not exist on remote".format(self.name))
+                self.output.error("Cart {} does not exist on remote".format(self.name))
             else:
                 if os.path.exists(self.cart_file):
-                    self.output.warn("Cart file {} already exists, overwriting with new data.".format(self.cart_file))
+                    self.output.warn("Cart file '{}' already exists, overwriting with new data.".format(self.cart_file))
                 f = open(self.cart_file, 'w')
                 f.write(json_body)
                 f.flush()
                 f.close()
         except MongoErrors.AutoReconnect:
-            self.output.error("failed to find cart {} on remote".format(self.name))
+            self.output.error("Failed to find cart '{}' on remote".format(self.name))
 
     def load(self):
         """
@@ -202,12 +202,12 @@ class Cart(object):
                 if os.path.exists(ipath):
                     self.output.debug("removing {}".format(ipath))
                     os.remove(ipath)
-                self.output.debug("removing {}'s remote item storage dir".format(self.name))
+                self.output.debug("Removing {}'s remote item storage dir".format(self.name))
                 os.rmdir(self.remotes_storage)
 
         # rm cart_file()
         if os.path.exists(self.cart_file):
-            self.output.debug("removing {}'s cart file".format(self.name))
+            self.output.debug("Removing {}'s cart file".format(self.name))
             os.remove(self.cart_file)
 
         # rm in mongo
@@ -219,7 +219,7 @@ class Cart(object):
             try:
                 db['carts'].remove({'_id': self.name})
             except MongoErrors.AutoReconnect:
-                self.output.error("failed to save cart {} on remote".format(self.name))
+                self.output.error("Failed to save cart '{}' on remote".format(self.name))
 
     def update(self, description):
         for repo_items in description:
@@ -247,7 +247,7 @@ class Cart(object):
             exists = pulp_repo.exists(repo, environment)
             if not exists:
                 stargs = {'repo': repo, 'environment': environment}
-                raise SystemError("repo {repo} does not exist in {environment}".format(**stargs))
+                raise SystemError("Repo {repo} does not exist in {environment}".format(**stargs))
 
         pulp_upload = juicer.pulp.Upload(connection)
 
@@ -412,7 +412,7 @@ class Cart(object):
                     else:
                         return False
             except MongoErrors.AutoReconnect:
-                self.output.error("failed to find cart {} on remote".format(self.name))
+                self.output.error("Failed to find cart '{}' on remote".format(self.name))
                 return False
 
     def filter_items(self, items):

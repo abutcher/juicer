@@ -5,3 +5,4 @@
    :numbered:
 
    module.rst
+   contributing.rst

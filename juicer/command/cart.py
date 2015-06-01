@@ -38,7 +38,7 @@ class CartDeleteCommand(JuicerCommand):
     def run(self):
         cart = juicer.cart.Cart(self.args.cartname)
         cart.delete()
-        self.output.info("successfully deleted cart {}".format(cart.name))
+        self.output.info("Successfully deleted cart {}".format(cart.name))
 
 
 class CartListCommand(JuicerCommand):
@@ -58,7 +58,7 @@ class CartListCommand(JuicerCommand):
                 cart_name = cart.split('/')[-1].replace('.json', '')
                 carts.append(cart_name)
         for cart in sorted(carts):
-            self.output.info("{0}".format(cart))
+            self.output.info("{}".format(cart))
 
     def _find_pattern(self, search_base, pattern):
         # Stolen from http://rosettacode.org/wiki/Walk_a_directory/Recursively#Python

@@ -34,7 +34,7 @@ class Config(object):
         configs = []
 
         if not os.path.exists(juicer.common.Constants.USER_CONFIG):
-            raise SystemError("No configuration file found: %s" % juicer.common.Constants.USER_CONFIG)
+            raise SystemError("No configuration file found: {}".format(juicer.common.Constants.USER_CONFIG))
 
         configs.append(juicer.common.Constants.USER_CONFIG)
         config.read(configs)
@@ -79,10 +79,9 @@ class Config(object):
 
             # ensure required keys are present in each section
             if not required_keys.issubset(set(cfg.keys())):
-                raise JuicerConfigError("Missing values in config file: %s" %
-                                        ", ".join(list(required_keys - set(cfg.keys()))))
+                raise JuicerConfigError("Missing values in config file: {}".format(
+                    ", ".join(list(required_keys - set(cfg.keys())))))
 
             # ensure promotion path exists
             if 'promotes_to' in cfg and cfg['promotes_to'] not in self.config.keys():
-                raise JuicerConfigError("promotion_path: %s is not a config section"
-                                        % cfg['promotes_to'])
+                raise JuicerConfigError("promotion_path: {} is not a config section".format(cfg['promotes_to']))

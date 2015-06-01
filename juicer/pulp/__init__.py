@@ -40,11 +40,12 @@ class Pulp(object):
         hostname = config.get(environment)['hostname']
         _pulp = pulp.bindings.server_info.ServerInfoAPI(self.connection)
         response = _pulp.get_types()
+        stargs = {'environment': environment, 'hostname': hostname}
         if response.response_code == Constants.PULP_GET_OK:
-            self.output.info("%s: %s OK" % (environment, hostname))
+            self.output.info("{environment}: {hostname} OK".format(**stargs))
             return True
         else:
-            self.output.info("%s: %s FAILED" % (environment, hostname))
+            self.output.info("{environment}: {hostname} FAILED".format(**stargs))
             return False
 
 
@@ -60,7 +61,7 @@ class Repo(Pulp):
         super(Repo, self).__init__(connection)
 
     def exists(self, name, environment):
-        repo_id = "{0}-{1}".format(name, environment)
+        repo_id = "{name}-{environment}".format(name=name, environment=environment)
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
         try:
             _pulp.repository(repo_id)
@@ -108,15 +109,17 @@ class Repo(Pulp):
                 distributors=repo_data['distributors']
             )
 
+            stargs = {'name': name, 'environment': environment}
             if response.response_code == Constants.PULP_POST_CREATED:
-                self.output.info("repo %s created in %s" % (name, environment))
+                self.output.info("repo {name} created in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to create repo %s in %s" % (name, environment))
+                self.output.error("failed to create repo {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.ConflictException:
-            self.output.error("repo %s already exists in %s" % (name, environment))
+            stargs = {'name': name, 'environment': environment}
+            self.output.error("repo {name} already exists in {environment}".format(**stargs))
             return False
 
     def delete(self, name, environment):
@@ -130,34 +133,36 @@ class Repo(Pulp):
         :return: True if repository deleted.
         :rtype: boolean
         """
-        repo_id = "{0}-{1}".format(name, environment)
+        stargs = {'name': name, 'environment': environment}
+        repo_id = "{name}-{environment}".format(**stargs)
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
         try:
             response = _pulp.delete(repo_id)
             if response.response_code == Constants.PULP_DELETE_ACCEPTED:
-                self.output.info("repo %s deleted in %s" % (name, environment))
+                self.output.info("repo {name} deleted in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to delete repo %s in %s" % (name, environment))
+                self.output.error("failed to delete repo {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("repo %s does not exist in %s" % (name, environment))
+            self.output.error("repo {name} does not exist in {environment}".format(**stargs))
             return False
 
     def distributors(self, name, environment):
-        repo_id = "{0}-{1}".format(name, environment)
+        stargs = {'name': name, 'environment': environment}
+        repo_id = "{name}-{environment}".format(**stargs)
         _pulp = pulp.bindings.repository.RepositoryDistributorAPI(self.connection)
         try:
             response = _pulp.distributors(repo_id)
             if response.response_code == Constants.PULP_GET_OK:
                 return response.response_body
             else:
-                self.output.error("failed to get distributors for repo %s in %s" % (name, environment))
+                self.output.error("failed to get distributors for repo {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return []
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("repo %s does not exist in %s" % (name, environment))
+            self.output.error("repo {name} does not exist in {environment}".format(**stargs))
             return []
 
     def list(self, environment):
@@ -171,18 +176,19 @@ class Repo(Pulp):
         if response.response_code == Constants.PULP_GET_OK:
             self.output.info(environment)
             for repo in response.response_body:
-                if "-{0}".format(environment) in repo['id']:
-                    self.output.info("  {0}".format(repo['display_name']))
+                if "-{}".format(environment) in repo['id']:
+                    self.output.info("  {}".format(repo['display_name']))
             return True
         else:
-            self.output.error("failed to list repos in %s" % environment)
+            self.output.error("failed to list repos in {}".format(environment))
             self.output.debug(response)
             return False
 
     def publish(self, name, environment):
         _pulp = pulp.bindings.repository.RepositoryActionsAPI(self.connection)
 
-        repo_id = "{0}-{1}".format(name, environment)
+        stargs = {'name': name, 'environment': environment}
+        repo_id = "{name}-{environment}".format(**stargs)
         distributors = self.distributors(name, environment)
 
         published = []
@@ -192,29 +198,29 @@ class Repo(Pulp):
                 if response.response_code == Constants.PULP_POST_ACCEPTED:
                     published.append(True)
                 else:
-                    self.output.debug("failed to publish repo %s in %s" % (name, environment))
+                    self.output.debug("failed to publish repo {name} in {environment}".format(**stargs))
                     self.output.debug(response)
                     published.append(False)
-            # if any(published):
-            #    self.output.info("repo %s published in %s" % (name, environment))
             return any(published)
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("repo %s does not exist in %s" % (name, environment))
+            self.output.error("repo {name} does not exist in {environment}".format(**stargs))
             return False
 
     def remove(self, name, environment, item_type, glob):
-        repo_id = "{0}-{1}".format(name, environment)
+        repo_id = "{name}-{environment}".format(name=name, environment=environment)
         _pulp = pulp.bindings.repository.RepositoryUnitAPI(self.connection)
         response = _pulp.remove(repo_id, type_ids=item_type, filters={'filename': {'$regex': glob}})
+        stargs = {'glob': glob, 'name': name}
         if response.response_code == Constants.PULP_POST_ACCEPTED:
-            self.output.info("call to delete %s from repo %s accepted" % (glob, name))
+            self.output.info("call to delete {glob} from repo {name} accepted".format(**stargs))
             return True
         else:
-            self.output.error("call to delete %s from repo %s failed" % (glob, name))
+            self.output.error("call to delete {glob} from repo {name} failed".format(**stargs))
             return False
 
     def show(self, name, environment, json=False):
-        repo_id = "{0}-{1}".format(name, environment)
+        stargs = {'name': name, 'environment': environment}
+        repo_id = "{name}-{environment}".format(**stargs)
         _pulp = pulp.bindings.repository.RepositoryAPI(self.connection)
         try:
             response = _pulp.repository(repo_id)
@@ -224,17 +230,20 @@ class Repo(Pulp):
                 else:
                     repo = response.response_body
                     self.output.info(environment)
-                    self.output.info("  name: {0}".format(repo['display_name']))
+                    self.output.info("  name: {}".format(repo['display_name']))
                     if repo['content_unit_counts'] != {}:
                         for key in repo['content_unit_counts'].keys():
-                            self.output.info("  {0}: {1}".format(key, repo['content_unit_counts'][key]))
+                            stargs = {'type': key, 'count': repo['content_unit_counts'][key]}
+                            self.output.info("  {type}: {count}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to show repo %s in %s" % (name, environment))
+                stargs = {'name': name, 'environment': environment}
+                self.output.error("failed to show repo {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("repo %s does not exist in %s" % (name, environment))
+            stargs = {'name': name, 'environment': environment}
+            self.output.error("repo {name} does not exist in {environment}".format(**stargs))
             return False
 
 
@@ -253,48 +262,52 @@ class Role(Pulp):
         _pulp = pulp.bindings.auth.RoleAPI(self.connection)
         try:
             response = _pulp.add_user(name, login)
+            stargs = {'login': login, 'name': name, 'environment': environment}
             if response.response_code == Constants.PULP_PUT_OK:
-                self.output.info("added %s to role %s in %s" % (login, name, environment))
+                self.output.info("added {login} to role {name} in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to add %s to role %s in %s" % (login, name, environment))
+                self.output.error("failed to add {login} to role {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("role %s does not exist in %s" % (name, environment))
+            stargs = {'name': name, 'environment': environment}
+            self.output.error("role {name} does not exist in {environment}".format(**stargs))
             return False
 
     def create(self, name, environment, description):
         _pulp = pulp.bindings.auth.RoleAPI(self.connection)
+        stargs = {'name': name, 'environment': environment}
         try:
             response = _pulp.create(
                 {'role_id': name,
                  'display_name': name,
                  'description': description})
             if response.response_code == Constants.PULP_POST_CREATED:
-                self.output.info("role %s created in %s" % (name, environment))
+                self.output.info("role {name} created in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to create role %s in %s" % (name, environment))
+                self.output.error("failed to create role {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.ConflictException:
-            self.output.error("role %s already exists in %s" % (name, environment))
+            self.output.error("role {name} already exists in {environment}".format(**stargs))
             return False
 
     def delete(self, name, environment):
         _pulp = pulp.bindings.auth.RoleAPI(self.connection)
+        stargs = {'name': name, 'environment': environment}
         try:
             response = _pulp.delete(name)
             if response.response_code == Constants.PULP_DELETE_OK:
-                self.output.info("role %s deleted in %s" % (name, environment))
+                self.output.info("role {name} deleted in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to delete role %s in %s" % (name, environment))
+                self.output.error("failed to delete role {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("role %s does not exist in %s" % (name, environment))
+            self.output.error("role {name} does not exist in {environment}".format(**stargs))
             return False
 
     def list(self, environment):
@@ -303,10 +316,10 @@ class Role(Pulp):
         if response.response_code == Constants.PULP_GET_OK:
             self.output.info(environment)
             for role in response.response_body:
-                self.output.info("  {0}".format(role['display_name']))
+                self.output.info("  {}".format(role['display_name']))
             return True
         else:
-            self.output.error("failed to list roles in %s" % environment)
+            self.output.error("failed to list roles in {}".format(environment))
             self.output.debug(response)
             return False
 
@@ -314,30 +327,33 @@ class Role(Pulp):
         _pulp = pulp.bindings.auth.RoleAPI(self.connection)
         try:
             response = _pulp.remove_user(name, login)
+            stargs = {'login': login, 'name': name, 'environment': environment}
             if response.response_code == Constants.PULP_PUT_OK:
-                self.output.info("removed %s from role %s in %s" % (login, name, environment))
+                self.output.info("removed {login} from role {name} in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to remove %s from role %s in %s" % (login, name, environment))
+                self.output.error("failed to remove {login} from role {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("role %s does not exist in %s" % (name, environment))
+            stargs = {'name': name, 'environment': environment}
+            self.output.error("role {name} does not exist in {environment}".format(**stargs))
             return False
 
     def show(self, name, environment):
         _pulp = pulp.bindings.auth.RoleAPI(self.connection)
+        stargs = {'name': name, 'environment': environment}
         try:
             response = _pulp.role(name)
             if response.response_code == Constants.PULP_GET_OK:
                 self.output.info(response.response_body)
                 return True
             else:
-                self.output.error("failed to show role %s in %s" % (name, environment))
+                self.output.error("failed to show role {name} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("role %s does not exist in %s" % (name, environment))
+            self.output.error("role {name} does not exist in {environment}".format(**stargs))
             return False
 
 
@@ -363,8 +379,8 @@ class Upload(Pulp):
             last_offset = total_seeked
             chunk = fd.read(Constants.UPLOAD_AT_ONCE)
             total_seeked += len(chunk)
-            self.output.debug("Seeked %s data... (total seeked: %s)" %
-                              (len(chunk), total_seeked))
+            stargs = {'bytes': len(chunk), 'total': total_seeked}
+            self.output.debug("Seeked {bytes} data... (total seeked: {total})".format(**stargs))
             self.upload_segment(upload_id, last_offset, chunk)
             callback.update(min(callback.currval + len(chunk), callback.maxval))
 
@@ -410,35 +426,37 @@ class User(Pulp):
 
     def create(self, login, password, environment, name=None, roles=None):
         _pulp = pulp.bindings.auth.UserAPI(self.connection)
+        stargs = {'login': login, 'environment': environment}
         try:
             response = _pulp.create(login=login,
                                     password=password[0],
                                     name=name,
                                     roles=roles)
             if response.response_code == Constants.PULP_POST_CREATED:
-                self.output.info("user %s created in %s" % (login, environment))
+                self.output.info("user {login} created in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to create user %s in %s" % (login, environment))
+                self.output.error("failed to create user {login} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.ConflictException:
-            self.output.error("user %s already exists in %s" % (login, environment))
+            self.output.error("user {login} already exists in {environment}".format(**stargs))
             return False
 
     def delete(self, login, environment):
         _pulp = pulp.bindings.auth.UserAPI(self.connection)
+        stargs = {'login': login, 'environment': environment}
         try:
             response = _pulp.delete(login)
             if response.response_code == Constants.PULP_DELETE_OK:
-                self.output.info("user %s deleted in %s" % (login, environment))
+                self.output.info("user {login} deleted in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to delete user %s in %s" % (login, environment))
+                self.output.error("failed to delete user {login} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("user %s does not exist in %s" % (login, environment))
+            self.output.error("user {login} does not exist in {environment}".format(**stargs))
             return False
 
     def list(self, environment):
@@ -447,13 +465,13 @@ class User(Pulp):
         if response.response_code == Constants.PULP_GET_OK:
             self.output.info(environment)
             for user in response.response_body:
-                self.output.info("  login: {0}, name: {1}, roles: {2}".format(
-                    user['login'],
-                    user['name'],
-                    ', '.join(user['roles']) if user['roles'] else None))
+                stargs = {'login': user['login'],
+                          'name': user['name'],
+                          'roles': ', '.join(user['roles']) if user['roles'] else None}
+                self.output.info("  login: {login}, name: {name}, roles: {roles}".format(**stargs))
             return True
         else:
-            self.output.error("failed to list users in %s" % environment)
+            self.output.error("failed to list users in {}".format(environment))
             self.output.debug(response)
             return False
 
@@ -464,15 +482,20 @@ class User(Pulp):
             if response.response_code == Constants.PULP_GET_OK:
                 user = response.response_body
                 self.output.info(environment)
-                self.output.info("  login: {0}".format(user['login']))
-                self.output.info("  name: {0}".format(user['name']))
-                self.output.info("  roles: {0}".format(', '.join(user['roles']) if user['roles'] else None))
+                stargs = {'login': user['login'],
+                          'name': user['name'],
+                          'roles': ', '.join(user['roles']) if user['roles'] else None}
+                self.output.info("  login: {login}".format(**stargs))
+                self.output.info("  name: {name}".format(**stargs))
+                self.output.info("  roles: {roles}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to show user %s in %s" % (login, environment))
+                stargs = {'login': login, 'environment': environment}
+                self.output.error("failed to show user {login} in {environment}".format(**stargs))
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("user %s does not exist in %s" % (login, environment))
+            stargs = {'login': login, 'environment': environment}
+            self.output.error("user {login} does not exist in {environment}".format(**stargs))
             return False
 
     def update(self, login, environment, password=None, name=None, roles=None):
@@ -486,17 +509,19 @@ class User(Pulp):
         if roles is not None:
             delta['roles'] = roles
 
+        stargs = {'login': login, 'environment': environment}
+
         try:
             response = _pulp.update(login, delta)
             if response.response_code == Constants.PULP_PUT_OK:
-                self.output.info("user %s updated in %s" % (login, environment))
+                self.output.info("user {login} updated in {environment}".format(**stargs))
                 return True
             else:
-                self.output.error("failed to update user %s in %s" % (login, environment))
+                self.output.error("failed to update user {login} in {environment}".format(**stargs))
                 self.output.debug(response)
                 return False
         except pulp.bindings.exceptions.NotFoundException:
-            self.output.error("user %s does not exist in %s" % (login, environment))
+            self.output.error("user {login} does not exist in {environment}".format(**stargs))
             return False
 
 

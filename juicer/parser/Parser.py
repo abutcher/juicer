@@ -554,7 +554,7 @@ def main():  # pragma: no cover
     # We have a stream handler, and it has a formatting string set,
     # now we join all the things together
     juicer_logger.addHandler(juicer_stream_handler)
-    juicer_logger.debug("initialized juicer-logging at level: %s" % log_level)
+    juicer_logger.debug("initialized juicer-logging at level: {}".format(log_level))
 
     ######################################################################
     args.cmd(args).run()

@@ -41,6 +41,6 @@ class RPMUploadCommand(JuicerCommand):
 
     def run(self):
         for environment in self.args.environment:
-            self.output.info("Starting upload for %s environment" % environment)
+            self.output.info("Starting upload for {} environment".format(environment))
             cart = juicer.cart.Cart('upload-cart', self.args.r)
             cart.upload_items(environment, self.connections[environment])

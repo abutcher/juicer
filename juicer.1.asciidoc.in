@@ -1,0 +1,424 @@
+juicer(1)
+=========
+:doctype:manpage
+:man source:   Juicer
+:man version:  %VERSION%
+:man manual:   Pulp repos and release carts
+
+NAME
+----
+juicer - create and push release carts, upload items to pulp
+
+
+
+SYNOPSIS
+--------
+juicer [-v] [-V] command subcommand [PARAMETERS ...] [OPTIONS ...]
+
+
+
+DESCRIPTION
+-----------
+A release cart is a description of what files (RPMs or otherwise) that
+you want to push into a specific repository. A single cart can specify
+multiple repositories and associated items. Release cart descriptions
+are saved so you can easily push a cart to another environment.
+
+Items need not be stored on your local machine. Juicer can handle
+remote resources as well. Anywhere an option argument is described as
+'item' you can give the path to a local directory, or file, as well as
+a file available over HTTP. HTTP directory indexes work as well; the
+page is parsed and links to files are added to your cart.
+
+
+COMMON OPTIONS
+--------------
+
+*-v*, *--verbose*::
+Display verbose output. In usage specify '-v' before 'COMMAND'.
+
+*-V*, *--version*::
+Print the version of Juicer that you're using.
+
+*--in* 'env' ...::
+
+In *juicer*(1) many subcommands allow you to limit their scope to a
+specific environment. Use *--in* to specify which environment(s) to
+perform the 'SUBCOMMAND' in. Commands which support this will show
+*[--in]* in their usage line.
+
+
+
+CART CREATE
+-----------
+usage: juicer cart create 'CARTNAME' [-r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...]]
+
+Create a cart with the items specified.
+
+*CARTNAME*::
+The name of the new release cart.
+
+*-r* 'REPONAME'::
+Name of the reopsitory to install 'ITEMS' into. The '-r' option may be
+given multiple times.
+
+*ITEM* ...::
+Items to add to the cart in repository 'REPONAME'.
+
+
+CART DELETE
+-----------
+usage: juicer cart delete 'CARTNAME'
+
+Deletes a release cart from your local system and on the cart server.
+
+*CARTNAME*::
+The name of the release cart to delete.
+
+
+CART LIST
+---------
+usage: juicer cart list ['CART_GLOB' [ 'CART_GLOB' ...]]
+
+List all carts. Optionally provide one or more 'CART_GLOB' to only
+list carts whose names match the given pattern. Pattern matching uses
+standard *fnmatch* rules.
+
+*CART_GLOB*::
+The pattern to match. Default: ***
+
+
+CART PULL
+---------
+usage: juicer cart pull 'CARTNAME'
+
+Pulls a description of a cart from the pulp server and saves it on
+your local machine in *~/.config/juicer/carts/*.
+
+*CARTNAME*::
+The name of the cart to pull.
+
+
+CART PUSH
+---------
+usage: juicer cart push 'CARTNAME' [-f] [--in ENV [ENV ...]]
+
+Pushes all cart items their repositories. Saves cart on the cart
+server.
+
+*CARTNAME*::
+The name of the cart to push.
+
+*-f,--force*::
+Force push cart. Force must be used when local cart differs from cart
+server.
+
+
+CART SHOW
+---------
+usage: juicer cart show 'CARTNAME'
+
+Print the contents of a cart.
+
+*CARTNAME*::
+The name of the release cart to show.
+
+
+CART UPDATE
+-----------
+usage: juicer cart update 'CARTNAME' [-r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...]]
+
+Update the specified cart with the items specified.
+
+Updating a cart will add an item to the cart if it wasn't originally
+present or overwrite an item if it already was.
+
+*CARTNAME*::
+The name of the new release cart.
+
+*-r* 'REPONAME'::
+Name of the reopsitory to install 'ITEMS' into. The '-r' option may be
+given multiple times.
+
+*ITEM* ...::
+Items to add to the cart in repository 'REPONAME'.
+
+
+HELLO
+------
+usage: juicer hello [--in]
+
+Test connection settings in *~/.config/juicer/config*
+
+
+REPO CREATE
+-----------
+usage: juicer repo create 'REPONAME' [-t,--type 'TYPE'] [--checksum-type 'CHECKSUM-TYPE'] [--in ENV [ENV ...]]
+
+Creates a repository on the pulp server.
+
+*REPONAME*::
+The name of the repository to create.
+
+*-t,--type* 'TYPE'::
+The type of repository to create, 'rpm', 'docker', or 'iso'. Defaults
+to 'rpm'.
+
+*--checksum-type* 'CHECKSUM-TYPE'::
+Checksum type used when generating repository metadata. Only necessary
+for 'rpm' and 'iso' repositories.
+
+
+REPO DELETE
+-----------
+usage: juicer repo delete 'REPONAME' [--in ENV [ENV ...]]
+
+Deletes a repository on the pulp server.
+
+*REPONAME*::
+Name of the repository to delete.
+
+
+REPO LIST
+---------
+usage: juicer repo list [--json] [--in ENV [ENV ...]]
+
+List repositories on the pulp server.
+
+*--json*::
+Output in json format.
+
+
+REPO PUBLISH
+------------
+usage: juicer repo publish 'REPONAME' [--in ENV [ENV ...]]
+
+Publishes a repository, regenerating its metadata.
+
+*-r* 'REPONAME'::
+The name of the repository to publish.
+
+
+REPO SHOW
+---------
+usage: juicer repo show 'REPONAME' ... [--json] [--in ENV [ENV ...]]
+
+Show repository item count.
+
+*-r* 'REPONAME'::
+The name of the repo(s) to show.
+
+*--json*::
+Output in json format.
+
+
+ROLE ADD
+--------
+usage: juicer role add --login 'LOGIN' --role 'ROLE' [--in ENV [ENV ...]]
+
+Add a pulp role to a user.
+
+*LOGIN*::
+Login/username for user.
+
+*--role* 'ROLE'::
+Role to add to the user.
+
+
+ROLE LIST
+---------
+usage: juicer role list
+
+List roles on the pulp server.
+
+
+RPM DELETE
+----------
+usage: juicer rpm delete -r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...] [--in ENV [ENV ...]]
+
+Delete rpms in a repository.
+
+*-r* 'REPONAME'::
+Name of the reopsitory 'ITEMS' belong to. The '-r' option may be given
+multiple times.
+
+*ITEM* ...::
+Items to delete from the repository 'REPONAME'.
+
+
+RPM UPLOAD
+----------
+usage: juicer rpm upload -r 'REPONAME' 'ITEM' ... [ -r 'REPONAME' 'ITEM' ...] [--in ENV [ENV ...]]
+
+Upload multiple RPMs ('ITEM') to 'REPONAME'.
+
+*-r* 'REPO' ...::
+The repo that 'ITEM' will be uploaded to. The '-r' option may be given
+multiple times.
+
+*ITEM* ...::
+Name of the RPM(s) to upload.
+
+
+USER CREATE
+-----------
+usage: juicer user create 'LOGIN' --name 'FULL NAME' [--password ['PASSWORD']] [--roles 'ROLE' ...] [--in ENV [ENV ...]]
+
+Create a user on the pulp server.
+
+*LOGIN*::
+Login/username for user.
+
+*--name* 'FULL NAME'::
+User's full name.
+
+*--password* 'PASSWORD'::
+User password. Juicer will prompt if the 'PASSWORD' argument is not
+supplied.
+
+*--roles* 'ROLE'::
+Pulp roles to apply to user.
+
+
+USER DELETE
+-----------
+usage: juicer user delete 'LOGIN' [--in ENV [ENV ...]]
+
+Delete a user on the pulp server.
+
+*LOGIN*::
+Login/username for user.
+
+
+USER LIST
+---------
+usage: juicer user list [--in ENV [ENV ...]]
+
+List users on the pulp server.
+
+
+USER SHOW
+---------
+usage: juicer user show 'LOGIN' [--in ENV [ENV ...]]
+
+Show user.
+
+*LOGIN*::
+Login/username for user.
+
+
+USER UPDATE
+-----------
+usage: juicer user update 'LOGIN' [--name 'FULL NAME'] [--password ['PASSWORD']] [--roles 'ROLE' ...] [--in ENV [ENV ...]]
+
+Update user on the pulp server. This will only update the parameters
+supplied.
+
+*LOGIN*::
+Login/username for user.
+
+*--name 'FULL NAME'*::
+Full name for user.
+
+*--password* 'PASSWORD'::
+User password. Juicer will prompt if the password argument is not
+supplied.
+
+*--roles* 'ROLE'::
+Pulp role(s) to apply to user.
+
+
+EXAMPLES
+--------
+
+'ITEMS' given may be any number and combination of the following input
+resource types:
+
+*local*::
+    ./directory/of/items | ./path/to/item.rpm | /path/to/item*
+
+    The items given are directly uploaded to the pulp server.
+
+Here is an example of how you would specify a directory of *local*
+RPMs and a direct path:
+
+    $ juicer rpm upload -r javastuff \
+        ~/my-java-app/rpmbuild/noarch/ \
+        ~/misc-java-rpms/megafrobber-0.8.0.noarch.rpm
+
+
+*remote*::
+
+    http[s]://rpms/directory/ | http[s]://website/some-thing.rpm
+
+    URL to an HTTP directory index or an RPM. RPM paths are parsed
+    from the index and then added to your cart. All remote items are
+    synced when you upload or push.
+
+Here is an example of how you would specify a directory of *remote*
+RPMs and a specific remote RPM:
+
+    $ juicer rpm upload -r javastuff \
+        http://jenkins.foo/job/results/ \
+        http://foo.bar/rpms/megafrobber-0.8.0.noarch.rpm
+
+*create and show a cart*::
+
+    $ juicer cart create juicer-0.1.7 \
+        -r juicer \
+        http://kojipkgs.fedoraproject.org/..../juicer-0.1.7-1.fc17.noarch.rpm \
+        -r juicer-deps \
+        ./rpm-build/noarch/juicer-misc-0.1.7-1.fc17.noarch.rpm
+    Saved cart 'juicer-0.1.7'
+
+The cart description is saved into *~/.config/juicer/carts/* as
+*juicer-0.1.7.json*. We could show it again simply:
+
+    $ juicer cart show juicer-0.1.7
+    {
+        "_id": "test",
+        "repos_items": {
+	    "juicer": [
+	        "http://kojipkgs.fedoraproject.org/..../juicer-0.1.7-1.fc17.noarch.rpm"
+            ],
+	    "juicer-deps": [
+	        "/full/path/to/rpm-build/noarch/juicer-misc-0.1.7-1.fc17.noarch.rpm"
+	    ]
+        }
+    }
+
+Remote items will be synced automatically when we push this cart to
+the repositories. Items synced are saved into
+*~/.config/juicer/carts/*'CART-NAME'*-remotes/*.
+
+Similarly, when using the *upload* command, remotes are also synced.
+
+
+FILES
+-----
+*~/.config/juicer/config* -- Juicer configuration file
+
+*~/.config/juicer/carts/* -- Cart storage location
+
+
+AUTHOR
+------
+Juicer was written by GCA-PC, Red Hat, Inc..
+
+This man page was written by Tim Bielawa <tbielawa@redhat.com>.
+
+
+
+COPYRIGHT
+---------
+Copyright © 2012-2015, Red Hat, Inc..
+
+Juicer is released under the terms of the GPLv3+ License.
+
+
+
+SEE ALSO
+--------
+*juicer-admin*(1), *juicer.conf*(5), *fnmatch*(3)
+
+*The Juicer Homepage* -- <https://github.com/juicer/juicer/>

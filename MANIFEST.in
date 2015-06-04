@@ -1,2 +1,2 @@
-include README.rst LICENSE
+include README.rst LICENSE juicer.1
 graft juicer

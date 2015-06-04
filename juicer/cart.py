@@ -397,6 +397,10 @@ class Cart(object):
         return output
 
     def verify_remote(self):
+        """
+        Checks if the remote cart exists.
+        Checks if remote cart is different that the local cart.
+        """
         if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
             cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
             connection_str = 'mongodb://' + cart_seeds

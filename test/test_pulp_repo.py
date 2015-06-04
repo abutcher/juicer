@@ -131,6 +131,35 @@ class TestRepo(TestCase):
                                        environment='re')
             self.assertFalse(deleted)
 
+    def test_pulp_repo_distributors(self):
+        """Verify pulp repo distributors"""
+        with mock.patch('pulp.bindings.repository') as repository:
+            # Return value for the distributors() method call (RepositoryDistributorAPI Class method)
+            mock_response = mock.MagicMock()
+            mock_response.response_code = 200
+            mock_response.response_body = [{'id': 'test-distributor'}]
+            mock_pulp = mock.Mock(distributors=mock.MagicMock(return_value=mock_response))
+
+            # (pulp.bindings).repository.RepositoryDistributorAPI
+            repository.RepositoryDistributorAPI = mock.Mock(return_value=mock_pulp)
+            pulp_repo = juicer.pulp.Repo(None)
+            distributors = pulp_repo.distributors(name='test-repo',
+                                                  environment='re')
+            self.assertEqual([{'id': 'test-distributor'}], distributors)
+
+            mock_response.response_code = 400
+            distributors = pulp_repo.distributors(name='test-repo',
+                                                  environment='re')
+            self.assertEqual([], distributors)
+
+            mock_pulp = mock.Mock(distributors=mock.MagicMock(side_effect=pulp.bindings.exceptions.NotFoundException({'_href': 'oh no'})))
+            repository.RepositoryDistributorAPI = mock.Mock(return_value=mock_pulp)
+            pulp_repo = juicer.pulp.Repo(None)
+            # false for the case where repo not deleted because it didn't exist
+            distributors = pulp_repo.distributors(name='test-repo',
+                                                  environment='re')
+            self.assertEqual([], distributors)
+
     def test_pulp_repo_list(self):
         """Verify pulp repo list"""
         with mock.patch('pulp.bindings.repository') as repository:

@@ -275,7 +275,7 @@ class Parser(object):
         # create the 'repo publish' sub-parser
         parser_repo_publish = subparser_repo.add_parser('publish',
                                                         help='publish a repository (this will regenerate metadata)',
-                                                        usage='%(prog)s REPONAME [-t, --type TYPE] [--in ENV [ENV ...]] [-h]')
+                                                        usage='%(prog)s REPONAME [--in ENV [ENV ...]] [-h]')
 
         parser_repo_publish.add_argument('repo', metavar='REPONAME',
                                          type=str.lower,

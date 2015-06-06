@@ -58,7 +58,6 @@ username: tux
 password: 5w33tP@ssw04d
 port: 443
 verify_ssl: True
-ca_path: /etc/pki/tls/certs/ca\-bundle\&.crt
 .fi
 .if n \{\
 .RE
@@ -111,6 +110,7 @@ promotes_to: prod
 # Our hosts will probably differ per environment and will thus
 # have a different certificate\&.
 hostname: devel\&.util\&.tux\&.org
+ca_path: /etc/pki/pulp/devel\&.crt
 cert_filename: /etc/pki/pulp/devel\&.crt
 .fi
 .if n \{\
@@ -125,6 +125,7 @@ cert_filename: /etc/pki/pulp/devel\&.crt
 # Our hosts will probably differ per environment and will thus
 # have a different certificate\&.
 hostname: prod\&.util\&.tux\&.org
+ca_path: /etc/pki/pulp/prod\&.crt
 cert_filename: /etc/pki/pulp/prod\&.crt
 .fi
 .if n \{\
@@ -205,7 +206,7 @@ This attribute defines the name of the mongodb host along with its port\&. This 
 \fBRequired in\fR:
 \fBDEFAULT\fR
 .sp
-\fBValues\fR: Must be a valid hostname
+\fBValues\fR: Must be a valid hostname or replica set definition
 .RE
 .PP
 \fBca_path\fR
@@ -218,7 +219,7 @@ The local CA path\&.
 \fBRequired in\fR: Each environment definition if not defined in
 \fBDEFAULT\fR
 .sp
-\fBValues\fR: The path to a CA certificate on the local filesystem\&.
+\fBValues\fR: The path to a CA certificate on the local filesystem
 .RE
 .PP
 \fBcert_filename\fR
@@ -231,7 +232,7 @@ The path to a client certificate OR the pulp server\(cqs CA certificate\&.
 \fBRequired in\fR: Each environment definition if not defined in
 \fBDEFAULT\fR
 .sp
-\fBValues\fR: The path to a certificate on the local filesystem\&.
+\fBValues\fR: The path to a certificate on the local filesystem
 .RE
 .PP
 \fBverify_ssl\fR
@@ -244,7 +245,7 @@ True or False\&. Verify the pulp server\(cqs SSL certificate\&.
 \fBRequired in\fR: Each environment definition if not defined in
 \fBDEFAULT\fR
 .sp
-\fBValues\fR: True or False\&.
+\fBValues\fR: True or False
 .RE
 .SH "FILES"
 .sp

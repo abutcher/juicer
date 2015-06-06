@@ -2,12 +2,12 @@
 .\"     Title: juicer
 .\"    Author: :doctype:manpage
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 06/03/2015
+.\"      Date: 06/05/2015
 .\"    Manual: Pulp repos and release carts
 .\"    Source: Juicer 1.0.0
 .\"  Language: English
 .\"
-.TH "JUICER" "1" "06/03/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
+.TH "JUICER" "1" "06/05/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -63,7 +63,8 @@ in\&. Commands which support this will show
 \fB[\-\-in]\fR
 in their usage line\&.
 .RE
-.SH "CART CREATE"
+.SH "CART OPERATIONS"
+.SS "CART CREATE"
 .sp
 usage: juicer cart create \fICARTNAME\fR [\-r \fIREPONAME\fR \fIITEM\fR \&... [\-r \fIREPONAME\fR \fIITEM\fR \&...]]
 .sp
@@ -88,7 +89,7 @@ option may be given multiple times\&.
 Items to add to the cart in repository
 \fIREPONAME\fR\&.
 .RE
-.SH "CART DELETE"
+.SS "CART DELETE"
 .sp
 usage: juicer cart delete \fICARTNAME\fR
 .sp
@@ -98,7 +99,7 @@ Deletes a release cart from your local system and on the cart server\&.
 .RS 4
 The name of the release cart to delete\&.
 .RE
-.SH "CART LIST"
+.SS "CART LIST"
 .sp
 usage: juicer cart list [\fICART_GLOB\fR [ \fICART_GLOB\fR \&...]]
 .sp
@@ -109,7 +110,7 @@ List all carts\&. Optionally provide one or more \fICART_GLOB\fR to only list ca
 The pattern to match\&. Default:
 \fB*\fR
 .RE
-.SH "CART PULL"
+.SS "CART PULL"
 .sp
 usage: juicer cart pull \fICARTNAME\fR
 .sp
@@ -119,7 +120,7 @@ Pulls a description of a cart from the pulp server and saves it on your local ma
 .RS 4
 The name of the cart to pull\&.
 .RE
-.SH "CART PUSH"
+.SS "CART PUSH"
 .sp
 usage: juicer cart push \fICARTNAME\fR [\-f] [\-\-in ENV [ENV \&...]]
 .sp
@@ -134,7 +135,7 @@ The name of the cart to push\&.
 .RS 4
 Force push cart\&. Force must be used when local cart differs from cart server\&.
 .RE
-.SH "CART SHOW"
+.SS "CART SHOW"
 .sp
 usage: juicer cart show \fICARTNAME\fR
 .sp
@@ -144,7 +145,7 @@ Print the contents of a cart\&.
 .RS 4
 The name of the release cart to show\&.
 .RE
-.SH "CART UPDATE"
+.SS "CART UPDATE"
 .sp
 usage: juicer cart update \fICARTNAME\fR [\-r \fIREPONAME\fR \fIITEM\fR \&... [\-r \fIREPONAME\fR \fIITEM\fR \&...]]
 .sp
@@ -176,7 +177,8 @@ Items to add to the cart in repository
 usage: juicer hello [\-\-in]
 .sp
 Test connection settings in \fB~/\&.config/juicer/config\fR
-.SH "REPO CREATE"
+.SH "REPOSITORY OPERATIONS"
+.SS "REPO CREATE"
 .sp
 usage: juicer repo create \fIREPONAME\fR [\-t,\-\-type \fITYPE\fR] [\-\-checksum\-type \fICHECKSUM\-TYPE\fR] [\-\-in ENV [ENV \&...]]
 .sp
@@ -204,7 +206,7 @@ and
 \fIiso\fR
 repositories\&.
 .RE
-.SH "REPO DELETE"
+.SS "REPO DELETE"
 .sp
 usage: juicer repo delete \fIREPONAME\fR [\-\-in ENV [ENV \&...]]
 .sp
@@ -214,7 +216,7 @@ Deletes a repository on the pulp server\&.
 .RS 4
 Name of the repository to delete\&.
 .RE
-.SH "REPO LIST"
+.SS "REPO LIST"
 .sp
 usage: juicer repo list [\-\-json] [\-\-in ENV [ENV \&...]]
 .sp
@@ -224,7 +226,7 @@ List repositories on the pulp server\&.
 .RS 4
 Output in json format\&.
 .RE
-.SH "REPO PUBLISH"
+.SS "REPO PUBLISH"
 .sp
 usage: juicer repo publish \fIREPONAME\fR [\-\-in ENV [ENV \&...]]
 .sp
@@ -234,7 +236,7 @@ Publishes a repository, regenerating its metadata\&.
 .RS 4
 The name of the repository to publish\&.
 .RE
-.SH "REPO SHOW"
+.SS "REPO SHOW"
 .sp
 usage: juicer repo show \fIREPONAME\fR \&... [\-\-json] [\-\-in ENV [ENV \&...]]
 .sp
@@ -249,7 +251,8 @@ The name of the repo(s) to show\&.
 .RS 4
 Output in json format\&.
 .RE
-.SH "ROLE ADD"
+.SH "ROLE OPERATIONS"
+.SS "ROLE ADD"
 .sp
 usage: juicer role add \-\-login \fILOGIN\fR \-\-role \fIROLE\fR [\-\-in ENV [ENV \&...]]
 .sp
@@ -264,12 +267,13 @@ Login/username for user\&.
 .RS 4
 Role to add to the user\&.
 .RE
-.SH "ROLE LIST"
+.SS "ROLE LIST"
 .sp
 usage: juicer role list
 .sp
 List roles on the pulp server\&.
-.SH "RPM DELETE"
+.SH "RPM OPERATIONS"
+.SS "RPM DELETE"
 .sp
 usage: juicer rpm delete \-r \fIREPONAME\fR \fIITEM\fR \&... [\-r \fIREPONAME\fR \fIITEM\fR \&...] [\-\-in ENV [ENV \&...]]
 .sp
@@ -289,7 +293,7 @@ option may be given multiple times\&.
 Items to delete from the repository
 \fIREPONAME\fR\&.
 .RE
-.SH "RPM UPLOAD"
+.SS "RPM UPLOAD"
 .sp
 usage: juicer rpm upload \-r \fIREPONAME\fR \fIITEM\fR \&... [ \-r \fIREPONAME\fR \fIITEM\fR \&...] [\-\-in ENV [ENV \&...]]
 .sp
@@ -308,7 +312,8 @@ option may be given multiple times\&.
 .RS 4
 Name of the RPM(s) to upload\&.
 .RE
-.SH "USER CREATE"
+.SH "USER OPERATIONS"
+.SS "USER CREATE"
 .sp
 usage: juicer user create \fILOGIN\fR \-\-name \fIFULL NAME\fR [\-\-password [\fIPASSWORD\fR]] [\-\-roles \fIROLE\fR \&...] [\-\-in ENV [ENV \&...]]
 .sp
@@ -335,7 +340,7 @@ argument is not supplied\&.
 .RS 4
 Pulp roles to apply to user\&.
 .RE
-.SH "USER DELETE"
+.SS "USER DELETE"
 .sp
 usage: juicer user delete \fILOGIN\fR [\-\-in ENV [ENV \&...]]
 .sp
@@ -345,12 +350,12 @@ Delete a user on the pulp server\&.
 .RS 4
 Login/username for user\&.
 .RE
-.SH "USER LIST"
+.SS "USER LIST"
 .sp
 usage: juicer user list [\-\-in ENV [ENV \&...]]
 .sp
 List users on the pulp server\&.
-.SH "USER SHOW"
+.SS "USER SHOW"
 .sp
 usage: juicer user show \fILOGIN\fR [\-\-in ENV [ENV \&...]]
 .sp
@@ -360,7 +365,7 @@ Show user\&.
 .RS 4
 Login/username for user\&.
 .RE
-.SH "USER UPDATE"
+.SS "USER UPDATE"
 .sp
 usage: juicer user update \fILOGIN\fR [\-\-name \fIFULL NAME\fR] [\-\-password [\fIPASSWORD\fR]] [\-\-roles \fIROLE\fR \&...] [\-\-in ENV [ENV \&...]]
 .sp

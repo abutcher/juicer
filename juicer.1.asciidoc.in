@@ -48,9 +48,11 @@ perform the 'SUBCOMMAND' in. Commands which support this will show
 *[--in]* in their usage line.
 
 
+CART OPERATIONS
+---------------
 
 CART CREATE
------------
+~~~~~~~~~~~
 usage: juicer cart create 'CARTNAME' [-r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...]]
 
 Create a cart with the items specified.
@@ -67,7 +69,7 @@ Items to add to the cart in repository 'REPONAME'.
 
 
 CART DELETE
------------
+~~~~~~~~~~~
 usage: juicer cart delete 'CARTNAME'
 
 Deletes a release cart from your local system and on the cart server.
@@ -77,7 +79,7 @@ The name of the release cart to delete.
 
 
 CART LIST
----------
+~~~~~~~~~
 usage: juicer cart list ['CART_GLOB' [ 'CART_GLOB' ...]]
 
 List all carts. Optionally provide one or more 'CART_GLOB' to only
@@ -89,7 +91,7 @@ The pattern to match. Default: ***
 
 
 CART PULL
----------
+~~~~~~~~~
 usage: juicer cart pull 'CARTNAME'
 
 Pulls a description of a cart from the pulp server and saves it on
@@ -100,7 +102,7 @@ The name of the cart to pull.
 
 
 CART PUSH
----------
+~~~~~~~~~
 usage: juicer cart push 'CARTNAME' [-f] [--in ENV [ENV ...]]
 
 Pushes all cart items their repositories. Saves cart on the cart
@@ -115,7 +117,7 @@ server.
 
 
 CART SHOW
----------
+~~~~~~~~~
 usage: juicer cart show 'CARTNAME'
 
 Print the contents of a cart.
@@ -125,7 +127,7 @@ The name of the release cart to show.
 
 
 CART UPDATE
------------
+~~~~~~~~~~~
 usage: juicer cart update 'CARTNAME' [-r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...]]
 
 Update the specified cart with the items specified.
@@ -151,8 +153,11 @@ usage: juicer hello [--in]
 Test connection settings in *~/.config/juicer/config*
 
 
+REPOSITORY OPERATIONS
+---------------------
+
 REPO CREATE
------------
+~~~~~~~~~~~
 usage: juicer repo create 'REPONAME' [-t,--type 'TYPE'] [--checksum-type 'CHECKSUM-TYPE'] [--in ENV [ENV ...]]
 
 Creates a repository on the pulp server.
@@ -170,7 +175,7 @@ for 'rpm' and 'iso' repositories.
 
 
 REPO DELETE
------------
+~~~~~~~~~~~
 usage: juicer repo delete 'REPONAME' [--in ENV [ENV ...]]
 
 Deletes a repository on the pulp server.
@@ -180,7 +185,7 @@ Name of the repository to delete.
 
 
 REPO LIST
----------
+~~~~~~~~~
 usage: juicer repo list [--json] [--in ENV [ENV ...]]
 
 List repositories on the pulp server.
@@ -190,7 +195,7 @@ Output in json format.
 
 
 REPO PUBLISH
-------------
+~~~~~~~~~~~~
 usage: juicer repo publish 'REPONAME' [--in ENV [ENV ...]]
 
 Publishes a repository, regenerating its metadata.
@@ -200,7 +205,7 @@ The name of the repository to publish.
 
 
 REPO SHOW
----------
+~~~~~~~~~
 usage: juicer repo show 'REPONAME' ... [--json] [--in ENV [ENV ...]]
 
 Show repository item count.
@@ -212,8 +217,11 @@ The name of the repo(s) to show.
 Output in json format.
 
 
+ROLE OPERATIONS
+---------------
+
 ROLE ADD
---------
+~~~~~~~~
 usage: juicer role add --login 'LOGIN' --role 'ROLE' [--in ENV [ENV ...]]
 
 Add a pulp role to a user.
@@ -226,14 +234,17 @@ Role to add to the user.
 
 
 ROLE LIST
----------
+~~~~~~~~~
 usage: juicer role list
 
 List roles on the pulp server.
 
 
+RPM OPERATIONS
+--------------
+
 RPM DELETE
-----------
+~~~~~~~~~~
 usage: juicer rpm delete -r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...] [--in ENV [ENV ...]]
 
 Delete rpms in a repository.
@@ -247,7 +258,7 @@ Items to delete from the repository 'REPONAME'.
 
 
 RPM UPLOAD
-----------
+~~~~~~~~~~
 usage: juicer rpm upload -r 'REPONAME' 'ITEM' ... [ -r 'REPONAME' 'ITEM' ...] [--in ENV [ENV ...]]
 
 Upload multiple RPMs ('ITEM') to 'REPONAME'.
@@ -260,8 +271,11 @@ multiple times.
 Name of the RPM(s) to upload.
 
 
+USER OPERATIONS
+---------------
+
 USER CREATE
------------
+~~~~~~~~~~~
 usage: juicer user create 'LOGIN' --name 'FULL NAME' [--password ['PASSWORD']] [--roles 'ROLE' ...] [--in ENV [ENV ...]]
 
 Create a user on the pulp server.
@@ -281,7 +295,7 @@ Pulp roles to apply to user.
 
 
 USER DELETE
------------
+~~~~~~~~~~~
 usage: juicer user delete 'LOGIN' [--in ENV [ENV ...]]
 
 Delete a user on the pulp server.
@@ -291,14 +305,14 @@ Login/username for user.
 
 
 USER LIST
----------
+~~~~~~~~~
 usage: juicer user list [--in ENV [ENV ...]]
 
 List users on the pulp server.
 
 
 USER SHOW
----------
+~~~~~~~~~
 usage: juicer user show 'LOGIN' [--in ENV [ENV ...]]
 
 Show user.
@@ -308,7 +322,7 @@ Login/username for user.
 
 
 USER UPDATE
------------
+~~~~~~~~~~~
 usage: juicer user update 'LOGIN' [--name 'FULL NAME'] [--password ['PASSWORD']] [--roles 'ROLE' ...] [--in ENV [ENV ...]]
 
 Update user on the pulp server. This will only update the parameters
@@ -376,7 +390,7 @@ The cart description is saved into *~/.config/juicer/carts/* as
 
     $ juicer cart show juicer-0.1.7
     {
-        "_id": "test",
+        "_id": "juicer-0.1.7",
         "repos_items": {
 	    "juicer": [
 	        "http://kojipkgs.fedoraproject.org/..../juicer-0.1.7-1.fc17.noarch.rpm"

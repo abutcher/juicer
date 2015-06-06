@@ -36,7 +36,7 @@ PULPDOCKERTAG := "pulp-docker-1.0.1-0.2.beta"
 # directory of the target file ($@), kinda like `dirname`.
 ASCII2MAN = a2x -D $(dir $@) -d manpage -f manpage $<
 ASCII2HTMLMAN = a2x -D docs/html/man/ -d manpage -f xhtml
-MANPAGES := juicer.1
+MANPAGES := juicer.1 juicer.conf.5
 
 # VERSION file provides one place to update the software version.
 VERSION := $(shell cat VERSION)
@@ -44,6 +44,11 @@ VERSION := $(shell cat VERSION)
 # Create sphinx docs
 docs: conf.py $(MANPAGES)
 	cd docsite; make html; cd -
+
+# Regenerate %.5.asciidoc if %.5.asciidoc.in has been modified more
+# recently than %.5.asciidoc.
+%.5.asciidoc: %.5.asciidoc.in VERSION
+	sed "s/%VERSION%/$(VERSION)/" $< > $@
 
 # Regenerate %.1.asciidoc if %.1.asciidoc.in has been modified more
 # recently than %.1.asciidoc.
@@ -53,6 +58,14 @@ docs: conf.py $(MANPAGES)
 # Regenerate %.1 if %.1.asciidoc or VERSION has been modified more
 # recently than %.1. (Implicitly runs the %.1.asciidoc recipe)
 %.1: %.1.asciidoc
+	@echo "#############################################"
+	@echo "# Building $@ NOW"
+	@echo "#############################################"
+	$(ASCII2MAN)
+
+# Regenerate %.5 if %.5.asciidoc or VERSION has been modified more
+# recently than %.5. (Implicitly runs the %.5.asciidoc recipe)
+%.5: %.5.asciidoc
 	@echo "#############################################"
 	@echo "# Building $@ NOW"
 	@echo "#############################################"

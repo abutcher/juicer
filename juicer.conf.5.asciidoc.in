@@ -1,0 +1,193 @@
+juicer.conf(5)
+==============
+:doctype: manpage
+:man source:   Juicer
+:man version:  %VERSION%
+:man manual:   Pulp repos and release carts
+
+NAME
+----
+juicer.conf - juicer configuration file
+
+SYNOPSIS
+--------
+juicer configuration file
+
+DESCRIPTION
+-----------
+
+Sections and variables to use in your juicer configuration file. This
+file is broken into two or more parts. The first is *DEFAULT* and the
+rest are named after your environments, e.g., *qa*, *stage*, or
+*prod*.
+
+Assuming you have a *devel* and *prod* environment, you might have a
+configuration file that looks like this:
+
+[literal]
+    # ~/.config/juicer/config - In this example config file we maintain two
+    # environments: devel and prod.
+
+    [DEFAULT]
+    username: tux
+    password: 5w33tP@ssw04d
+    port: 443
+    verify_ssl: True
+    ca_path: /etc/pki/tls/certs/ca-bundle.crt
+
+    # 'devel' is the base environment. This means juicer will default
+    # to using 'devel' first when commands are not specified with an
+    # explicit environment(s).
+    start_in: devel
+
+    # Carts are stored in a mongodb instance somewhere. This is the
+    # hostname of our mongodb server. A replica set can be specified by
+    # comma delimiting hostname and port combinations.
+    cart_seeds: mongodb01.util.tux.org:27017,mongodb02.util.tux.org:27017
+
+    [devel]
+    # Most of our configuration for this environment lives in the
+    # DEFAULT section already, but we do need to tell Juicer where
+    # this environment promotes to next.
+    promotes_to: prod
+
+    # Our hosts will probably differ per environment and will thus
+    # have a different certificate.
+    hostname: devel.util.tux.org
+    cert_filename: /etc/pki/pulp/devel.crt
+
+    [prod]
+    # Our hosts will probably differ per environment and will thus
+    # have a different certificate.
+    hostname: prod.util.tux.org
+    cert_filename: /etc/pki/pulp/prod.crt
+
+ATTRIBUTES
+----------
+
+*username*::
+
+The user name to use when connecting to a pulp server.
++
+*Allowed in*: *DEFAULT*, and any environment definition
++
+*Required in*: Each environment definition if not defined in *DEFAULT*
+
+
+*password*::
+
+The password to use when connecting to a pulp server.
++
+*Allowed in*: *DEFAULT*, and any environment definition
++
+*Required in*: Each environment definition if not defined in *DEFAULT*
+
+
+*hostname*::
+
+The hostname of a pulp server.
++
+*Allowed in*: *DEFAULT*, and any environment definition
++
+*Required in*: Each environment definition if not defined in *DEFAULT*
+
+
+*start_in*::
+
+This is the initial destination for all operations when not explicitly
+specified.
++
+*Allowed in*: *DEFAULT*
++
+*Required in*: *DEFAULT*
++
+*Values*: Must be a single valid environment name
+
+
+*promotes_to*::
+
+This attribute specifies what environment packages flow into next. For
+example, packages in a *devel* environment normally promote to a
+*stage* or *prod* environment next.
++
+*Allowed in*: Any environment definition
++
+*Required in*: This attribute is optional
++
+*Values*: Must be a single valid environment name
+
+
+*cart_seeds*::
+
+This attribute defines the name of the mongodb host along with its
+port. This is where carts are stored. A mongodb replicaset can be
+provided by adding comma delimited mongodb hosts.
++
+*Allowed in*: *DEFAULT*
++
+*Required in*: *DEFAULT*
++
+*Values*: Must be a valid hostname
+
+
+*ca_path*::
+
+The local CA path.
++
+*Allowed in*: *DEFAULT*
++
+*Required in*: Each environment definition if not defined in *DEFAULT*
++
+*Values*: The path to a CA certificate on the local filesystem.
+
+
+*cert_filename*::
+
+The path to a client certificate OR the pulp server's CA certificate.
++
+*Allowed in*: *DEFAULT*
++
+*Required in*: Each environment definition if not defined in *DEFAULT*
++
+*Values*: The path to a certificate on the local filesystem.
+
+
+*verify_ssl*::
+
+True or False. Verify the pulp server's SSL certificate.
++
+*Allowed in*: *DEFAULT*
++
+*Required in*: Each environment definition if not defined in *DEFAULT*
++
+*Values*: True or False.
+
+
+
+FILES
+-----
+*~/.config/juicer/config* -- Personal Juicer configuration file
+
+
+
+AUTHOR
+------
+Juicer was written by GCA-PC, Red Hat, Inc..
+
+This man page was written by Tim Bielawa <tbielawa@redhat.com>.
+
+
+
+COPYRIGHT
+---------
+Copyright © 2012-2015, Red Hat, Inc..
+
+Juicer is released under the terms of the GPLv3+ License.
+
+
+
+SEE ALSO
+--------
+*juicer*(1)
+
+*The Juicer Homepage* -- <https://github.com/juicer/juicer/>

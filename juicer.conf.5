@@ -1,0 +1,266 @@
+'\" t
+.\"     Title: juicer.conf
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 06/05/2015
+.\"    Manual: Pulp repos and release carts
+.\"    Source: Juicer 1.0.0
+.\"  Language: English
+.\"
+.TH "JUICER\&.CONF" "5" "06/05/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+juicer.conf \- juicer configuration file
+.SH "SYNOPSIS"
+.sp
+juicer configuration file
+.SH "DESCRIPTION"
+.sp
+Sections and variables to use in your juicer configuration file\&. This file is broken into two or more parts\&. The first is \fBDEFAULT\fR and the rest are named after your environments, e\&.g\&., \fBqa\fR, \fBstage\fR, or \fBprod\fR\&.
+.sp
+Assuming you have a \fBdevel\fR and \fBprod\fR environment, you might have a configuration file that looks like this:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# ~/\&.config/juicer/config \- In this example config file we maintain two
+# environments: devel and prod\&.
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[DEFAULT]
+username: tux
+password: 5w33tP@ssw04d
+port: 443
+verify_ssl: True
+ca_path: /etc/pki/tls/certs/ca\-bundle\&.crt
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# \*(Aqdevel\*(Aq is the base environment\&. This means juicer will default
+# to using \*(Aqdevel\*(Aq first when commands are not specified with an
+# explicit environment(s)\&.
+start_in: devel
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# Carts are stored in a mongodb instance somewhere\&. This is the
+# hostname of our mongodb server\&. A replica set can be specified by
+# comma delimiting hostname and port combinations\&.
+cart_seeds: mongodb01\&.util\&.tux\&.org:27017,mongodb02\&.util\&.tux\&.org:27017
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[devel]
+# Most of our configuration for this environment lives in the
+# DEFAULT section already, but we do need to tell Juicer where
+# this environment promotes to next\&.
+promotes_to: prod
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# Our hosts will probably differ per environment and will thus
+# have a different certificate\&.
+hostname: devel\&.util\&.tux\&.org
+cert_filename: /etc/pki/pulp/devel\&.crt
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+[prod]
+# Our hosts will probably differ per environment and will thus
+# have a different certificate\&.
+hostname: prod\&.util\&.tux\&.org
+cert_filename: /etc/pki/pulp/prod\&.crt
+.fi
+.if n \{\
+.RE
+.\}
+.SH "ATTRIBUTES"
+.PP
+\fBusername\fR
+.RS 4
+The user name to use when connecting to a pulp server\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR, and any environment definition
+.sp
+\fBRequired in\fR: Each environment definition if not defined in
+\fBDEFAULT\fR
+.RE
+.PP
+\fBpassword\fR
+.RS 4
+The password to use when connecting to a pulp server\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR, and any environment definition
+.sp
+\fBRequired in\fR: Each environment definition if not defined in
+\fBDEFAULT\fR
+.RE
+.PP
+\fBhostname\fR
+.RS 4
+The hostname of a pulp server\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR, and any environment definition
+.sp
+\fBRequired in\fR: Each environment definition if not defined in
+\fBDEFAULT\fR
+.RE
+.PP
+\fBstart_in\fR
+.RS 4
+This is the initial destination for all operations when not explicitly specified\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR
+.sp
+\fBRequired in\fR:
+\fBDEFAULT\fR
+.sp
+\fBValues\fR: Must be a single valid environment name
+.RE
+.PP
+\fBpromotes_to\fR
+.RS 4
+This attribute specifies what environment packages flow into next\&. For example, packages in a
+\fBdevel\fR
+environment normally promote to a
+\fBstage\fR
+or
+\fBprod\fR
+environment next\&.
+.sp
+\fBAllowed in\fR: Any environment definition
+.sp
+\fBRequired in\fR: This attribute is optional
+.sp
+\fBValues\fR: Must be a single valid environment name
+.RE
+.PP
+\fBcart_seeds\fR
+.RS 4
+This attribute defines the name of the mongodb host along with its port\&. This is where carts are stored\&. A mongodb replicaset can be provided by adding comma delimited mongodb hosts\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR
+.sp
+\fBRequired in\fR:
+\fBDEFAULT\fR
+.sp
+\fBValues\fR: Must be a valid hostname
+.RE
+.PP
+\fBca_path\fR
+.RS 4
+The local CA path\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR
+.sp
+\fBRequired in\fR: Each environment definition if not defined in
+\fBDEFAULT\fR
+.sp
+\fBValues\fR: The path to a CA certificate on the local filesystem\&.
+.RE
+.PP
+\fBcert_filename\fR
+.RS 4
+The path to a client certificate OR the pulp server\(cqs CA certificate\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR
+.sp
+\fBRequired in\fR: Each environment definition if not defined in
+\fBDEFAULT\fR
+.sp
+\fBValues\fR: The path to a certificate on the local filesystem\&.
+.RE
+.PP
+\fBverify_ssl\fR
+.RS 4
+True or False\&. Verify the pulp server\(cqs SSL certificate\&.
+.sp
+\fBAllowed in\fR:
+\fBDEFAULT\fR
+.sp
+\fBRequired in\fR: Each environment definition if not defined in
+\fBDEFAULT\fR
+.sp
+\fBValues\fR: True or False\&.
+.RE
+.SH "FILES"
+.sp
+\fB~/\&.config/juicer/config\fR \(em Personal Juicer configuration file
+.SH "AUTHOR"
+.sp
+Juicer was written by GCA\-PC, Red Hat, Inc\&.\&.
+.sp
+This man page was written by Tim Bielawa <tbielawa@redhat\&.com>\&.
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2012\-2015, Red Hat, Inc\&.\&.
+.sp
+Juicer is released under the terms of the GPLv3+ License\&.
+.SH "SEE ALSO"
+.sp
+\fBjuicer\fR(1)
+.sp
+\fBThe Juicer Homepage\fR \(em https://github\&.com/juicer/juicer/

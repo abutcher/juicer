@@ -1,6 +1,6 @@
 juicer(1)
 =========
-:doctype:manpage
+:doctype: manpage
 :man source:   Juicer
 :man version:  %VERSION%
 :man manual:   Pulp repos and release carts
@@ -413,6 +413,7 @@ FILES
 *~/.config/juicer/config* -- Juicer configuration file
 
 *~/.config/juicer/carts/* -- Cart storage location
+
 
 
 AUTHOR

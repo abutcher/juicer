@@ -20,7 +20,7 @@ import juicer.pulp
 from juicer.command import JuicerCommand
 
 
-class RPMDeleteCommand(JuicerCommand):
+class RPMDeleteCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RPMDeleteCommand, self).__init__(args)
 
@@ -35,7 +35,7 @@ class RPMDeleteCommand(JuicerCommand):
                 pulp_repo.publish(repo, 'rpm', environment)
 
 
-class RPMUploadCommand(JuicerCommand):
+class RPMUploadCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RPMUploadCommand, self).__init__(args)
 

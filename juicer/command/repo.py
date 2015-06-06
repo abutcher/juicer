@@ -19,7 +19,7 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class RepoCreateCommand(JuicerCommand):
+class RepoCreateCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RepoCreateCommand, self).__init__(args)
 
@@ -34,7 +34,7 @@ class RepoCreateCommand(JuicerCommand):
                               environment=environment)
 
 
-class RepoDeleteCommand(JuicerCommand):
+class RepoDeleteCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RepoDeleteCommand, self).__init__(args)
 
@@ -45,7 +45,7 @@ class RepoDeleteCommand(JuicerCommand):
                              environment=environment)
 
 
-class RepoListCommand(JuicerCommand):
+class RepoListCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RepoListCommand, self).__init__(args)
 
@@ -55,7 +55,7 @@ class RepoListCommand(JuicerCommand):
             pulp_repo.list(environment=environment)
 
 
-class RepoPublishCommand(JuicerCommand):
+class RepoPublishCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RepoPublishCommand, self).__init__(args)
 
@@ -66,7 +66,7 @@ class RepoPublishCommand(JuicerCommand):
                               environment=environment)
 
 
-class RepoShowCommand(JuicerCommand):
+class RepoShowCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RepoShowCommand, self).__init__(args)
 

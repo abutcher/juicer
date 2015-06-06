@@ -23,7 +23,7 @@ from juicer.command import JuicerCommand
 import juicer.cart
 
 
-class CartCreateCommand(JuicerCommand):
+class CartCreateCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(CartCreateCommand, self).__init__(args)
 
@@ -31,7 +31,7 @@ class CartCreateCommand(JuicerCommand):
         juicer.cart.Cart(self.args.cartname, self.args.r, autosave=True)
 
 
-class CartDeleteCommand(JuicerCommand):
+class CartDeleteCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(CartDeleteCommand, self).__init__(args)
 
@@ -71,7 +71,7 @@ class CartListCommand(JuicerCommand):
                     yield os.path.join(root, filename)
 
 
-class CartPullCommand(JuicerCommand):
+class CartPullCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(CartPullCommand, self).__init__(args)
 
@@ -80,7 +80,7 @@ class CartPullCommand(JuicerCommand):
         cart.pull()
 
 
-class CartPushCommand(JuicerCommand):
+class CartPushCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(CartPushCommand, self).__init__(args)
 
@@ -90,7 +90,7 @@ class CartPushCommand(JuicerCommand):
             cart.upload_items(environment, self.connections[environment], self.args.force)
 
 
-class CartShowCommand(JuicerCommand):
+class CartShowCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(CartShowCommand, self).__init__(args)
 
@@ -99,7 +99,7 @@ class CartShowCommand(JuicerCommand):
         self.output.info(str(cart))
 
 
-class CartUpdateCommand(JuicerCommand):
+class CartUpdateCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(CartUpdateCommand, self).__init__(args)
 

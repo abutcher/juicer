@@ -19,7 +19,7 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class UserCreateCommand(JuicerCommand):
+class UserCreateCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(UserCreateCommand, self).__init__(args)
 
@@ -33,7 +33,7 @@ class UserCreateCommand(JuicerCommand):
                              roles=self.args.roles)
 
 
-class UserDeleteCommand(JuicerCommand):
+class UserDeleteCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(UserDeleteCommand, self).__init__(args)
 
@@ -44,7 +44,7 @@ class UserDeleteCommand(JuicerCommand):
                              environment=environment)
 
 
-class UserListCommand(JuicerCommand):
+class UserListCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(UserListCommand, self).__init__(args)
 
@@ -54,7 +54,7 @@ class UserListCommand(JuicerCommand):
             pulp_user.list(environment=environment)
 
 
-class UserShowCommand(JuicerCommand):
+class UserShowCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(UserShowCommand, self).__init__(args)
 
@@ -65,7 +65,7 @@ class UserShowCommand(JuicerCommand):
                            environment=environment)
 
 
-class UserUpdateCommand(JuicerCommand):
+class UserUpdateCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(UserUpdateCommand, self).__init__(args)
 

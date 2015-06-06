@@ -19,7 +19,7 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class HelloCommand(JuicerCommand):
+class HelloCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(HelloCommand, self).__init__(args)
 

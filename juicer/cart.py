@@ -27,19 +27,21 @@ import progressbar
 import re
 import urllib2
 
-from juicer.common import Constants
-from juicer.config import Config
+import juicer.common
 import juicer.pulp
 import juicer.remotes
+from juicer.config import Config
 
 
 class Cart(object):
     def __init__(self, name, description=None, autoload=False, autosync=False, autosave=False):
         self.output = logging.getLogger('juicer')
         self.name = name
-        self.cart_file = os.path.join(Constants.CART_LOCATION, "{}.json".format(self.name))
+        self.cart_file = os.path.join(juicer.common.Constants.CART_LOCATION,
+                                      "{}.json".format(self.name))
         self.repo_items_hash = {}
-        self.remotes_storage = os.path.expanduser(os.path.join(Constants.CART_LOCATION, "{}-remotes".format(self.name)))
+        self.remotes_storage = os.path.expanduser(os.path.join(juicer.common.Constants.CART_LOCATION,
+                                                               "{}-remotes".format(self.name)))
         self.config = Config()
 
         if autoload:
@@ -126,7 +128,7 @@ class Cart(object):
     def save(self, remote_save=True, warning=False):
         if self.is_empty():
             self.output.error('Cart is empty, not saving anything')
-            return None
+            return False
         self.save_local(warning=warning)
         if remote_save:
             if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
@@ -485,7 +487,7 @@ class CartItem(object):
             maxval=item_size).start()
         downloaded = 0
         while True:
-            buffer = u.read(Constants.DOWNLOAD_AT_ONCE)
+            buffer = u.read(juicer.common.Constants.DOWNLOAD_AT_ONCE)
             if not buffer:
                 break
             f.write(buffer)

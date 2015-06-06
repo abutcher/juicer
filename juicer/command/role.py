@@ -19,7 +19,7 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class RoleAddCommand(JuicerCommand):
+class RoleAddCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RoleAddCommand, self).__init__(args)
 
@@ -31,7 +31,7 @@ class RoleAddCommand(JuicerCommand):
                                login=self.args.login)
 
 
-class RoleListCommand(JuicerCommand):
+class RoleListCommand(JuicerCommand):  # pragma: no cover
     def __init__(self, args):
         super(RoleListCommand, self).__init__(args)
 

@@ -18,6 +18,13 @@ which provides a shopping cart style approach to uploading and
 promoting groups of packages or docker images through multiple
 environments.
 
+Documentation
+-------------
+
+The main documentation lives at
+`http://juicer.readthedocs.org/en/latest/
+<http://juicer.readthedocs.org/en/latest/>`_.
+
 Usage
 -----
 

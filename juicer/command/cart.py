@@ -64,7 +64,7 @@ class CartListCommand(JuicerCommand):
         # Stolen from http://rosettacode.org/wiki/Walk_a_directory/Recursively#Python
         if (not os.path.isdir(search_base)) and os.path.exists(search_base):
             # Adapt the algorithm to gracefully handle non-directory search paths
-            yield search_base
+            yield search_base  # pragma: no cover
         else:
             for root, dirs, files in os.walk(search_base):
                 for filename in fnmatch.filter(files, pattern):

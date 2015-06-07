@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from pymongo import MongoClient
-from pymongo import errors as MongoErrors
 import bitmath
 import bitmath.integrations
 import json
@@ -24,6 +22,8 @@ import logging
 import os
 import os.path
 import progressbar
+import pymongo
+import pymongo.errors
 import re
 import urllib2
 
@@ -150,17 +150,17 @@ class Cart(object):
     def save_remote(self):
         cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
         connection_str = 'mongodb://' + cart_seeds
-        mongo = MongoClient(connection_str)
+        mongo = pymongo.MongoClient(connection_str)
         db = mongo.carts
         try:
             db['carts'].save(self._cart_dict())
-        except MongoErrors.AutoReconnect:
+        except pymongo.errors.AutoReconnect:
             self.output.error("Failed to save cart '{}' on remote".format(self.name))
 
     def pull(self):
         cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
         connection_str = 'mongodb://' + cart_seeds
-        mongo = MongoClient(connection_str)
+        mongo = pymongo.MongoClient(connection_str)
         db = mongo.carts
         try:
             json_body = json.dumps(db['carts'].find_one({'_id': self.name}))
@@ -173,7 +173,7 @@ class Cart(object):
                 f.write(json_body)
                 f.flush()
                 f.close()
-        except MongoErrors.AutoReconnect:
+        except pymongo.errors.AutoReconnect:
             self.output.error("Failed to find cart '{}' on remote".format(self.name))
 
     def load(self):
@@ -216,11 +216,11 @@ class Cart(object):
         if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
             cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
             connection_str = 'mongodb://' + cart_seeds
-            mongo = MongoClient(connection_str)
+            mongo = pymongo.MongoClient(connection_str)
             db = mongo.carts
             try:
                 db['carts'].remove({'_id': self.name})
-            except MongoErrors.AutoReconnect:
+            except pymongo.errors.AutoReconnect:
                 self.output.error("Failed to save cart '{}' on remote".format(self.name))
 
     def update(self, description):
@@ -406,7 +406,7 @@ class Cart(object):
         if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
             cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
             connection_str = 'mongodb://' + cart_seeds
-            mongo = MongoClient(connection_str)
+            mongo = pymongo.MongoClient(connection_str)
             db = mongo.carts
             try:
                 json_body = json.dumps(db['carts'].find_one({'_id': self.name}))
@@ -417,7 +417,7 @@ class Cart(object):
                         return True
                     else:
                         return False
-            except MongoErrors.AutoReconnect:
+            except pymongo.errors.AutoReconnect:
                 self.output.error("Failed to find cart '{}' on remote".format(self.name))
                 return False
 

@@ -15,10 +15,12 @@
 
 from . import TestCase, unittest
 from contextlib import nested
+import json
 import mock
 import os
 
 import juicer.cart
+import pymongo
 
 
 class TestCart(TestCase):
@@ -57,12 +59,22 @@ class TestCart(TestCase):
 
     def test_cart_save_delete(self):
         """Cart can be saved and deleted"""
-        with mock.patch('juicer.common.Constants') as constants:
+        with nested(
+                mock.patch('juicer.common.Constants'),
+                mock.patch('pymongo.MongoClient')) as (
+                    constants,
+                    MongoClient):
+
+            # Override constants.
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
+
             cart = juicer.cart.Cart('test-cart', [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
+
+            # We can save the cart and a file is created locally.
             cart.save()
             self.assertTrue(os.path.exists(cart.cart_file))
+            # We can delete the cart and the file no longer exists.
             cart.delete()
             self.assertFalse(os.path.exists(cart.cart_file))
 
@@ -78,13 +90,69 @@ class TestCart(TestCase):
         
     def test_cart_update(self):
         """Cart can be updated"""
-        with mock.patch('juicer.common.Constants') as constants:
+        with nested(
+                mock.patch('juicer.common.Constants'),
+                mock.patch('pymongo.MongoClient')) as (
+                    constants,
+                    MongoClient):
+
+            # Override constants.
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
+
             cart = juicer.cart.Cart('test-cart', [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
-            cart.save()
-            self.assertTrue(os.path.exists(cart.cart_file))
             cart.update([['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
             self.assertEqual(cart.items()[0].name, 'empty-0.1-1.noarch.rpm')
             cart.delete()
+            self.assertFalse(os.path.exists(cart.cart_file))
+
+    def test_cart_pull(self):
+        """Cart can be pulled"""
+        with nested(
+                mock.patch('juicer.common.Constants'),
+                mock.patch('pymongo.MongoClient')) as (
+                    constants,
+                    MongoClient):
+
+            # Override constants.
+            constants.CART_LOCATION = './'
+            constants.USER_CONFIG = './config'
+
+            test_cart_body = {
+                "_id": "potato",
+                "repos_items": {
+	            "test": [
+	                "share/juicer/empty-0.1-1.noarch.rpm"
+	            ]
+                }
+            }
+
+            # MongoClient().carts.__getitem__().find_one()
+            mock_find_one = mock.MagicMock(find_one=mock.MagicMock(return_value=test_cart_body))
+            mock_mongo = mock.MagicMock(carts=mock.MagicMock(__getitem__=mock.MagicMock(name="shit",return_value=mock_find_one)))
+
+            # pymongo.MongoClient
+            MongoClient.return_value = mock_mongo
+
+            cart = juicer.cart.Cart('potato')
+            # Do an initial pull
+            cart.pull()
+            self.assertTrue(os.path.exists(cart.cart_file))
+            # Pull to overwrite existing file
+            cart.pull()
+            self.assertTrue(os.path.exists(cart.cart_file))
+            # Delete cart file
+            cart.delete()
+            self.assertFalse(os.path.exists(cart.cart_file))
+
+            # MongoClient().carts.__getitem__().find_one()
+            mock_find_one = mock.MagicMock(find_one=mock.MagicMock(return_value=None))
+            mock_mongo = mock.MagicMock(carts=mock.MagicMock(__getitem__=mock.MagicMock(return_value=mock_find_one)))
+
+            # pymongo.MongoClient()
+            MongoClient.return_value = mock_mongo
+
+            # We can't pull a cart that doesn't exist on the remote
+            cart = juicer.cart.Cart('potato')
+            cart.pull()
             self.assertFalse(os.path.exists(cart.cart_file))

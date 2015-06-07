@@ -5,6 +5,7 @@ port: 443
 verify_ssl: False
 ca_path: /home/testuser/certs/pulp.crt
 cert_filename: /home/testuser/certs/client.crt
+cart_seeds: testhost.re.example.com:27017
 start_in: re
 
 [re]

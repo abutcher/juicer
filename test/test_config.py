@@ -26,6 +26,7 @@ serialized_config = {
     "qa": {
         "ca_path": "/home/testuser/certs/pulp.crt",
         "cert_filename": "/home/testuser/certs/client.crt",
+        "cart_seeds": "testhost.re.example.com:27017",
         "hostname": "testhost.qa.example.com",
         "password": "testpass",
         "port": "443",
@@ -36,6 +37,7 @@ serialized_config = {
     "re": {
         "ca_path": "/home/testuser/certs/pulp.crt",
         "cert_filename": "/home/testuser/certs/client.crt",
+        "cart_seeds": "testhost.re.example.com:27017",
         "hostname": "testhost.re.example.com",
         "password": "testpass",
         "port": "443",

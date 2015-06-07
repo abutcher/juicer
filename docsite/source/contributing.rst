@@ -153,6 +153,10 @@ in the ``docsite`` directory. This file shows the order we apply
 section header markup. Please follow it exactly, doing so will help us
 avoid silly rendering errors.
 
+.. literalinclude:: ../HEADERS
+   :language: ini
+   :linenos:
+
 Word Wrapping
 =============
 

@@ -4,6 +4,12 @@
    :height: 19
    :width: 77
 
+.. image:: https://readthedocs.org/projects/juicer/badge/?version=latest
+   :target: http://juicer.rtfd.org/
+   :align: right
+   :height: 19
+   :width: 77
+
 Juicer
 ######
 Juicer is a command-line interface to the `Pulp REST API

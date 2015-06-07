@@ -27,32 +27,11 @@ prod; meaning that we upload our packages to devel and test them
 accordingly in our development environment before we promote them to
 prod.
 
-.. code::
 
-  [DEFAULT]
-  username: admin
-  password: admin
-  port: 443
-  verify_ssl: True
-  ca_path: /etc/pki/pulp/ca.crt
-  cert_filename: /etc/pki/pulp/pulp.crt
-  start_in: devel
-  cart_seeds: localhost:27017
+.. literalinclude:: ../../config
+   :language: ini
+   :linenos:
 
-  [devel]
-  hostname: localhost
-  promotes_to: qa
-
-  [qa]
-  hostname: localhost
-  promotes_to: stage
-
-  [stage]
-  hostname: localhost
-  promotes_to: prod
-
-  [prod]
-  hostname: localhost
 
 Usage
 -----

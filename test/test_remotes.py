@@ -15,6 +15,7 @@
 
 from . import TestCase, unittest
 from contextlib import nested
+import mock
 
 import juicer.remotes
 
@@ -23,7 +24,7 @@ class TestRemotes(TestCase):
         pass
 
     def test_classify_remotes(self):
-        """Verify remote item classification"""
+        """Can classify remote item types"""
         resource_type = juicer.remotes.classify_resource_type("http://example.com/file.rpm")
         self.assertEqual(resource_type, juicer.remotes.REMOTE_PKG_TYPE)
         resource_type = juicer.remotes.classify_resource_type("http://example.com/stuff/")
@@ -32,3 +33,50 @@ class TestRemotes(TestCase):
         self.assertEqual(resource_type, juicer.remotes.REMOTE_INPUT_FILE_TYPE)
         resource_type = juicer.remotes.classify_resource_type("potato")
         self.assertEqual(resource_type, None)
+
+    def test_parse_directory_index(self):
+        """Can parse a directory index"""
+        site_index = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <html>
+        <head>
+        <title>Index of /pulp/repos/re/test</title>
+        </head>
+        <body>
+        <h1>Index of /pulp/repos/re/test</h1>
+        <ul><li><a href="/pulp/repos/re/"> Parent Directory</a></li>
+        <li><a href="repodata/"> repodata/</a></li>
+        <li><a href="versionmerge-1.0.8-1.fc20.noarch.rpm"> versionmerge-1.0.8-1.fc20.noarch.rpm</a></li>
+        </ul>
+        </body></html>"""
+        with mock.patch('urllib2.urlopen') as urlopen:
+            urlopen.return_value = site_index
+            remote_list = juicer.remotes.parse_directory_index('http://test.com/pulp/repos/re/test')
+            self.assertEqual(remote_list, [u'http://test.com/pulp/repos/re/test/versionmerge-1.0.8-1.fc20.noarch.rpm'])
+
+    def test_assemble_remotes(self):
+        """Can assemble remotes"""
+        site_index = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <html>
+        <head>
+        <title>Index of /pulp/repos/re/test</title>
+        </head>
+        <body>
+        <h1>Index of /pulp/repos/re/test</h1>
+        <ul><li><a href="/pulp/repos/re/"> Parent Directory</a></li>
+        <li><a href="repodata/"> repodata/</a></li>
+        <li><a href="versionmerge-1.0.8-1.fc20.noarch.rpm"> versionmerge-1.0.8-1.fc20.noarch.rpm</a></li>
+        </ul>
+        </body></html>"""
+        with mock.patch('urllib2.urlopen') as urlopen:
+            urlopen.return_value = site_index
+
+            # Remote file
+            remotes = juicer.remotes.assemble_remotes('http://example.com/file.rpm')
+            self.assertEqual(remotes, ['http://example.com/file.rpm'])
+            # Remote file index
+            remotes = juicer.remotes.assemble_remotes('http://test.com/pulp/repos/re/test')
+            self.assertEqual(remotes, [u'http://test.com/pulp/repos/re/test/versionmerge-1.0.8-1.fc20.noarch.rpm'])
+            # Local file
+            remotes = juicer.remotes.assemble_remotes('share/juicer/empty-0.1-1.noarch.rpm')
+            self.assertEqual(remotes, [])
+

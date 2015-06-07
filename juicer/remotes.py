@@ -12,11 +12,10 @@
 """
 Functions for handling remote package resources
 """
-from BeautifulSoup import BeautifulSoup as bs
 from os.path import exists, expanduser
+import BeautifulSoup
 import re
 import urllib2
-
 
 REMOTE_PKG_TYPE = 1
 REMOTE_INDEX_TYPE = 2
@@ -123,7 +122,7 @@ def parse_directory_index(directory_index):
         directory_index = directory_index + '/'
 
     site_index = urllib2.urlopen(directory_index)
-    parsed_site_index = bs(site_index)
+    parsed_site_index = BeautifulSoup.BeautifulSoup(site_index)
     link_tags = parsed_site_index.findAll('a', href=re.compile(r'(.+)\.(.+)'))
     # Only save the HREF attribute values from the links found
     names = [link['href'] for link in link_tags]

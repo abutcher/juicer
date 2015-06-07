@@ -4,3 +4,4 @@ M2Crypto
 progressbar
 pyflakes
 pymongo
+python-coveralls

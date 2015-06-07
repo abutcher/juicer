@@ -155,7 +155,6 @@ avoid silly rendering errors.
 
 .. literalinclude:: ../HEADERS
    :language: ini
-   :linenos:
 
 Word Wrapping
 =============

@@ -133,3 +133,58 @@ Output should read as a garden variety sentence.
 
    $ juicer cart create test -r test-repo ~/rpmbuild/RPMS/noarch/*
    Saved cart 'test'
+
+
+Documentation
+*************
+
+I assume you came here to learn how to update the project
+documentation?
+
+Hello, you have just become my new best friend. I think we're going to
+get along really well together.
+
+
+Section Headers
+===============
+
+When marking up section headers please refer to the ``HEADERS`` file
+in the ``docsite`` directory. This file shows the order we apply
+section header markup. Please follow it exactly, doing so will help us
+avoid silly rendering errors.
+
+Word Wrapping
+=============
+
+**Please do** word-wrap your documentation contributions! In **emacs**
+this is as simple as pressing ``M-q`` in a paragraph you want to
+auto-word-wrap (the emacs function is called ``fill-paragraph``. You
+can run it manually with ``M-x fill-paragraph <RET>`` if you prefer.
+
+If you use **vi(m)**, then I'm sorry. I cannot assist you with your
+word-wrapping needs a this time. Please feel free to submit a pull
+request to update these docs with vi(m) automatic word-wrapping
+instructions!
+
+Fear not -- pull-requests won't be rejected just because they aren't
+word-wrapped. You just earn major karma with us if you word-wrap your
+contributions :-). Thanks!
+
+
+Building The Docs
+=================
+
+So you want to build the documentation locally? Aren't you in luck, I
+think that's a surpurb idea as well. Building the docs is a fairly
+straight-forward process. All you **may** have to do is install some
+requirements first:
+
+From **yum:**
+
+* ``python-sphinx``
+* ``python-sphinx_rtd_theme``
+
+Optionally, you may install these requirements from **pip:**
+
+* ``Sphinx``
+* ``sphinx_rtd_theme``

@@ -4,6 +4,8 @@ notifications:
 branches:
     only:
         - master
+after_success:
+    - coveralls
 script: make ci
 
 # Need extra deps for our requirements

@@ -140,18 +140,27 @@ source. The directory listing will be searched for links ending in
 Push a cart to an environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Pushing a cart will upload all of its items to the specified
+environment.
+
 .. code:: bash
 
    juicer cart push my-cart --in qa
 
-A cart can be saved remotely once it has been pushed. This can be
-useful if the release engineer needs to swap mid-release. Add
-``cart_seeds`` (insecure mongo endpoint) to juicer configuration to
-enable remote saves. Remote carts can be pulled with ``juicer cart
-pull``.
+.. note::
+   A cart can be saved remotely once it has been pushed. This can be
+   useful if the release engineer needs to swap mid-release. Add
+   ``cart_seeds`` (insecure mongo endpoint) to juicer configuration to
+   enable remote saves. Remote carts can be pulled with ``juicer cart
+   pull``.
 
-.. code:: bash
+   To further illustrate remote cart saving, we can delete our local cart
+   file and pull it down again.
 
-   juicer cart delete my-cart
-   juicer cart pull my-cart
-   juicer cart show my-cart
+   .. code:: bash
+
+      rm ~/.config/juicer/carts/my-cart.json
+      juicer cart pull my-cart
+      juicer cart show my-cart
+
+   ``juicer cart pull`` will overwrite a local cart file if it exists.

@@ -229,4 +229,4 @@ documentation from source
 
 .. code:: bash
 
-   $ xdg-open xdg-open ./build/html/index.html
+   $ xdg-open ./build/html/index.html

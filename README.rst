@@ -10,6 +10,12 @@
    :height: 19
    :width: 77
 
+.. image:: https://coveralls.io/repos/abutcher/juicer/badge.svg?branch=master
+   :target: https://coveralls.io/r/abutcher/juicer?branch=master
+   :align: right
+   :height: 19
+   :width: 77
+
 Juicer
 ######
 Juicer is a command-line interface to the `Pulp REST API

@@ -148,13 +148,15 @@ get along really well together.
 Section Headers
 ===============
 
-When marking up section headers please refer to the ``HEADERS`` file
-in the ``docsite`` directory. This file shows the order we apply
+When marking up section headers please refer to the `HEADERS
+<https://github.com/abutcher/juicer/blob/master/docsite/HEADERS>`_
+file in the ``docsite`` directory. This file shows the order we apply
 section header markup. Please follow it exactly, doing so will help us
 avoid silly rendering errors.
 
 .. literalinclude:: ../HEADERS
    :language: ini
+
 
 Word Wrapping
 =============
@@ -191,3 +193,40 @@ Optionally, you may install these requirements from **pip:**
 
 * ``Sphinx``
 * ``sphinx_rtd_theme``
+
+Once you have the requirements installed you can attempt to build the
+documentation from source
+
+* Switch into the ``docsite`` directory and run ``make html``:
+
+.. code:: bash
+
+   $ cd ./docsite
+   $ make html
+   sphinx-build -b html -d build/doctrees   source build/html
+   Making output directory...
+   Running Sphinx v1.1.3
+   loading pickled environment... not yet created
+   building [html]: targets for 3 source files that are out of date
+   updating environment: 3 added, 0 changed, 0 removed
+   reading sources... [100%] index
+   looking for now-outdated files... none found
+   pickling environment... done
+   checking consistency... done
+   preparing documents... done
+   writing output... [100%] index
+   writing additional files... genindex search
+   copying static files... done
+   dumping search index... done
+   dumping object inventory... done
+   build succeeded.
+
+   Build finished. The HTML pages are in build/html.
+
+* If the docs built correctly then you can open them in your default
+  browser with this command (while still in the ``docsite``
+  directory):
+
+.. code:: bash
+
+   $ xdg-open xdg-open ./build/html/index.html

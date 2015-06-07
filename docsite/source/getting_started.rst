@@ -132,6 +132,32 @@ Packages don't have to be local.
 
    juicer cart create my-cart -r my-repository http://dang.com/rpms/omg.rpm
 
+You can even provide an apache directory index (example:
+`http://lnx.cx/~tbielawa/rpms/ <http://lnx.cx/~tbielawa/rpms/>`_) as a
+source. The directory listing will be searched for links ending in
+``.rpm``. All matches will be added to the cart!
+
+.. code:: bash
+
+   juicer cart create my-dir-cart -r my-repository http://son.com/rpms/
+   juicer cart show my-dir-cart
+
+
+.. code:: json
+
+   {
+       "_id": "my-dir-cart",
+       "repos_items": {
+           "my-repository": [
+               "http://son.com/rpms/megafrobber-1.0.3-2.noarch.rpm",
+               "http://son.com/rpms/defrobnicate-ng-3.2.1-0.noarch.rpm",
+           ]
+       }
+   }
+
+
+
+
 Push a cart to an environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -150,4 +176,3 @@ pull``.
    juicer cart delete my-cart
    juicer cart pull my-cart
    juicer cart show my-cart
-

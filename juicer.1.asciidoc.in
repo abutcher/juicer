@@ -55,7 +55,9 @@ CART CREATE
 ~~~~~~~~~~~
 usage: juicer cart create 'CARTNAME' [-r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...]]
 
-Create a cart with the items specified.
+Create a cart with the items specified. Creating a cart will overwrite
+a local cart if any local cart shares a name with the cart being
+created.
 
 *CARTNAME*::
 The name of the new release cart.
@@ -103,8 +105,9 @@ CART PULL
 ~~~~~~~~~
 usage: juicer cart pull 'CARTNAME'
 
-Pulls a description of a cart from the pulp server and saves it on
-your local machine in *~/.config/juicer/carts/*.
+Pulls a description of a cart from MongoDB and saves it on your local
+machine in *~/.config/juicer/carts/*. Will overwrite a local cart if
+local cart shares name with remote cart.
 
 *CARTNAME*::
 The name of the cart to pull.

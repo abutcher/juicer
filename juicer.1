@@ -68,7 +68,7 @@ in their usage line\&.
 .sp
 usage: juicer cart create \fICARTNAME\fR [\-r \fIREPONAME\fR \fIITEM\fR \&... [\-r \fIREPONAME\fR \fIITEM\fR \&...]]
 .sp
-Create a cart with the items specified\&.
+Create a cart with the items specified\&. Creating a cart will overwrite a local cart if any local cart shares a name with the cart being created\&.
 .PP
 \fBCARTNAME\fR
 .RS 4
@@ -124,7 +124,7 @@ The pattern to match\&. Default:
 .sp
 usage: juicer cart pull \fICARTNAME\fR
 .sp
-Pulls a description of a cart from the pulp server and saves it on your local machine in \fB~/\&.config/juicer/carts/\fR\&.
+Pulls a description of a cart from MongoDB and saves it on your local machine in \fB~/\&.config/juicer/carts/\fR\&. Will overwrite a local cart if local cart shares name with remote cart\&.
 .PP
 \fBCARTNAME\fR
 .RS 4

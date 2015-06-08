@@ -388,15 +388,14 @@ class Upload(Pulp):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
         response = _pulp.initialize_upload()
         if response.response_code != Constants.PULP_POST_CREATED:
-            raise SystemError("Failed to initialize upload")
+            raise SystemError("Failed to initialize upload:\n" + response.response_body)
         return response.response_body['upload_id']
 
     def upload_segment(self, upload_id, last_offset, chunk):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
         response = _pulp.upload_segment(upload_id, last_offset, chunk)
         if response.response_code is not Constants.PULP_PUT_OK:
-            self.output.error("Failed to upload")
-            raise SystemError("Failed to upload")
+            raise SystemError("Failed to upload segment:\n" + response.response_body)
 
     def import_upload(self, upload_id, repo_id, unit_type, unit_key, unit_metadata):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
@@ -407,8 +406,7 @@ class Upload(Pulp):
                                        unit_metadata)
         if response.response_code not in [Constants.PULP_POST_OK,
                                           Constants.PULP_POST_ACCEPTED]:
-            self.output.error("Failed to import upload")
-            raise SystemError("Failed to import upload")
+            raise SystemError("Failed to import upload:\n" + response.response_body)
         # This is an instance of pulp.bindings.responses.Task
         return response.response_body
 
@@ -416,8 +414,7 @@ class Upload(Pulp):
         _pulp = pulp.bindings.upload.UploadAPI(self.connection)
         response = _pulp.delete_upload(upload_id)
         if response.response_code != Constants.PULP_DELETE_OK:
-            self.output.error("Failed to clean up upload")
-            raise SystemError("Failed to clean up upload")
+            raise SystemError("Failed to clean up upload:\n" + response.response_body)
 
 
 class User(Pulp):

@@ -79,8 +79,10 @@ class Cart(object):
         `name` - Name of this repo.
         `items` - List of paths to rpm.
         """
-        stargs = {'name': self.name, 'count': len(items), 'repo': repo_name}
-        self.output.debug("[CART:{name}] Adding {count} items to {repo}".format(**stargs))
+        self.output.debug("[CART:{name}] Adding {count} items to {repo}".format(
+            name=self.name,
+            count=len(items),
+            repo=repo_name))
         items = self.filter_items(items)
         cart_items = []
         for item in items:
@@ -135,13 +137,13 @@ class Cart(object):
                 self.save_remote()
             else:
                 self.output.warn('No cart_seeds found in config file. Cart not saved on remote.')
-        self.output.info("Saved cart '{}'".format(self.name))
+        self.output.info("Saved cart '{cart}'".format(cart=self.name))
         return True
 
     def save_local(self, warning=False):
         json_body = json.dumps(self._cart_dict())
-        if warning and os.path.exists(self.cart_file):
-            self.output.warn("Cart file '{}' already exists, overwriting with new data".format(self.cart_file))
+        if warning and os.path.exists(self.cart_file):  # Sometimes we don't want to show this warning.
+            self.output.warn("Cart file '{cart}' already exists, overwriting with new data".format(cart=self.cart_file))
         f = open(self.cart_file, 'w')
         f.write(json_body)
         f.flush()
@@ -155,7 +157,7 @@ class Cart(object):
         try:
             db['carts'].save(self._cart_dict())
         except pymongo.errors.AutoReconnect:
-            self.output.error("Failed to save cart '{}' on remote".format(self.name))
+            self.output.error("Failed to save cart '{cart}' on remote".format(cart=self.name))
 
     def pull(self):
         cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
@@ -174,14 +176,14 @@ class Cart(object):
                 f.flush()
                 f.close()
         except pymongo.errors.AutoReconnect:
-            self.output.error("Failed to find cart '{}' on remote".format(self.name))
+            self.output.error("Failed to find cart '{cart}' on remote".format(cart=self.name))
 
     def load(self):
         """
         Build a cart from a json file
         """
         if not os.path.exists(self.cart_file):
-            raise SystemError("No cart file found {}".format(self.cart_file))
+            raise SystemExit("No cart file could be found: {cart_file}".format(cart_file=self.cart_file))
 
         cart_file = open(self.cart_file)
         cart_body = json.loads(cart_file.read())
@@ -211,17 +213,17 @@ class Cart(object):
             for item in os.listdir(self.remotes_storage):
                 ipath = os.path.expanduser(self.remotes_storage + '/' + item)
                 if os.path.exists(ipath):
-                    self.output.debug("removing {}".format(ipath))
+                    self.output.debug("removing {ipath}".format(ipath=ipath))
                     os.remove(ipath)
-                self.output.debug("Removing {}'s remote item storage dir".format(self.name))
+                self.output.debug("Removing {cart}'s remote item storage dir".format(cart=self.name))
                 os.rmdir(self.remotes_storage)
 
         # rm cart_file()
         if os.path.exists(self.cart_file):
-            self.output.debug("Removing {}'s cart file".format(self.name))
+            self.output.debug("Removing {cart}'s cart file".format(cart=self.name))
             os.remove(self.cart_file)
 
-        self.output.info("Successfully deleted cart '{}' locally".format(self.name))
+        self.output.info("Successfully deleted cart '{cart}' locally".format(cart=self.name))
 
     def delete_remote(self):
         # rm in mongo
@@ -232,9 +234,9 @@ class Cart(object):
             db = mongo.carts
             try:
                 db['carts'].remove({'_id': self.name})
+                self.output.info("Successfully deleted cart '{cart}' on remote".format(cart=self.name))
             except pymongo.errors.AutoReconnect:
-                self.output.error("Failed to save cart '{}' on remote".format(self.name))
-            self.output.info("Successfully deleted cart '{}' remotely".format(self.name))
+                self.output.error("Failed to delete cart '{cart}' on remote".format(self.name))
 
     def update(self, description):
         for repo_items in description:
@@ -250,8 +252,7 @@ class Cart(object):
     def upload_items(self, environment, connection, force):
         if not force:
             if not self.verify_remote():
-                self.output.warning("Cart differs from remote, use -f to force the push")
-                raise SystemError("Cart differs from remote, use -f to force the push")
+                raise SystemExit("Local cart differs from remote, use -f to force upload")
 
         ######################################################################
         # Ensure repositories exist before we do any work
@@ -261,8 +262,8 @@ class Cart(object):
             # Make sure the repo exists before we upload items
             exists = pulp_repo.exists(repo, environment)
             if not exists:
-                stargs = {'repo': repo, 'environment': environment}
-                raise SystemError("Repo {repo} does not exist in {environment}".format(**stargs))
+                raise SystemExit("Repo '{repo}' does not exist in '{environment}'".format(
+                    repo=repo, environment=environment))
 
         pulp_upload = juicer.pulp.Upload(connection)
 
@@ -345,8 +346,11 @@ class Cart(object):
                 import_pbar.update(item_count)
                 # Only update path to remote path if the item is iso or rpm
                 if item_type in ['rpm', 'iso']:
-                    stargs = {'host': connection.host, 'environment': environment, 'repo': repo, 'name': item.name}
-                    item.path = "https://{host}/pulp/repos/{environment}/{repo}/{name}".format(**stargs)
+                    item.path = "https://{host}/pulp/repos/{environment}/{repo}/{name}".format(
+                        host=connection.host,
+                        environment=environment,
+                        repo=repo,
+                        name=item.name)
         import_pbar.finish()
 
         ######################################################################
@@ -431,7 +435,7 @@ class Cart(object):
                     else:
                         return False
             except pymongo.errors.AutoReconnect:
-                self.output.error("Failed to find cart '{}' on remote".format(self.name))
+                self.output.error("Failed to find cart '{cart}' on remote".format(cart=self.name))
                 return False
 
     def filter_items(self, items):
@@ -441,11 +445,11 @@ class Cart(object):
         remote_items = []
 
         possible_remotes = filter(lambda i: not os.path.exists(i), items)
-        self.output.debug("Considering {} possible remotes".format(len(possible_remotes)))
+        self.output.debug("Considering {number} possible remotes".format(number=len(possible_remotes)))
 
         for item in possible_remotes:
             remote_items.extend(juicer.remotes.assemble_remotes(item))
-            self.output.debug("Remote packages: {}".format(str(remote_items)))
+            self.output.debug("Remote packages: {remote_items}".format(remote_items=str(remote_items)))
 
         local_items = filter(os.path.exists, items)
 
@@ -481,8 +485,10 @@ class CartItem(object):
             os.mkdir(destination)
 
         self.path = dest_file
-        stargs = {'source': self.source, 'path': self.path}
-        self.output.debug("Beginning remote->local sync: {source}->{path}".format(**stargs))
+
+        self.output.debug("Beginning remote->local sync: {source}->{path}".format(
+            source=self.source,
+            path=self.path))
 
         # An array of widgets to design our progress bar.
         widgets = ['Downloading {} '.format(self.name),

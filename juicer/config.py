@@ -19,8 +19,6 @@ import ConfigParser
 import juicer.common.Constants
 import os
 
-from juicer.exceptions import JuicerConfigError
-
 
 class Config(object):
     def __init__(self):
@@ -34,7 +32,8 @@ class Config(object):
         configs = []
 
         if not os.path.exists(juicer.common.Constants.USER_CONFIG):
-            raise SystemError("No configuration file found: {}".format(juicer.common.Constants.USER_CONFIG))
+            raise SystemExit("No config file was found at '{config}'".format(
+                config=juicer.common.Constants.USER_CONFIG))
 
         configs.append(juicer.common.Constants.USER_CONFIG)
         config.read(configs)
@@ -79,9 +78,17 @@ class Config(object):
 
             # ensure required keys are present in each section
             if not required_keys.issubset(set(cfg.keys())):
-                raise JuicerConfigError("Missing values in config file: {}".format(
-                    ", ".join(list(required_keys - set(cfg.keys())))))
+                raise SystemExit("Error reading juicer config file '{config}':"
+                                 "\nConfig does not contain the following required values: {missing}"
+                                 "\n\nFor additional information see 'man 5 juicer.conf'".format(
+                                     config=juicer.common.Constants.USER_CONFIG,
+                                     missing=', '.join(list(required_keys - set(cfg.keys())))))
 
             # ensure promotion path exists
             if 'promotes_to' in cfg and cfg['promotes_to'] not in self.config.keys():
-                raise JuicerConfigError("promotion_path: {} is not a config section".format(cfg['promotes_to']))
+                raise SystemExit("Error reading juicer config file '{config}':"
+                                 "\nSection '{environment}' promotes to '{promotes_to}', but '{promotes_to}' is not a config section"
+                                 "\n\nFor additional information see 'man 5 juicer.conf'".format(
+                                     config=juicer.common.Constants.USER_CONFIG,
+                                     environment=environment,
+                                     promotes_to=cfg['promotes_to']))

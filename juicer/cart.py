@@ -190,13 +190,22 @@ class Cart(object):
         for repo, items in cart_body['repos_items'].iteritems():
             self.add_repo(repo, items)
 
-    def delete(self):
+    def delete(self, local=False, remote=False):
         """
         Remove all trace of this cart: delete the file(s) on the local
         filesystem and delete the entry from the database
         """
         self.output.debug("Deleting cart {}".format(self.name))
 
+        if local and not remote:  # User only specified local.
+            self.delete_local()
+        elif remote and not local:  # User only specified remote
+            self.delete_remote()
+        else:  # User didn't specify, do both.
+            self.delete_local()
+            self.delete_remote()
+
+    def delete_local(self):
         # rm -r self.remotes_storage()
         if os.path.exists(self.remotes_storage):
             for item in os.listdir(self.remotes_storage):
@@ -212,6 +221,9 @@ class Cart(object):
             self.output.debug("Removing {}'s cart file".format(self.name))
             os.remove(self.cart_file)
 
+        self.output.info("Successfully deleted cart '{}' locally".format(self.name))
+
+    def delete_remote(self):
         # rm in mongo
         if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
             cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
@@ -222,6 +234,7 @@ class Cart(object):
                 db['carts'].remove({'_id': self.name})
             except pymongo.errors.AutoReconnect:
                 self.output.error("Failed to save cart '{}' on remote".format(self.name))
+            self.output.info("Successfully deleted cart '{}' remotely".format(self.name))
 
     def update(self, description):
         for repo_items in description:

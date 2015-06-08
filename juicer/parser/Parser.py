@@ -169,7 +169,7 @@ class Parser(object):
         # Create the 'cart push' sub-parser
         parser_cart_push = subparser_cart.add_parser('push',
                                                      help='upload cart items to pulp',
-                                                     usage='%(prog)s CARTNAME [--in ENV [ENV ...]] [-f] [-h]')
+                                                     usage='%(prog)s CARTNAME [--in ENV [ENV ...]] [-f,--force] [-h]')
 
         parser_cart_push.add_argument('cartname', metavar='CARTNAME',
                                       help='cart name')
@@ -192,10 +192,22 @@ class Parser(object):
         # Create the 'cart delete' sub-parser
         parser_cart_delete = subparser_cart.add_parser('delete',
                                                        help='delete cart locally and on remote',
-                                                       usage='%(prog)s CARTNAME [-h]')
+                                                       usage='%(prog)s CARTNAME [-l,--local] [-r,--remote] [-h]')
 
         parser_cart_delete.add_argument('cartname', metavar='CARTNAME',
                                         help='cart name')
+
+        parser_cart_delete.add_argument('-l', '--local',
+                                        action='store_true',
+                                        default=False,
+                                        dest='local',
+                                        help='delete the cart which is cached locally (does not destroy remote cart definitions)')
+
+        parser_cart_delete.add_argument('-r', '--remote',
+                                        action='store_true',
+                                        default=False,
+                                        dest='remote',
+                                        help='delete the cart on the remote side only (ignores any cached cart definitions)')
 
         parser_cart_delete.set_defaults(cmd=juicer.command.cart.CartDeleteCommand)
 

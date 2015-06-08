@@ -154,12 +154,12 @@ environment.
    enable remote saves. Remote carts can be pulled with ``juicer cart
    pull``.
 
-   To further illustrate remote cart saving, we can delete our local cart
-   file and pull it down again.
+   To further illustrate remote cart saving, we can delete our local
+   cart and pull it down again.
 
    .. code:: bash
 
-      rm ~/.config/juicer/carts/my-cart.json
+      juicer cart delete my-cart --local
       juicer cart pull my-cart
       juicer cart show my-cart
 

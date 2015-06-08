@@ -44,12 +44,10 @@ def CartListCommand(args):
     for glob in jc.args.cart_glob:
         # Translate cart names into cart file names
         if not glob.endswith('.json'):
-            search_glob = glob + ".json"
-        else:
-            search_glob = glob
+            glob += '.json'
 
-        for cart in _find_pattern(Constants.CART_LOCATION, search_glob):
-            cart_name = cart.split('/')[-1].replace('.json', '')
+        for cart in _find_pattern(Constants.CART_LOCATION, glob):
+            cart_name = os.path.basename(cart).replace('.json', '')
             carts.append(cart_name)
     for cart in sorted(carts):
         jc.output.info("{}".format(cart))

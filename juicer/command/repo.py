@@ -19,61 +19,51 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class RepoCreateCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RepoCreateCommand, self).__init__(args)
+def RepoCreateCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_repo = juicer.pulp.Repo(self.connections[environment])
-            pulp_repo.create(name=self.args.repo,
-                             repotype=self.args.repotype,
-                             environment=environment,
-                             checksumtype=self.args.checksum_type)
-            pulp_repo.publish(name=self.args.repo,
-                              environment=environment)
+    for environment in jc.args.environment:
+        pulp_repo = juicer.pulp.Repo(jc.connections[environment])
+        pulp_repo.create(name=jc.args.repo,
+                         repotype=jc.args.repotype,
+                         environment=environment,
+                         checksumtype=jc.args.checksum_type)
+        pulp_repo.publish(name=jc.args.repo,
+                          environment=environment)
 
 
-class RepoDeleteCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RepoDeleteCommand, self).__init__(args)
+def RepoDeleteCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_repo = juicer.pulp.Repo(self.connections[environment])
-            pulp_repo.delete(name=self.args.repo,
-                             environment=environment)
+    for environment in jc.args.environment:
+        pulp_repo = juicer.pulp.Repo(jc.connections[environment])
+        pulp_repo.delete(name=jc.args.repo,
+                         environment=environment)
 
 
-class RepoListCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RepoListCommand, self).__init__(args)
+def RepoListCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_repo = juicer.pulp.Repo(self.connections[environment])
-            pulp_repo.list(environment=environment)
+    for environment in jc.args.environment:
+        pulp_repo = juicer.pulp.Repo(jc.connections[environment])
+        pulp_repo.list(environment=environment)
 
 
-class RepoPublishCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RepoPublishCommand, self).__init__(args)
+def RepoPublishCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_repo = juicer.pulp.Repo(self.connections[environment])
-            pulp_repo.publish(name=self.args.repo,
-                              environment=environment)
+    for environment in jc.args.environment:
+        pulp_repo = juicer.pulp.Repo(jc.connections[environment])
+        pulp_repo.publish(name=jc.args.repo,
+                          environment=environment)
 
 
-class RepoShowCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RepoShowCommand, self).__init__(args)
+def RepoShowCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            for repo in self.args.repo:
-                pulp_repo = juicer.pulp.Repo(self.connections[environment])
-                pulp_repo.show(name=repo,
-                               environment=environment,
-                               json=self.args.json)
+    for environment in jc.args.environment:
+        for repo in jc.args.repo:
+            pulp_repo = juicer.pulp.Repo(jc.connections[environment])
+            pulp_repo.show(name=repo,
+                           environment=environment,
+                           json=jc.args.json)

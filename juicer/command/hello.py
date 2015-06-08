@@ -19,11 +19,9 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class HelloCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(HelloCommand, self).__init__(args)
+def HelloCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp = juicer.pulp.Pulp(self.connections[environment])
-            pulp.hello(environment)
+    for environment in jc.args.environment:
+        pulp = juicer.pulp.Pulp(jc.connections[environment])
+        pulp.hello(environment)

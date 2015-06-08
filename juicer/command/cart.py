@@ -23,86 +23,73 @@ from juicer.command import JuicerCommand
 import juicer.cart
 
 
-class CartCreateCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(CartCreateCommand, self).__init__(args)
+def CartCreateCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        juicer.cart.Cart(self.args.cartname, self.args.r, autosave=True)
+    juicer.cart.Cart(jc.args.cartname, jc.args.r, autosave=True)
 
 
-class CartDeleteCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(CartDeleteCommand, self).__init__(args)
+def CartDeleteCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        cart = juicer.cart.Cart(self.args.cartname)
-        cart.delete(local=self.args.local,
-                    remote=self.args.remote)
+    cart = juicer.cart.Cart(jc.args.cartname)
+    cart.delete(local=jc.args.local,
+                remote=jc.args.remote)
 
 
-class CartListCommand(JuicerCommand):
-    def __init__(self, args):
-        super(CartListCommand, self).__init__(args)
+def CartListCommand(args):
+    jc = JuicerCommand(args)
 
-    def run(self):
-        carts = []
-        for glob in self.args.cart_glob:
-            # Translate cart names into cart file names
-            if not glob.endswith('.json'):
-                search_glob = glob + ".json"
-            else:
-                search_glob = glob
-
-            for cart in self._find_pattern(Constants.CART_LOCATION, search_glob):
-                cart_name = cart.split('/')[-1].replace('.json', '')
-                carts.append(cart_name)
-        for cart in sorted(carts):
-            self.output.info("{}".format(cart))
-
-    def _find_pattern(self, search_base, pattern):
-        # Stolen from http://rosettacode.org/wiki/Walk_a_directory/Recursively#Python
-        if (not os.path.isdir(search_base)) and os.path.exists(search_base):
-            # Adapt the algorithm to gracefully handle non-directory search paths
-            yield search_base  # pragma: no cover
+    carts = []
+    for glob in jc.args.cart_glob:
+        # Translate cart names into cart file names
+        if not glob.endswith('.json'):
+            search_glob = glob + ".json"
         else:
-            for root, dirs, files in os.walk(search_base):
-                for filename in fnmatch.filter(files, pattern):
-                    yield os.path.join(root, filename)
+            search_glob = glob
+
+        for cart in _find_pattern(Constants.CART_LOCATION, search_glob):
+            cart_name = cart.split('/')[-1].replace('.json', '')
+            carts.append(cart_name)
+    for cart in sorted(carts):
+        jc.output.info("{}".format(cart))
 
 
-class CartPullCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(CartPullCommand, self).__init__(args)
-
-    def run(self):
-        cart = juicer.cart.Cart(self.args.cartname, autoload=False, autosave=False, autosync=False)
-        cart.pull()
-
-
-class CartPushCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(CartPushCommand, self).__init__(args)
-
-    def run(self):
-        cart = juicer.cart.Cart(self.args.cartname, autoload=True, autosave=True, autosync=False)
-        for environment in self.args.environment:
-            cart.upload_items(environment, self.connections[environment], self.args.force)
+def _find_pattern(search_base, pattern):
+    # Stolen from http://rosettacode.org/wiki/Walk_a_directory/Recursively#Python
+    if (not os.path.isdir(search_base)) and os.path.exists(search_base):
+        # Adapt the algorithm to gracefully handle non-directory search paths
+        yield search_base  # pragma: no cover
+    else:
+        for root, dirs, files in os.walk(search_base):
+            for filename in fnmatch.filter(files, pattern):
+                yield os.path.join(root, filename)
 
 
-class CartShowCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(CartShowCommand, self).__init__(args)
+def CartPullCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        cart = juicer.cart.Cart(self.args.cartname, autoload=True)
-        self.output.info(str(cart))
+    cart = juicer.cart.Cart(jc.args.cartname, autoload=False, autosave=False, autosync=False)
+    cart.pull()
 
 
-class CartUpdateCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(CartUpdateCommand, self).__init__(args)
+def CartPushCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        cart = juicer.cart.Cart(self.args.cartname, autoload=True)
-        cart.update(self.args.r)
+    cart = juicer.cart.Cart(jc.args.cartname, autoload=True, autosave=True, autosync=False)
+    for environment in jc.args.environment:
+        cart.upload_items(environment, jc.connections[environment], jc.args.force)
+
+
+def CartShowCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
+
+    cart = juicer.cart.Cart(jc.args.cartname, autoload=True)
+    jc.output.info(str(cart))
+
+
+def CartUpdateCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
+
+    cart = juicer.cart.Cart(jc.args.cartname, autoload=True)
+    cart.update(jc.args.r)

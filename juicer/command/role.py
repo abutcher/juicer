@@ -19,23 +19,19 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class RoleAddCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RoleAddCommand, self).__init__(args)
+def RoleAddCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_role = juicer.pulp.Role(self.connections[environment])
-            pulp_role.add_user(name=self.args.role,
-                               environment=environment,
-                               login=self.args.login)
+    for environment in jc.args.environment:
+        pulp_role = juicer.pulp.Role(jc.connections[environment])
+        pulp_role.add_user(name=jc.args.role,
+                           environment=environment,
+                           login=jc.args.login)
 
 
-class RoleListCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RoleListCommand, self).__init__(args)
+def RoleListCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_role = juicer.pulp.Role(self.connections[environment])
-            pulp_role.list(environment=environment)
+    for environment in jc.args.environment:
+        pulp_role = juicer.pulp.Role(jc.connections[environment])
+        pulp_role.list(environment=environment)

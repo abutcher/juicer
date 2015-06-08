@@ -20,27 +20,23 @@ import juicer.pulp
 from juicer.command import JuicerCommand
 
 
-class RPMDeleteCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RPMDeleteCommand, self).__init__(args)
+def RPMDeleteCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_repo = juicer.pulp.Repo(self.connections[environment])
-            for repo, item in self.args.r:
-                pulp_repo.remove(name=repo,
-                                 environment=environment,
-                                 item_type='rpm',
-                                 glob=item)
-                pulp_repo.publish(repo, 'rpm', environment)
+    for environment in jc.args.environment:
+        pulp_repo = juicer.pulp.Repo(jc.connections[environment])
+        for repo, item in jc.args.r:
+            pulp_repo.remove(name=repo,
+                             environment=environment,
+                             item_type='rpm',
+                             glob=item)
+            pulp_repo.publish(repo, 'rpm', environment)
 
 
-class RPMUploadCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(RPMUploadCommand, self).__init__(args)
+def RPMUploadCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            self.output.info("Starting upload for {} environment".format(environment))
-            cart = juicer.cart.Cart('upload-cart', self.args.r)
-            cart.upload_items(environment, self.connections[environment])
+    for environment in jc.args.environment:
+        jc.output.info("Starting upload for {} environment".format(environment))
+        cart = juicer.cart.Cart('upload-cart', jc.args.r)
+        cart.upload_items(environment, jc.connections[environment])

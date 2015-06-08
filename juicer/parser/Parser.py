@@ -569,7 +569,7 @@ def main():  # pragma: no cover
     juicer_logger.debug("initialized juicer-logging at level: {}".format(log_level))
 
     ######################################################################
-    args.cmd(args).run()
+    args.cmd(args)
 
 if __name__ == '__main__':  # pragma: no cover
     main()

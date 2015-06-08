@@ -19,61 +19,51 @@ from juicer.command import JuicerCommand
 import juicer.pulp
 
 
-class UserCreateCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(UserCreateCommand, self).__init__(args)
+def UserCreateCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_user = juicer.pulp.User(self.connections[environment])
-            pulp_user.create(login=self.args.login,
-                             password=self.args.password,
-                             environment=environment,
-                             name=self.args.name,
-                             roles=self.args.roles)
+    for environment in jc.args.environment:
+        pulp_user = juicer.pulp.User(jc.connections[environment])
+        pulp_user.create(login=jc.args.login,
+                         password=jc.args.password,
+                         environment=environment,
+                         name=jc.args.name,
+                         roles=jc.args.roles)
 
 
-class UserDeleteCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(UserDeleteCommand, self).__init__(args)
+def UserDeleteCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_user = juicer.pulp.User(self.connections[environment])
-            pulp_user.delete(login=self.args.login,
-                             environment=environment)
+    for environment in jc.args.environment:
+        pulp_user = juicer.pulp.User(jc.connections[environment])
+        pulp_user.delete(login=jc.args.login,
+                         environment=environment)
 
 
-class UserListCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(UserListCommand, self).__init__(args)
+def UserListCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_user = juicer.pulp.User(self.connections[environment])
-            pulp_user.list(environment=environment)
+    for environment in jc.args.environment:
+        pulp_user = juicer.pulp.User(jc.connections[environment])
+        pulp_user.list(environment=environment)
 
 
-class UserShowCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(UserShowCommand, self).__init__(args)
+def UserShowCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_user = juicer.pulp.User(self.connections[environment])
-            pulp_user.show(login=self.args.login,
-                           environment=environment)
+    for environment in jc.args.environment:
+        pulp_user = juicer.pulp.User(jc.connections[environment])
+        pulp_user.show(login=jc.args.login,
+                       environment=environment)
 
 
-class UserUpdateCommand(JuicerCommand):  # pragma: no cover
-    def __init__(self, args):
-        super(UserUpdateCommand, self).__init__(args)
+def UserUpdateCommand(args):  # pragma: no cover
+    jc = JuicerCommand(args)
 
-    def run(self):
-        for environment in self.args.environment:
-            pulp_user = juicer.pulp.User(self.connections[environment])
-            pulp_user.update(login=self.args.login,
-                             password=self.args.password,
-                             environment=environment,
-                             name=self.args.name,
-                             roles=self.args.roles)
+    for environment in jc.args.environment:
+        pulp_user = juicer.pulp.User(jc.connections[environment])
+        pulp_user.update(login=jc.args.login,
+                         password=jc.args.password,
+                         environment=environment,
+                         name=jc.args.name,
+                         roles=jc.args.roles)

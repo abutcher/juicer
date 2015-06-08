@@ -50,7 +50,7 @@ class TestCart(TestCase):
 
             parser = Parser()
             args = parser.parser.parse_args(['cart', 'list'])
-            args.cmd(args).run()
+            args.cmd(args)
 
             args = parser.parser.parse_args(['cart', 'list', 'ca*.json'])
-            args.cmd(args).run()
+            args.cmd(args)

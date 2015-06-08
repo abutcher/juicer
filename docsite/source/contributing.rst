@@ -18,43 +18,59 @@ This will install dependencies within an isolated Python `virtualenv
 tests, `PEP8 <http://www.python.org/dev/peps/pep-0008>`_ style
 formatting is also checked.
 
-.. code-block:: console
-   :linenos:
-   :emphasize-lines: 2
 
-   [~/juicer] 23:29:58  (master)
-   $ make ci
-   sed "s/%VERSION%/1.0.0/" juicer/__init__.py.in > juicer/__init__.py
-   #############################################
-   # Creating a virtualenv
-   #############################################
-   virtualenv juicerenv
-   New python executable in juicerenv/bin/python2
-   Also creating executable in juicerenv/bin/python
-   Installing setuptools, pip...done.
-   . juicerenv/bin/activate && pip install -r requirements.txt
+.. raw:: html
 
-   ... snip ...
+    <div style="margin-top:10px;">
+      <iframe width="690" height="400" src="http://showterm.io/715d7b22f89c4157b7e5f" frameborder="0" allowfullscreen></iframe>
+    </div>
 
-   Verify pulp role create ... ok
-   Verify pulp role delete ... ok
-   Verify pulp role list ... ok
-   Verify pulp role remove_user ... ok
-   Verify pulp role show ... ok
-   Verify pulp user create ... ok
-   Verify pulp user delete ... ok
-   Verify pulp user list ... ok
-   Verify pulp user show ... ok
-   Verify pulp user update ... ok
-   Ensure docker image type upload data is sane ... ok
-   Ensure RPM type upload data is sane ... ok
 
-   OK
-   #############################################
-   # UNIT TESTS RAN. HTML CODE COVERAGE RESULTS:
-   % xdg-open ./cover/index.html
-   #############################################
-   :
+..
+   .. code-block:: console
+      :linenos:
+      :emphasize-lines: 2
+
+      [~/juicer] 23:29:58  (master)
+      $ make ci
+      sed "s/%VERSION%/1.0.0/" juicer/__init__.py.in > juicer/__init__.py
+      #############################################
+      # Creating a virtualenv
+      #############################################
+      virtualenv juicerenv
+      New python executable in juicerenv/bin/python2
+      Also creating executable in juicerenv/bin/python
+      Installing setuptools, pip...done.
+      . juicerenv/bin/activate && pip install -r requirements.txt
+
+      ... snip ...
+
+      Verify pulp role create ... ok
+      Verify pulp role delete ... ok
+      Verify pulp role list ... ok
+      Verify pulp role remove_user ... ok
+      Verify pulp role show ... ok
+      Verify pulp user create ... ok
+      Verify pulp user delete ... ok
+      Verify pulp user list ... ok
+      Verify pulp user show ... ok
+      Verify pulp user update ... ok
+      Ensure docker image type upload data is sane ... ok
+      Ensure RPM type upload data is sane ... ok
+
+      OK
+      #############################################
+      # UNIT TESTS RAN. HTML CODE COVERAGE RESULTS:
+      % xdg-open ./cover/index.html
+      #############################################
+      :
+
+
+Once the command ``make ci`` exits and returns control to the shell we
+can scroll up a few lines and review the results of our unit tests and
+code-coverage report (move your cursor over the window above and
+scroll up/down to see for yourself).
+
 
 Running Juicer Locally
 **********************

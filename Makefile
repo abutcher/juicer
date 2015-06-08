@@ -2,10 +2,12 @@
 
 # Makefile for juicer
 #
-# useful targets (not all implemented yet!):
+# useful targets:
+#   make ci                  -- Install deps in virtualenv and run tests
+#   make ci-unittests        -- Run tests
 #   make clean               -- Clean up garbage
-#   make pyflakes, make pep8 -- source code checks
-#   make test ----------------- run all unit tests (export LOG=true for /tmp/ logging)
+#   make docs                -- Build the docs
+#   make pyflakes, make pep8 -- Source code checks
 
 ########################################################
 

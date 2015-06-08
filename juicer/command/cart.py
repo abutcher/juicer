@@ -37,8 +37,8 @@ class CartDeleteCommand(JuicerCommand):  # pragma: no cover
 
     def run(self):
         cart = juicer.cart.Cart(self.args.cartname)
-        cart.delete()
-        self.output.info("Successfully deleted cart {}".format(cart.name))
+        cart.delete(local=self.args.local,
+                    remote=self.args.remote)
 
 
 class CartListCommand(JuicerCommand):

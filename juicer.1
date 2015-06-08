@@ -2,12 +2,12 @@
 .\"     Title: juicer
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 06/05/2015
+.\"      Date: 06/07/2015
 .\"    Manual: Pulp repos and release carts
 .\"    Source: Juicer 1.0.0
 .\"  Language: English
 .\"
-.TH "JUICER" "1" "06/05/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
+.TH "JUICER" "1" "06/07/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -91,13 +91,23 @@ Items to add to the cart in repository
 .RE
 .SS "CART DELETE"
 .sp
-usage: juicer cart delete \fICARTNAME\fR
+usage: juicer cart delete \fICARTNAME\fR [\-l,\-\-local] [\-r,\-\-remote]
 .sp
-Deletes a release cart from your local system and on the cart server\&.
+Delete a juicer cart\&. Default behavior deletes any locally cached copies as well as remote copies stored in MongoDB\&.
 .PP
 \fBCARTNAME\fR
 .RS 4
 The name of the release cart to delete\&.
+.RE
+.PP
+\fB\-l,\-\-local\fR
+.RS 4
+Delete the cart which is cached locally (does not destroy remote cart definitions)
+.RE
+.PP
+\fB\-r,\-\-remote\fR
+.RS 4
+Delete the cart on the remote side only (ignores any cached cart definitions)\&.
 .RE
 .SS "CART LIST"
 .sp

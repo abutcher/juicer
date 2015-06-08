@@ -70,12 +70,21 @@ Items to add to the cart in repository 'REPONAME'.
 
 CART DELETE
 ~~~~~~~~~~~
-usage: juicer cart delete 'CARTNAME'
+usage: juicer cart delete 'CARTNAME' [-l,--local] [-r,--remote]
 
-Deletes a release cart from your local system and on the cart server.
+Delete a juicer cart. Default behavior deletes any locally cached
+copies as well as remote copies stored in MongoDB.
 
 *CARTNAME*::
 The name of the release cart to delete.
+
+*-l,--local*::
+Delete the cart which is cached locally (does not destroy remote cart
+definitions)
+
+*-r,--remote*::
+Delete the cart on the remote side only (ignores any cached cart
+definitions).
 
 
 CART LIST

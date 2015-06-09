@@ -25,6 +25,7 @@ import progressbar
 import pymongo
 import pymongo.errors
 import re
+import shutil
 import urllib2
 
 import juicer.common
@@ -209,13 +210,7 @@ class Cart(object):
     def delete_local(self):
         # rm -r self.remotes_storage()
         if os.path.exists(self.remotes_storage):
-            for item in os.listdir(self.remotes_storage):
-                ipath = os.path.expanduser(self.remotes_storage + '/' + item)
-                if os.path.exists(ipath):
-                    self.output.debug("removing {ipath}".format(ipath=ipath))
-                    os.remove(ipath)
-                self.output.debug("Removing {cart}'s remote item storage dir".format(cart=self.name))
-                os.rmdir(self.remotes_storage)
+            shutil.rmtree(self.remotes_storage)
 
         # rm cart_file()
         if os.path.exists(self.cart_file):

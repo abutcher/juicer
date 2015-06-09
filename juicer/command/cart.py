@@ -90,4 +90,5 @@ def CartUpdateCommand(args):  # pragma: no cover
     jc = JuicerCommand(args)
 
     cart = juicer.cart.Cart(jc.args.cartname, autoload=True)
-    cart.update(jc.args.r)
+    filtered_repo_items = juicer.remotes.filter_items(jc.args.r)
+    cart.update(filtered_repo_items)

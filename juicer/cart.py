@@ -238,8 +238,7 @@ class Cart(object):
                 self.output.error("Failed to delete cart '{cart}' on remote".format(self.name))
 
     def update(self, description):
-        for repo_items in description:
-            (repo, items) = (repo_items[0], repo_items[1:])
+        for repo, items in description:
             if repo not in self.keys():
                 self[repo] = items
             else:

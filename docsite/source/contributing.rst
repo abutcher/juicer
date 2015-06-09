@@ -19,7 +19,7 @@ tests, `PEP8 <http://www.python.org/dev/peps/pep-0008>`_ style
 formatting is also checked.
 
 
-.. showterm:: 7b5f8d42ba021511e627e
+.. showterm:: 715d7b22f89c4157b7e5f
 
 
 Once the command ``make ci`` exits and returns control to the shell we

@@ -175,6 +175,7 @@ class Cart(object):
                 f.write(json_body)
                 f.flush()
                 f.close()
+                self.output.info("Successfully pulled cart '{cart}' from remote".format(cart=self.name))
         except pymongo.errors.AutoReconnect:
             self.output.error("Failed to find cart '{cart}' on remote".format(cart=self.name))
 
@@ -518,7 +519,6 @@ class CartItem(object):
 
         self.modified = True
         self.synced = True
-        self.item_type = self._set_item_type()
 
     def __str__(self):
         return self.path if self.path else self.source

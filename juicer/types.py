@@ -28,23 +28,21 @@ class Iso(object):
     def generate_repo_data(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)
         relative_url = "/{0}/{1}/".format(environment, name)
-        repo_data = {}
-        repo_data['id'] = repo_id
-        repo_data['display_name'] = name
-        repo_data['description'] = repo_id
-        repo_data['notes'] = {'_repo-type': 'iso-repo'}
-        repo_data['importer_type_id'] = 'iso_importer'
-        repo_data['importer_config'] = {}
-        repo_data['distributors'] = [{'distributor_id': 'iso_distributor',
-                                      'distributor_type_id': 'iso_distributor',
-                                      'distributor_config': {
-                                          'http': True,
-                                          'https': True,
-                                          'serve_http': True,
-                                      },
-                                      'auto_publish': True,
-                                      'relative_path': relative_url
-                                     }]
+        repo_data = {'id': repo_id,
+                     'display_name': name,
+                     'description': repo_id,
+                     'notes': {'_repo-type': 'iso-repo'},
+                     'importer_type_id': 'iso_importer',
+                     'importer_config': {},
+                     'distributors': [{'distributor_id': 'iso_distributor',
+                                       'distributor_type_id': 'iso_distributor',
+                                       'distributor_config': {
+                                           'http': True,
+                                           'https': True,
+                                           'serve_http': True,
+                                       },
+                                       'auto_publish': True,
+                                       'relative_path': relative_url}]}
         return repo_data
 
     def generate_upload_data(self, checksumtype='sha256'):
@@ -67,24 +65,22 @@ class Docker(object):
     def generate_repo_data(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)
         relative_url = "/{0}/{1}/".format(environment, name)
-        repo_data = {}
-        repo_data['id'] = repo_id
-        repo_data['display_name'] = name
-        repo_data['description'] = repo_id
-        repo_data['notes'] = {'_repo-type': 'docker-repo'}
-        repo_data['importer_type_id'] = 'docker_importer'
-        repo_data['importer_config'] = {}
-        repo_data['distributors'] = [{'distributor_id': 'docker_web_distributor_name_cli',
-                                      'distributor_type_id': 'docker_distributor_web',
-                                      'distributor_config': {},
-                                      'auto_publish': True,
-                                      'relative_path': relative_url},
-                                     {'distributor_id': 'docker_export_distributor_name_cli',
-                                      'distributor_type_id': 'docker_distributor_export',
-                                      'distributor_config': {},
-                                      'auto_publish': True,
-                                      'relative_path': relative_url
-                                     }]
+        repo_data = {'id': repo_id,
+                     'display_name': name,
+                     'description': repo_id,
+                     'notes': {'_repo-type': 'docker-repo'},
+                     'importer_type_id': 'docker_importer',
+                     'importer_config': {},
+                     'distributors': [{'distributor_id': 'docker_web_distributor_name_cli',
+                                       'distributor_type_id': 'docker_distributor_web',
+                                       'distributor_config': {},
+                                       'auto_publish': True,
+                                       'relative_path': relative_url},
+                                      {'distributor_id': 'docker_export_distributor_name_cli',
+                                       'distributor_type_id': 'docker_distributor_export',
+                                       'distributor_config': {},
+                                       'auto_publish': True,
+                                       'relative_path': relative_url}]}
         return repo_data
 
     def generate_upload_data(self, checksumtype='sha256'):
@@ -100,24 +96,22 @@ class RPM(object):
     def generate_repo_data(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)
         relative_url = "/{0}/{1}/".format(environment, name)
-        repo_data = {}
-        repo_data['id'] = repo_id
-        repo_data['display_name'] = name
-        repo_data['description'] = repo_id
-        repo_data['notes'] = {'_repo-type': 'rpm-repo'}
-        repo_data['importer_type_id'] = 'yum_importer'
-        repo_data['importer_config'] = {}
-        repo_data['distributors'] = [{'distributor_id': 'yum_distributor',
-                                      'distributor_type_id': 'yum_distributor',
-                                      'distributor_config': {
-                                          'relative_url': relative_url,
-                                          'http': True,
-                                          'https': True,
-                                          'checksum_type': checksumtype
-                                      },
-                                      'auto_publish': True,
-                                      'relative_path': relative_url
-        }]
+        repo_data = {'id': repo_id,
+                     'display_name': name,
+                     'description': repo_id,
+                     'notes': {'_repo-type': 'rpm-repo'},
+                     'importer_type_id': 'yum_importer',
+                     'importer_config': {},
+                     'distributors': [{'distributor_id': 'yum_distributor',
+                                       'distributor_type_id': 'yum_distributor',
+                                       'distributor_config': {
+                                           'relative_url': relative_url,
+                                           'http': True,
+                                           'https': True,
+                                           'checksum_type': checksumtype
+                                       },
+                                       'auto_publish': True,
+                                       'relative_path': relative_url}]}
         return repo_data
 
     def generate_upload_data(self, checksumtype='sha256'):

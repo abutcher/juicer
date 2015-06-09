@@ -26,7 +26,7 @@ import juicer.cart
 def CartCreateCommand(args):  # pragma: no cover
     jc = JuicerCommand(args)
     filtered_repo_items = juicer.remotes.filter_items(jc.args.r)
-    juicer.cart.Cart(jc.args.cartname, filtered_repo_items, jc.args.cart_type, autosave=True)
+    juicer.cart.Cart(jc.args.cartname, filtered_repo_items, autosave=True)
 
 
 def CartDeleteCommand(args):  # pragma: no cover

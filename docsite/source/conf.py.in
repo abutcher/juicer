@@ -27,7 +27,13 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.relpath('../../juicer/'))
+
+# This first `insert` adds the parent directory to the load path. From
+# here we can load the showterm plugin
+sys.path.insert(0, os.path.abspath('.'))
+# This `insert` adds the juicer source code to the load path. This
+# enables auto-api functionality, source code embedding, etc
+sys.path.insert(1, os.path.relpath('../../juicer/'))
 
 # -- General configuration ------------------------------------------------
 
@@ -38,6 +44,7 @@ sys.path.insert(0, os.path.relpath('../../juicer/'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'showterm',
     'sphinx.ext.autodoc',
 ]
 

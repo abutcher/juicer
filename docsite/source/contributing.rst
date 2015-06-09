@@ -19,51 +19,7 @@ tests, `PEP8 <http://www.python.org/dev/peps/pep-0008>`_ style
 formatting is also checked.
 
 
-.. raw:: html
-
-    <div style="margin-top:10px;">
-      <iframe width="690" height="400" src="http://showterm.io/715d7b22f89c4157b7e5f" frameborder="0" allowfullscreen></iframe>
-    </div>
-
-
-..
-   .. code-block:: console
-      :linenos:
-      :emphasize-lines: 2
-
-      [~/juicer] 23:29:58  (master)
-      $ make ci
-      sed "s/%VERSION%/1.0.0/" juicer/__init__.py.in > juicer/__init__.py
-      #############################################
-      # Creating a virtualenv
-      #############################################
-      virtualenv juicerenv
-      New python executable in juicerenv/bin/python2
-      Also creating executable in juicerenv/bin/python
-      Installing setuptools, pip...done.
-      . juicerenv/bin/activate && pip install -r requirements.txt
-
-      ... snip ...
-
-      Verify pulp role create ... ok
-      Verify pulp role delete ... ok
-      Verify pulp role list ... ok
-      Verify pulp role remove_user ... ok
-      Verify pulp role show ... ok
-      Verify pulp user create ... ok
-      Verify pulp user delete ... ok
-      Verify pulp user list ... ok
-      Verify pulp user show ... ok
-      Verify pulp user update ... ok
-      Ensure docker image type upload data is sane ... ok
-      Ensure RPM type upload data is sane ... ok
-
-      OK
-      #############################################
-      # UNIT TESTS RAN. HTML CODE COVERAGE RESULTS:
-      % xdg-open ./cover/index.html
-      #############################################
-      :
+.. showterm:: 7b5f8d42ba021511e627e
 
 
 Once the command ``make ci`` exits and returns control to the shell we

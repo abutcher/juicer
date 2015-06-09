@@ -80,3 +80,36 @@ class TestRemotes(TestCase):
             remotes = juicer.remotes.assemble_remotes('share/juicer/empty-0.1-1.noarch.rpm')
             self.assertEqual(remotes, [])
 
+    def test_filter_items(self):
+        """Can filter a list of items"""
+        site_index = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+        <html>
+        <head>
+        <title>Index of /pulp/repos/re/test</title>
+        </head>
+        <body>
+        <h1>Index of /pulp/repos/re/test</h1>
+        <ul><li><a href="/pulp/repos/re/"> Parent Directory</a></li>
+        <li><a href="repodata/"> repodata/</a></li>
+        <li><a href="versionmerge-1.0.8-1.fc20.noarch.rpm"> versionmerge-1.0.8-1.fc20.noarch.rpm</a></li>
+        </ul>
+        </body></html>"""
+        with mock.patch('urllib2.urlopen') as urlopen:
+            urlopen.return_value = site_index
+
+            # Remote file
+            repo_items = [['test-repo', 'http://example.com/file.rpm']]
+            filtered_repo_hash = juicer.remotes.filter_items(repo_items)
+            self.assertEqual(filtered_repo_hash, {'test-repo': ['http://example.com/file.rpm']})
+            # Remote file index
+            repo_hash = [['test-repo', 'http://example.com/pulp/repos/re/test']]
+            filtered_repo_hash = juicer.remotes.filter_items(repo_hash)
+            self.assertEqual(filtered_repo_hash, {'test-repo': ['http://example.com/pulp/repos/re/test/versionmerge-1.0.8-1.fc20.noarch.rpm']})
+            # Local file
+            repo_items = [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']]
+            filtered_repo_hash = juicer.remotes.filter_items(repo_items)
+            self.assertEqual(filtered_repo_hash, {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
+            # Something that should get removed
+            repo_items = [['test-repo', 'potato']]
+            filtered_repo_hash = juicer.remotes.filter_items(repo_items)
+            self.assertEqual(filtered_repo_hash, {'test-repo': []})

@@ -41,7 +41,7 @@ class TestCart(TestCase):
         with mock.patch('juicer.common.Constants') as constants:
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
-            cart = juicer.cart.Cart('test-cart', [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
+            cart = juicer.cart.Cart('test-cart', {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
             self.assertEqual(cart.repos(), ['test-repo'])
             self.assertEqual(cart.keys(), ['test-repo'])
             self.assertEqual(cart.is_empty(), False)
@@ -69,7 +69,7 @@ class TestCart(TestCase):
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
 
-            cart = juicer.cart.Cart('test-cart', [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
+            cart = juicer.cart.Cart('test-cart', {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
 
             # We can save the cart and a file is created locally.
             cart.save()
@@ -83,8 +83,7 @@ class TestCart(TestCase):
         with mock.patch('juicer.common.Constants') as constants:
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
-            # A path that doesn't exist, like potato, should result in cart not being saved
-            cart = juicer.cart.Cart('test-cart', [['test-repo', 'potato']])
+            cart = juicer.cart.Cart('test-cart', {'test-repo': []})
             cart.save()
             self.assertFalse(os.path.exists(cart.cart_file))
         
@@ -100,7 +99,7 @@ class TestCart(TestCase):
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
 
-            cart = juicer.cart.Cart('test-cart', [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
+            cart = juicer.cart.Cart('test-cart', {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
             cart.update([['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
             self.assertEqual(cart.items()[0].name, 'empty-0.1-1.noarch.rpm')
             cart.delete()

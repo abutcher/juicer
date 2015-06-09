@@ -12,14 +12,40 @@
 """
 Functions for handling remote package resources
 """
-from os.path import exists, expanduser
+import os.path
 import BeautifulSoup
+import logging
 import re
 import urllib2
 
 REMOTE_PKG_TYPE = 1
 REMOTE_INDEX_TYPE = 2
 REMOTE_INPUT_FILE_TYPE = 3
+
+output = logging.getLogger('juicer')
+
+
+def filter_items(repo_items):
+    """
+    Filter a list of items into locals and remotes.
+    """
+    repo_hash = {}
+    for ri in repo_items:
+        (repo, items) = (ri[0], ri[1:])
+
+        remote_items = []
+        possible_remotes = filter(lambda i: not os.path.exists(i), items)
+
+        output.debug("Considering {number} possible remotes".format(number=len(possible_remotes)))
+
+        for item in possible_remotes:
+            remote_items.extend(assemble_remotes(item))
+            output.debug("Remote packages: {remote_items}".format(remote_items=str(remote_items)))
+
+        local_items = filter(os.path.exists, items)
+        filtered_items = list(set(remote_items + local_items))
+        repo_hash[repo] = filtered_items
+    return repo_hash
 
 
 def assemble_remotes(resource):
@@ -63,7 +89,7 @@ def classify_resource_type(resource):
         return REMOTE_PKG_TYPE
     elif is_directory_index(resource):
         return REMOTE_INDEX_TYPE
-    elif exists(expanduser(resource)):
+    elif os.path.exists(os.path.expanduser(resource)):
         return REMOTE_INPUT_FILE_TYPE
     else:
         return None
@@ -125,7 +151,7 @@ def parse_directory_index(directory_index):
     parsed_site_index = BeautifulSoup.BeautifulSoup(site_index)
     link_tags = parsed_site_index.findAll('a', href=re.compile(r'(.+)\.(.+)'))
     # Only save the HREF attribute values from the links found
-    names = [link['href'] for link in link_tags]
+    names = [str(link['href']) for link in link_tags]
 
     # Join the index path with the discovered names so we only return complete paths
     remote_list = map(lambda end: "".join([directory_index, end]), names)

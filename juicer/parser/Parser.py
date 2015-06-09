@@ -113,6 +113,12 @@ class Parser(object):
                             nargs='+',
                             help='destination repo name, items')
 
+        parser_cart_create.add_argument('-t', '--type',
+                                        metavar='CART-TYPE',
+                                        default="rpm",
+                                        dest='cart_type',
+                                        help='type of cart items (one of: rpm, docker, iso)(default: rpm)')
+
         parser_cart_create.set_defaults(cmd=juicer.command.cart.CartCreateCommand)
 
         ##################################################################

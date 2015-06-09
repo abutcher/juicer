@@ -49,8 +49,7 @@ class Cart(object):
             self.load()
 
         if description is not None:
-            for repo_items in description:
-                (repo, items) = (repo_items[0], repo_items[1:])
+            for repo, items in description.iteritems():
                 self.output.debug("Processing {num} input items for repo {repo}".format(num=len(items), repo=repo))
                 self[repo] = items
             if autosave:
@@ -83,7 +82,6 @@ class Cart(object):
             name=self.name,
             count=len(items),
             repo=repo_name))
-        items = self.filter_items(items)
         cart_items = []
         for item in items:
             self.output.debug("Creating Cart for {}".format(item))
@@ -438,24 +436,6 @@ class Cart(object):
             except pymongo.errors.AutoReconnect:
                 self.output.error("Failed to find cart '{cart}' on remote".format(cart=self.name))
                 return False
-
-    def filter_items(self, items):
-        """
-        Filter a list of packages into local and remotes.
-        """
-        remote_items = []
-
-        possible_remotes = filter(lambda i: not os.path.exists(i), items)
-        self.output.debug("Considering {number} possible remotes".format(number=len(possible_remotes)))
-
-        for item in possible_remotes:
-            remote_items.extend(juicer.remotes.assemble_remotes(item))
-            self.output.debug("Remote packages: {remote_items}".format(remote_items=str(remote_items)))
-
-        local_items = filter(os.path.exists, items)
-
-        filtered_items = list(set(remote_items + local_items))
-        return filtered_items
 
 
 class CartItem(object):

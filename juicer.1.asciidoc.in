@@ -69,6 +69,10 @@ given multiple times.
 *ITEM* ...::
 Items to add to the cart in repository 'REPONAME'.
 
+*-t,--type* 'CART-TYPE'::
+The type of cart to create, 'rpm', 'docker', or 'iso'. Defaults
+to 'rpm'.
+
 
 CART DELETE
 ~~~~~~~~~~~
@@ -170,14 +174,14 @@ REPOSITORY OPERATIONS
 
 REPO CREATE
 ~~~~~~~~~~~
-usage: juicer repo create 'REPONAME' [-t,--type 'TYPE'] [--checksum-type 'CHECKSUM-TYPE'] [--in ENV [ENV ...]]
+usage: juicer repo create 'REPONAME' [-t,--type 'REPO-TYPE'] [--checksum-type 'CHECKSUM-TYPE'] [--in ENV [ENV ...]]
 
 Creates a repository on the pulp server.
 
 *REPONAME*::
 The name of the repository to create.
 
-*-t,--type* 'TYPE'::
+*-t,--type* 'REPO-TYPE'::
 The type of repository to create, 'rpm', 'docker', or 'iso'. Defaults
 to 'rpm'.
 

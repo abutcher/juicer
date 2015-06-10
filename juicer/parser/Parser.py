@@ -101,7 +101,7 @@ class Parser(object):
         # Create the 'cart create' sub-parser
         parser_cart_create = subparser_cart.add_parser('create',
                                                        help='create cart with destination repositories and items',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]] [-h]')
+                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]] [-t,-type CART-TYPE] [-h]')
 
         parser_cart_create.add_argument('cartname', metavar='CARTNAME',
                                         help='cart name')

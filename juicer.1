@@ -2,12 +2,12 @@
 .\"     Title: juicer
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 06/07/2015
+.\"      Date: 06/10/2015
 .\"    Manual: Pulp repos and release carts
 .\"    Source: Juicer 1.0.0
 .\"  Language: English
 .\"
-.TH "JUICER" "1" "06/07/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
+.TH "JUICER" "1" "06/10/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -88,6 +88,15 @@ option may be given multiple times\&.
 .RS 4
 Items to add to the cart in repository
 \fIREPONAME\fR\&.
+.RE
+.PP
+\fB\-t,\-\-type\fR \fICART\-TYPE\fR
+.RS 4
+The type of cart to create,
+\fIrpm\fR,
+\fIdocker\fR, or
+\fIiso\fR\&. Defaults to
+\fIrpm\fR\&.
 .RE
 .SS "CART DELETE"
 .sp
@@ -190,7 +199,7 @@ Test connection settings in \fB~/\&.config/juicer/config\fR
 .SH "REPOSITORY OPERATIONS"
 .SS "REPO CREATE"
 .sp
-usage: juicer repo create \fIREPONAME\fR [\-t,\-\-type \fITYPE\fR] [\-\-checksum\-type \fICHECKSUM\-TYPE\fR] [\-\-in ENV [ENV \&...]]
+usage: juicer repo create \fIREPONAME\fR [\-t,\-\-type \fIREPO\-TYPE\fR] [\-\-checksum\-type \fICHECKSUM\-TYPE\fR] [\-\-in ENV [ENV \&...]]
 .sp
 Creates a repository on the pulp server\&.
 .PP
@@ -199,7 +208,7 @@ Creates a repository on the pulp server\&.
 The name of the repository to create\&.
 .RE
 .PP
-\fB\-t,\-\-type\fR \fITYPE\fR
+\fB\-t,\-\-type\fR \fIREPO\-TYPE\fR
 .RS 4
 The type of repository to create,
 \fIrpm\fR,

@@ -18,6 +18,8 @@ import logging
 import re
 import urllib2
 
+import juicer.types
+
 REMOTE_PKG_TYPE = 1
 REMOTE_INDEX_TYPE = 2
 REMOTE_INPUT_FILE_TYPE = 3
@@ -25,10 +27,20 @@ REMOTE_INPUT_FILE_TYPE = 3
 output = logging.getLogger('juicer')
 
 
-def filter_items(repo_items):
+def filter_items(repo_items, item_type):
     """
     Filter a list of items into locals and remotes.
     """
+
+    if item_type == 'rpm':
+        pattern = juicer.types.RPM(None).pattern
+    elif item_type == 'docker':
+        pattern = juicer.types.Docker(None).pattern
+    elif item_type == 'iso':
+        pattern = juicer.types.Iso(None).pattern
+    else:
+        pattern = juicer.types.Iso(None).pattern
+
     repo_hash = {}
     for ri in repo_items:
         (repo, items) = (ri[0], ri[1:])
@@ -39,7 +51,7 @@ def filter_items(repo_items):
         output.debug("Considering {number} possible remotes".format(number=len(possible_remotes)))
 
         for item in possible_remotes:
-            remote_items.extend(assemble_remotes(item))
+            remote_items.extend(assemble_remotes(item, pattern))
             output.debug("Remote packages: {remote_items}".format(remote_items=str(remote_items)))
 
         local_items = filter(os.path.exists, items)
@@ -48,7 +60,7 @@ def filter_items(repo_items):
     return repo_hash
 
 
-def assemble_remotes(resource):
+def assemble_remotes(resource, pattern):
     """
     Using the specified input resource, assemble a list of resource URLS.
 
@@ -58,22 +70,22 @@ def assemble_remotes(resource):
     package URLs.
 
     """
-    resource_type = classify_resource_type(resource)
+    resource_type = classify_resource_type(resource, pattern)
 
     if resource_type is None:
         return []
     elif resource_type == REMOTE_PKG_TYPE:
         return [resource]
     elif resource_type == REMOTE_INDEX_TYPE:
-        return parse_directory_index(resource)
+        return parse_directory_index(resource, pattern)
     elif resource_type == REMOTE_INPUT_FILE_TYPE:
         # Later on this could examine the excluded data for directory
         # indexes and iterate over those too.
-        remote_packages, excluded_data = parse_input_file(resource)
+        remote_packages, excluded_data = parse_input_file(resource, pattern)
         return remote_packages
 
 
-def classify_resource_type(resource):
+def classify_resource_type(resource, pattern):
     """Determine if the specified resource is remote or local.
 
     We can handle three remote resource types from the command line,
@@ -85,7 +97,7 @@ def classify_resource_type(resource):
     - Input files don't match above, exist() on local filesystem
 
     """
-    if is_remote_package(resource):
+    if is_remote_package(resource, pattern):
         return REMOTE_PKG_TYPE
     elif is_directory_index(resource):
         return REMOTE_INDEX_TYPE
@@ -95,11 +107,11 @@ def classify_resource_type(resource):
         return None
 
 
-def is_remote_package(resource):
+def is_remote_package(resource, pattern):
     """
     Classify the input resource as a remote resource.
     """
-    remote_regexp = re.compile(r"^https?://(.+)\/(.+)\.(.+)$", re.I)
+    remote_regexp = re.compile(r"^https?://(.+)\/{pattern}$".format(pattern=pattern), re.I)
     result = remote_regexp.match(resource)
 
     if result is not None:
@@ -121,7 +133,7 @@ def is_directory_index(resource):
         return False
 
 
-def parse_input_file(resource):
+def parse_input_file(resource, pattern):
     """
     Parse input file into remote packages and excluded data.
 
@@ -131,15 +143,15 @@ def parse_input_file(resource):
     """
     input_resource = open(resource, 'r').read()
     remotes_list = [url for url in input_resource.split()]
-    remote_packages = [pkg for pkg in remotes_list if is_remote_package(pkg) is True]
+    remote_packages = [pkg for pkg in remotes_list if is_remote_package(pkg, pattern) is True]
     excluded_data = [datum for datum in remotes_list if datum not in remote_packages]
     http_indexes = [index for index in excluded_data if is_directory_index(index)]
-    remotes_from_indexes = reduce(lambda x, y: x + parse_directory_index(y), http_indexes, [])
+    remotes_from_indexes = reduce(lambda x, y: x + parse_directory_index(y, pattern), http_indexes, [])
 
     return (remote_packages + remotes_from_indexes, excluded_data)
 
 
-def parse_directory_index(directory_index):
+def parse_directory_index(directory_index, pattern):
     """
     Retrieve a directory index and make a list of the resources listed.
     """
@@ -149,7 +161,7 @@ def parse_directory_index(directory_index):
 
     site_index = urllib2.urlopen(directory_index)
     parsed_site_index = BeautifulSoup.BeautifulSoup(site_index)
-    link_tags = parsed_site_index.findAll('a', href=re.compile(r'(.+)\.(.+)'))
+    link_tags = parsed_site_index.findAll('a', href=re.compile(pattern))
     # Only save the HREF attribute values from the links found
     names = [str(link['href']) for link in link_tags]
 

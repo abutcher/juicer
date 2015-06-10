@@ -25,13 +25,13 @@ class TestRemotes(TestCase):
 
     def test_classify_remotes(self):
         """Can classify remote item types"""
-        resource_type = juicer.remotes.classify_resource_type("http://example.com/file.rpm")
+        resource_type = juicer.remotes.classify_resource_type("http://example.com/file.rpm", r'(.+)\.rpm')
         self.assertEqual(resource_type, juicer.remotes.REMOTE_PKG_TYPE)
-        resource_type = juicer.remotes.classify_resource_type("http://example.com/stuff/")
+        resource_type = juicer.remotes.classify_resource_type("http://example.com/stuff/", r'(.+)\.rpm')
         self.assertEqual(resource_type, juicer.remotes.REMOTE_INDEX_TYPE)
-        resource_type = juicer.remotes.classify_resource_type("share/juicer/empty-0.1-1.noarch.rpm")
+        resource_type = juicer.remotes.classify_resource_type("share/juicer/empty-0.1-1.noarch.rpm", r'(.+)\.rpm')
         self.assertEqual(resource_type, juicer.remotes.REMOTE_INPUT_FILE_TYPE)
-        resource_type = juicer.remotes.classify_resource_type("potato")
+        resource_type = juicer.remotes.classify_resource_type("potato", r'(.+)\.rpm')
         self.assertEqual(resource_type, None)
 
     def test_parse_directory_index(self):
@@ -50,7 +50,7 @@ class TestRemotes(TestCase):
         </body></html>"""
         with mock.patch('urllib2.urlopen') as urlopen:
             urlopen.return_value = site_index
-            remote_list = juicer.remotes.parse_directory_index('http://test.com/pulp/repos/re/test')
+            remote_list = juicer.remotes.parse_directory_index('http://test.com/pulp/repos/re/test', r'(.+)\.rpm')
             self.assertEqual(remote_list, [u'http://test.com/pulp/repos/re/test/versionmerge-1.0.8-1.fc20.noarch.rpm'])
 
     def test_assemble_remotes(self):
@@ -71,13 +71,13 @@ class TestRemotes(TestCase):
             urlopen.return_value = site_index
 
             # Remote file
-            remotes = juicer.remotes.assemble_remotes('http://example.com/file.rpm')
+            remotes = juicer.remotes.assemble_remotes('http://example.com/file.rpm', r'(.+)\.rpm')
             self.assertEqual(remotes, ['http://example.com/file.rpm'])
             # Remote file index
-            remotes = juicer.remotes.assemble_remotes('http://test.com/pulp/repos/re/test')
+            remotes = juicer.remotes.assemble_remotes('http://test.com/pulp/repos/re/test', r'(.+)\.rpm')
             self.assertEqual(remotes, [u'http://test.com/pulp/repos/re/test/versionmerge-1.0.8-1.fc20.noarch.rpm'])
             # Local file
-            remotes = juicer.remotes.assemble_remotes('share/juicer/empty-0.1-1.noarch.rpm')
+            remotes = juicer.remotes.assemble_remotes('share/juicer/empty-0.1-1.noarch.rpm', r'(.+)\.rpm')
             self.assertEqual(remotes, [])
 
     def test_filter_items(self):
@@ -99,17 +99,17 @@ class TestRemotes(TestCase):
 
             # Remote file
             repo_items = [['test-repo', 'http://example.com/file.rpm']]
-            filtered_repo_hash = juicer.remotes.filter_items(repo_items)
+            filtered_repo_hash = juicer.remotes.filter_items(repo_items, 'rpm')
             self.assertEqual(filtered_repo_hash, {'test-repo': ['http://example.com/file.rpm']})
             # Remote file index
             repo_hash = [['test-repo', 'http://example.com/pulp/repos/re/test']]
-            filtered_repo_hash = juicer.remotes.filter_items(repo_hash)
+            filtered_repo_hash = juicer.remotes.filter_items(repo_hash, 'rpm')
             self.assertEqual(filtered_repo_hash, {'test-repo': ['http://example.com/pulp/repos/re/test/versionmerge-1.0.8-1.fc20.noarch.rpm']})
             # Local file
             repo_items = [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']]
-            filtered_repo_hash = juicer.remotes.filter_items(repo_items)
+            filtered_repo_hash = juicer.remotes.filter_items(repo_items, 'rpm')
             self.assertEqual(filtered_repo_hash, {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
             # Something that should get removed
             repo_items = [['test-repo', 'potato']]
-            filtered_repo_hash = juicer.remotes.filter_items(repo_items)
+            filtered_repo_hash = juicer.remotes.filter_items(repo_items, 'rpm')
             self.assertEqual(filtered_repo_hash, {'test-repo': []})

@@ -24,6 +24,7 @@ from pyrpm.rpm import RPM as PYRPM
 class Iso(object):
     def __init__(self, path=None):
         self.path = path
+        self.pattern = r'(.+)\.(.+)'
 
     def generate_repo_data(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)
@@ -61,6 +62,7 @@ class Iso(object):
 class Docker(object):
     def __init__(self, path=None):
         self.path = path
+        self.pattern = r'(.+)\.tar'
 
     def generate_repo_data(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)
@@ -92,6 +94,7 @@ class Docker(object):
 class RPM(object):
     def __init__(self, path=None):
         self.path = path
+        self.pattern = r'(.+)\.rpm'
 
     def generate_repo_data(self, name, environment, checksumtype='sha256'):
         repo_id = "{0}-{1}".format(name, environment)

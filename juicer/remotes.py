@@ -55,6 +55,9 @@ def filter_items(repo_items, item_type):
             output.debug("Remote packages: {remote_items}".format(remote_items=str(remote_items)))
 
         local_items = filter(os.path.exists, items)
+        # Store absolute path for local items
+        local_items = map(os.path.abspath, local_items)
+
         filtered_items = list(set(remote_items + local_items))
         repo_hash[repo] = filtered_items
     return repo_hash

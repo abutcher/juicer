@@ -108,7 +108,7 @@ class TestRemotes(TestCase):
             # Local file
             repo_items = [['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']]
             filtered_repo_hash = juicer.remotes.filter_items(repo_items, 'rpm')
-            self.assertEqual(filtered_repo_hash, {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
+            self.assertTrue('test-repo' in filtered_repo_hash.keys())
             # Something that should get removed
             repo_items = [['test-repo', 'potato']]
             filtered_repo_hash = juicer.remotes.filter_items(repo_items, 'rpm')

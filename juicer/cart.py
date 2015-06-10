@@ -31,11 +31,12 @@ import urllib2
 import juicer.common
 import juicer.pulp
 import juicer.remotes
+import juicer.types
 from juicer.config import Config
 
 
 class Cart(object):
-    def __init__(self, name, description=None, autoload=False, autosync=False, autosave=False):
+    def __init__(self, name, description=None, cart_type='rpm', autoload=False, autosync=False, autosave=False):
         self.output = logging.getLogger('juicer')
         self.name = name
         self.cart_file = os.path.join(juicer.common.Constants.CART_LOCATION,
@@ -44,6 +45,16 @@ class Cart(object):
         self.remotes_storage = os.path.expanduser(os.path.join(juicer.common.Constants.CART_LOCATION,
                                                                "{}-remotes".format(self.name)))
         self.config = Config()
+
+        self.cart_type = cart_type
+        if cart_type == 'rpm':
+            self.type_object = juicer.types.RPM
+        elif cart_type == 'docker':
+            self.type_object = juicer.types.Docker
+        elif cart_type == 'iso':
+            self.type_object = juicer.types.Iso
+        else:
+            self.type_object = None
 
         if autoload:
             self.output.debug("[CART:{}] Auto-loading cart items".format(self.name))
@@ -189,6 +200,17 @@ class Cart(object):
         cart_body = json.loads(cart_file.read())
         cart_file.close()
 
+        self.cart_type = cart_body['type']
+
+        if self.cart_type == 'rpm':
+            self.type_object = juicer.types.RPM
+        elif self.cart_type == 'docker':
+            self.type_object = juicer.types.Docker
+        elif self.cart_type == 'iso':
+            self.type_object = juicer.types.Iso
+        else:
+            self.type_object = None
+
         for repo, items in cart_body['repos_items'].iteritems():
             self.add_repo(repo, items)
 
@@ -320,25 +342,20 @@ class Cart(object):
         tasks = []
         for repo, items in self.iterrepos():
             repo_id = "{0}-{1}".format(repo, environment)
-            # Pull repository distributors to determine what type of items we're going to upload
-            distributors = pulp_repo.distributors(repo, environment)
             for item in items:
-                distributor_ids = [distributor['id'] for distributor in distributors]
-                if 'yum_distributor' in distributor_ids:
-                    item_type = 'rpm'
-                    unit_key, unit_metadata = juicer.types.RPM(item.path).generate_upload_data()
-                elif 'docker_web_distributor_name_cli' in distributor_ids:
-                    item_type = 'docker_image'
-                    unit_key, unit_metadata = juicer.types.Docker(item.path).generate_upload_data()
-                elif 'iso_distributor' in distributor_ids:
-                    item_type = 'iso'
-                    unit_key, unit_metadata = juicer.types.Iso(item.path).generate_upload_data()
+                if self.cart_type == 'docker':
+                    unit_type = 'docker_image'
+                unit_key, unit_metadata = self.type_object(item.path).generate_upload_data()
                 # Keep tasks returned from import upload so we can make sure they've finished
-                tasks.append(pulp_upload.import_upload(item.upload_id, repo_id, item_type, unit_key, unit_metadata))
+                tasks.append(pulp_upload.import_upload(upload_id=item.upload_id,
+                                                       repo_id=repo_id,
+                                                       unit_type=unit_type,
+                                                       unit_key=unit_key,
+                                                       unit_metadata=unit_metadata))
                 item_count += 1
                 import_pbar.update(item_count)
                 # Only update path to remote path if the item is iso or rpm
-                if item_type in ['rpm', 'iso']:
+                if self.cart_type in ['rpm', 'iso']:
                     item.path = "https://{host}/pulp/repos/{environment}/{repo}/{name}".format(
                         host=connection.host,
                         environment=environment,
@@ -399,6 +416,7 @@ class Cart(object):
 
     def _cart_dict(self):
         output = {'_id': self.name,
+                  'type': self.cart_type,
                   'repos_items': []}
 
         repos_items = {}

@@ -1,5 +1,6 @@
 {
     "_id": "cart",
+    "type":"rpm",
     "repos_items": {
 	"test": [
 	    "share/juicer/empty-0.1-1.noarch.rpm"

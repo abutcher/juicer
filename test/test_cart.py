@@ -32,7 +32,7 @@ class TestCart(TestCase):
         with mock.patch('juicer.common.Constants') as constants:
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
-            cart = juicer.cart.Cart('test-cart')
+            cart = juicer.cart.Cart(name='test-cart')
             self.assertEqual(cart.is_empty(), True)
             self.assertEqual(cart.repo_items_hash, {})
 
@@ -41,7 +41,8 @@ class TestCart(TestCase):
         with mock.patch('juicer.common.Constants') as constants:
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
-            cart = juicer.cart.Cart('test-cart', {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
+            cart = juicer.cart.Cart(name='test-cart',
+                                    description={'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
             self.assertEqual(cart.repos(), ['test-repo'])
             self.assertEqual(cart.keys(), ['test-repo'])
             self.assertEqual(cart.is_empty(), False)
@@ -52,7 +53,7 @@ class TestCart(TestCase):
         with mock.patch('juicer.common.Constants') as constants:
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
-            cart = juicer.cart.Cart('cart', autoload=True)
+            cart = juicer.cart.Cart(name='cart', autoload=True)
             self.assertEqual(cart.repos(), ['test'])
             self.assertEqual(cart.is_empty(), False)
             self.assertEqual(cart.items()[0].name, 'empty-0.1-1.noarch.rpm')
@@ -69,7 +70,8 @@ class TestCart(TestCase):
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
 
-            cart = juicer.cart.Cart('test-cart', {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
+            cart = juicer.cart.Cart(name='test-cart',
+                                    description={'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
 
             # We can save the cart and a file is created locally.
             cart.save()
@@ -83,7 +85,8 @@ class TestCart(TestCase):
         with mock.patch('juicer.common.Constants') as constants:
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
-            cart = juicer.cart.Cart('test-cart', {'test-repo': []})
+            cart = juicer.cart.Cart(name='test-cart',
+                                    description={'test-repo': []})
             cart.save()
             self.assertFalse(os.path.exists(cart.cart_file))
         
@@ -99,7 +102,8 @@ class TestCart(TestCase):
             constants.CART_LOCATION = './'
             constants.USER_CONFIG = './config'
 
-            cart = juicer.cart.Cart('test-cart', {'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
+            cart = juicer.cart.Cart(name='test-cart',
+                                    description={'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
             cart.update([['test-repo', 'share/juicer/empty-0.1-1.noarch.rpm']])
             self.assertEqual(cart.items()[0].name, 'empty-0.1-1.noarch.rpm')
             cart.delete()
@@ -133,7 +137,7 @@ class TestCart(TestCase):
             # pymongo.MongoClient
             MongoClient.return_value = mock_mongo
 
-            cart = juicer.cart.Cart('potato')
+            cart = juicer.cart.Cart(name='potato')
             # Do an initial pull
             cart.pull()
             self.assertTrue(os.path.exists(cart.cart_file))
@@ -152,6 +156,6 @@ class TestCart(TestCase):
             MongoClient.return_value = mock_mongo
 
             # We can't pull a cart that doesn't exist on the remote
-            cart = juicer.cart.Cart('potato')
+            cart = juicer.cart.Cart(name='potato')
             cart.pull()
             self.assertFalse(os.path.exists(cart.cart_file))

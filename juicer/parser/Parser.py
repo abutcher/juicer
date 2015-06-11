@@ -101,7 +101,7 @@ class Parser(object):
         # Create the 'cart create' sub-parser
         parser_cart_create = subparser_cart.add_parser('create',
                                                        help='create cart with destination repositories and items',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]] [-t,-type CART-TYPE] [-h]')
+                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]] [-t,-type CART-TYPE]')
 
         parser_cart_create.add_argument('cartname', metavar='CARTNAME',
                                         help='cart name')
@@ -124,7 +124,7 @@ class Parser(object):
         ##################################################################
         # Create the 'cart show' sub-parser
         parser_cart_show = subparser_cart.add_parser('show',
-                                                     usage='%(prog)s CARTNAME [-h]',
+                                                     usage='%(prog)s CARTNAME',
                                                      help='show the contents of a cart')
 
         parser_cart_show.add_argument('cartname', metavar='CARTNAME',
@@ -135,7 +135,7 @@ class Parser(object):
         ##################################################################
         # Create the 'cart list' sub-parser
         parser_cart_list = subparser_cart.add_parser('list',
-                                                     usage='%(prog)s [GLOB] [-h]',
+                                                     usage='%(prog)s [GLOB]',
                                                      help='list local carts')
 
         parser_cart_list.add_argument('cart_glob', metavar='GLOB',
@@ -148,7 +148,7 @@ class Parser(object):
         # Create the 'cart update' sub-parser
         parser_cart_update = subparser_cart.add_parser('update',
                                                        help='update cart with new items',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]] [-h]')
+                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]]')
 
         parser_cart_update.add_argument('cartname', metavar='CARTNAME',
                                         help='cart name')
@@ -163,7 +163,7 @@ class Parser(object):
         ##################################################################
         # Create the 'cart pull' sub-parser
         parser_cart_pull = subparser_cart.add_parser('pull',
-                                                     usage='%(prog)s CARTNAME [-h]',
+                                                     usage='%(prog)s CARTNAME',
                                                      help='pull cart from remote')
 
         parser_cart_pull.add_argument('cartname', metavar='CARTNAME',
@@ -175,7 +175,7 @@ class Parser(object):
         # Create the 'cart push' sub-parser
         parser_cart_push = subparser_cart.add_parser('push',
                                                      help='upload cart items to pulp',
-                                                     usage='%(prog)s CARTNAME [--in ENV [ENV ...]] [-f,--force] [-h]')
+                                                     usage='%(prog)s CARTNAME [--in ENV [ENV ...]] [-f,--force]')
 
         parser_cart_push.add_argument('cartname', metavar='CARTNAME',
                                       help='cart name')
@@ -198,7 +198,7 @@ class Parser(object):
         # Create the 'cart delete' sub-parser
         parser_cart_delete = subparser_cart.add_parser('delete',
                                                        help='delete cart locally and on remote',
-                                                       usage='%(prog)s CARTNAME [-l,--local] [-r,--remote] [-h]')
+                                                       usage='%(prog)s CARTNAME [-l,--local] [-r,--remote]')
 
         parser_cart_delete.add_argument('cartname', metavar='CARTNAME',
                                         help='cart name')
@@ -221,7 +221,7 @@ class Parser(object):
         # create the 'rpm upload' sub-parser
         parser_rpm_upload = subparser_rpm.add_parser('upload',
                                                      help='upload rpms to repositories',
-                                                     usage='%(prog)s -r REPONAME ITEM ... [ -r REPONAME ITEM ...] [--in ENV [ENV ...]] [-h]')
+                                                     usage='%(prog)s -r REPONAME ITEM ... [ -r REPONAME ITEM ...] [--in ENV [ENV ...]]')
 
         parser_rpm_upload.add_argument('-r', metavar=('REPONAME', 'ITEM'),
                                        action='append',
@@ -255,7 +255,7 @@ class Parser(object):
         # create the 'rpm delete' sub-parser
         parser_rpm_delete = subparser_rpm.add_parser('delete',
                                                      help='delete rpms from repositories',
-                                                     usage='%(prog)s -r REPONAME ITEM ... [-r REPONAME ITEM ...] [--in ENV [ENV ...]] [-h]')
+                                                     usage='%(prog)s -r REPONAME ITEM ... [-r REPONAME ITEM ...] [--in ENV [ENV ...]]')
 
         parser_rpm_delete.add_argument('-r', metavar=('REPONAME', 'ITEM'),
                                        required=True,
@@ -274,7 +274,7 @@ class Parser(object):
         ##################################################################
         # Create the 'repo delete' sub-parser
         parser_repo_delete = subparser_repo.add_parser('delete',
-                                                       usage='%(prog)s REPONAME [--in ENV [ENV ...]] [-h]',
+                                                       usage='%(prog)s REPONAME [--in ENV [ENV ...]]',
                                                        help='delete a repository')
 
         parser_repo_delete.add_argument('repo', metavar='REPONAME',
@@ -293,7 +293,7 @@ class Parser(object):
         # create the 'repo publish' sub-parser
         parser_repo_publish = subparser_repo.add_parser('publish',
                                                         help='publish a repository (this will regenerate metadata)',
-                                                        usage='%(prog)s REPONAME [--in ENV [ENV ...]] [-h]')
+                                                        usage='%(prog)s REPONAME [--in ENV [ENV ...]]')
 
         parser_repo_publish.add_argument('repo', metavar='REPONAME',
                                          type=str.lower,
@@ -311,7 +311,7 @@ class Parser(object):
         # Create the 'repo create' sub-parser
         parser_repo_create = subparser_repo.add_parser('create',
                                                        help='create a repository',
-                                                       usage='%(prog)s REPONAME [-t,--type TYPE] [--checksum-type CHECKSUM-TYPE] [--in ENV [ENV ...]] [-h]')
+                                                       usage='%(prog)s REPONAME [-t,--type TYPE] [--checksum-type CHECKSUM-TYPE] [--in ENV [ENV ...]]')
 
         parser_repo_create.add_argument('repo', metavar='REPONAME',
                                         type=str.lower,
@@ -339,7 +339,7 @@ class Parser(object):
         ##################################################################
         # Create the 'repo list' sub-parser
         parser_repo_list = subparser_repo.add_parser('list',
-                                                     usage='%(prog)s [--json] [--in ENV [ENV ...]] [-h]',
+                                                     usage='%(prog)s [--json] [--in ENV [ENV ...]]',
                                                      help='list repositories')
 
         parser_repo_list.add_argument('--in', metavar='ENV',
@@ -358,7 +358,7 @@ class Parser(object):
         # Create the 'repo show' sub-parser
 
         parser_repo_show = subparser_repo.add_parser('show',
-                                                     usage='%(prog)s REPONAME ... [--json] [--in ENV [ENV ...]] [-h]',
+                                                     usage='%(prog)s REPONAME ... [--json] [--in ENV [ENV ...]]',
                                                      help='show one or more repositories')
 
         parser_repo_show.add_argument('repo', metavar='REPONAME',
@@ -381,7 +381,7 @@ class Parser(object):
         ##################################################################
         # Create the 'role add' sub-parser
         parser_role_add = subparser_role.add_parser('add',
-                                                    usage='%(prog)s --login LOGIN --role ROLE [--in ENV [ENV ...]] [-h]',
+                                                    usage='%(prog)s --login LOGIN --role ROLE [--in ENV [ENV ...]]',
                                                     help='add user to role')
 
         parser_role_add.add_argument('--login', metavar='LOGIN',
@@ -405,7 +405,7 @@ class Parser(object):
         ##################################################################
         # Create the 'role list' sub-parser
         parser_role_list = subparser_role.add_parser('list',
-                                                     usage='%(prog)s [--in ENV [ENV ...]] [-h]',
+                                                     usage='%(prog)s [--in ENV [ENV ...]]',
                                                      help='list roles')
 
         parser_role_list.add_argument('--in', metavar='ENV',
@@ -420,7 +420,7 @@ class Parser(object):
         # Create the 'user create' sub-parser
         parser_user_create = subparser_user.add_parser('create',
                                                        help='create a user',
-                                                       usage='%(prog)s LOGIN --name \"FULL NAME\" [--password [\"PASSWORD\"]] [--roles ROLE ...] [--in ENV [ENV ...]] [-h]')
+                                                       usage='%(prog)s LOGIN --name \"FULL NAME\" [--password [\"PASSWORD\"]] [--roles ROLE ...] [--in ENV [ENV ...]]')
 
         parser_user_create.add_argument('login', metavar='LOGIN',
                                         help='login id for user')
@@ -456,7 +456,7 @@ class Parser(object):
         ##################################################################
         # Create the 'user delete' sub-parser
         parser_user_delete = subparser_user.add_parser('delete',
-                                                       usage='%(prog)s LOGIN [--in ENV [ENV ...]] [-h]',
+                                                       usage='%(prog)s LOGIN [--in ENV [ENV ...]]',
                                                        help='delete a user')
 
         parser_user_delete.add_argument('login', metavar='LOGIN',
@@ -474,7 +474,7 @@ class Parser(object):
         ##################################################################
         # Create the 'user show' sub-parser
         parser_user_show = subparser_user.add_parser('show',
-                                                     usage='%(prog)s LOGIN [--in ENV [ENV ...]] [-h]',
+                                                     usage='%(prog)s LOGIN [--in ENV [ENV ...]]',
                                                      help='show a user')
 
         parser_user_show.add_argument('login', metavar='LOGIN',
@@ -493,7 +493,7 @@ class Parser(object):
         # Create the 'user update' sub-parser
         parser_user_update = subparser_user.add_parser('update',
                                                        help='change user information',
-                                                       usage='%(prog)s LOGIN [--name \"FULL NAME\"] [--password [\"PASSWORD\"]] [--roles ROLE ...] [--in ENV [ENV ...]] [-h]')
+                                                       usage='%(prog)s LOGIN [--name \"FULL NAME\"] [--password [\"PASSWORD\"]] [--roles ROLE ...] [--in ENV [ENV ...]]')
 
         parser_user_update.add_argument('login', metavar='LOGIN',
                                         type=str.lower,
@@ -529,7 +529,7 @@ class Parser(object):
         ##################################################################
         # Create the 'user list' sub-parser
         parser_user_list = subparser_user.add_parser('list',
-                                                     usage='%(prog)s [--in ENV [ENV ...]] [-h]',
+                                                     usage='%(prog)s [--in ENV [ENV ...]]',
                                                      help='list users')
 
         parser_user_list.add_argument('--in', metavar='ENV',

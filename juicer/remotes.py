@@ -100,10 +100,10 @@ def classify_resource_type(resource, pattern):
     - Input files don't match above, exist() on local filesystem
 
     """
-    if is_remote_package(resource, pattern):
-        return REMOTE_PKG_TYPE
-    elif is_directory_index(resource):
+    if is_directory_index(resource):
         return REMOTE_INDEX_TYPE
+    elif is_remote_package(resource, pattern):
+        return REMOTE_PKG_TYPE
     elif os.path.exists(os.path.expanduser(resource)):
         return REMOTE_INPUT_FILE_TYPE
     else:
@@ -127,10 +127,10 @@ def is_directory_index(resource):
     """
     Classify the input resource as a directory index or not.
     """
-    remote_regexp = re.compile(r"^https?://(.+)/?$", re.I)
-    result = remote_regexp.match(resource)
+    ends_in_slash = re.compile(r"^https?://(.+)/?$", re.I).match(resource)
+    has_no_dot = not re.compile(r"(.+)[.](.+)", re.I).match(os.path.basename(resource))
 
-    if result is not None:
+    if ends_in_slash and has_no_dot:
         return True
     else:
         return False

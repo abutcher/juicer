@@ -2,12 +2,12 @@
 .\"     Title: juicer
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 06/10/2015
+.\"      Date: 06/12/2015
 .\"    Manual: Pulp repos and release carts
 .\"    Source: Juicer 1.0.0
 .\"  Language: English
 .\"
-.TH "JUICER" "1" "06/10/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
+.TH "JUICER" "1" "06/12/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -126,7 +126,7 @@ List all carts\&. Optionally provide one or more \fICART_GLOB\fR to only list ca
 .PP
 \fBCART_GLOB\fR
 .RS 4
-The pattern to match\&. Default:
+The pattern to match\&. Must escape special characters that would be shell interpreted\&. Default:
 \fB*\fR
 .RE
 .SS "CART PULL"

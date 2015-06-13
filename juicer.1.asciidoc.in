@@ -102,7 +102,8 @@ list carts whose names match the given pattern. Pattern matching uses
 standard *fnmatch* rules.
 
 *CART_GLOB*::
-The pattern to match. Default: ***
+The pattern to match. Must escape special characters that would be
+shell interpreted. Default: ***
 
 
 CART PULL

@@ -34,6 +34,7 @@ class TestRemotes(TestCase):
         resource_type = juicer.remotes.classify_resource_type("potato", r'(.+)\.rpm')
         self.assertEqual(resource_type, None)
 
+
     def test_parse_directory_index(self):
         """Can parse a directory index"""
         site_index = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">

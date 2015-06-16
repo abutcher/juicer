@@ -12,6 +12,7 @@
 """
 Functions for handling remote package resources
 """
+import fnmatch
 import os.path
 import BeautifulSoup
 import logging
@@ -39,7 +40,7 @@ def filter_items(repo_items, item_type):
     elif item_type == 'iso':
         pattern = juicer.types.Iso(None).pattern
     else:
-        pattern = juicer.types.Iso(None).pattern
+        pattern = juicer.types.RPM(None).pattern
 
     repo_hash = {}
     for ri in repo_items:
@@ -127,11 +128,17 @@ def is_directory_index(resource):
     """
     Classify the input resource as a directory index or not.
     """
-    ends_in_slash = re.compile(r"^https?://(.+)/?$", re.I).match(resource)
-    has_no_dot = not re.compile(r"(.+)[.](.+)", re.I).match(os.path.basename(resource))
-
-    if ends_in_slash and has_no_dot:
+    if re.compile(r"^https?://(.+)/$", re.I).match(resource):
         return True
+
+    if re.compile(r"^https?://(.+)$", re.I).match(resource):
+        if re.compile(r"^[^\[\]\*\?\!]+$", re.I).match(resource):
+            if re.compile(r"(.+)[.](.+)").match(os.path.basename(resource)):
+                return False
+            else:
+                return True
+        else:
+            return True
     else:
         return False
 
@@ -158,15 +165,27 @@ def parse_directory_index(directory_index, pattern):
     """
     Retrieve a directory index and make a list of the resources listed.
     """
-    # Normalize our URL style
-    if not directory_index.endswith('/'):
-        directory_index = directory_index + '/'
 
-    site_index = urllib2.urlopen(directory_index)
+    # Use the tail of the remote path to determine what we're dealing with.
+    head, tail = os.path.split(directory_index)
+
+    # Is this an fnmatch or a directory without a trailing slash?
+    if re.compile(r"^[^\[\]\*\?\!\.]+$", re.I).match(tail):
+        if not directory_index.endswith('/'):
+            directory_index = directory_index + '/'
+        site_index = urllib2.urlopen(directory_index)
+    else:
+        pattern = fnmatch.translate(tail)
+        directory_index = head + '/'
+        site_index = urllib2.urlopen(directory_index)
+
     parsed_site_index = BeautifulSoup.BeautifulSoup(site_index)
     link_tags = parsed_site_index.findAll('a', href=re.compile(pattern))
     # Only save the HREF attribute values from the links found
     names = [str(link['href']) for link in link_tags]
+
+    # Remove items ending in /
+    names[:] = [name for name in names if not name.endswith('/')]
 
     # Join the index path with the discovered names so we only return complete paths
     remote_list = map(lambda end: "".join([directory_index, end]), names)

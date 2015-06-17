@@ -134,7 +134,25 @@ source. The directory listing will be searched for links ending in
        }
    }
 
+If you need to get more specific you can use `fnmatch.fnmatch
+<https://docs.python.org/2/library/fnmatch.html>`_ wildcard matching
+with apache directory indexes.
 
+.. code:: bash
+
+   juicer cart create my-dir-cart -r my-repository http://son.com/rpms/mega*rpm
+   juicer cart show my-dir-cart
+
+.. code:: json
+
+   {
+       "_id": "my-dir-cart",
+       "repos_items": {
+           "my-repository": [
+               "http://son.com/rpms/megafrobber-1.0.3-2.noarch.rpm",
+           ]
+       }
+   }
 
 
 Push a cart to an environment

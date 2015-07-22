@@ -72,6 +72,8 @@ DOWNLOAD_AT_ONCE = 1048576
 CART_LOCATION = os.path.expanduser("~/.config/juicer/carts")
 USER_CONFIG = os.path.expanduser("~/.config/juicer/config")
 CONFIG_DIR = os.path.expanduser("~/.config/juicer")
+PRE_PLUGIN_DIR = '/usr/share/juicer/plugins/pre/'
+POST_PLUGIN_DIR = '/usr/share/juicer/plugins/post/'
 EXAMPLE_USER_CONFIG = '/usr/share/juicer/juicer.user.conf'
 EXAMPLE_SYSTEM_CONFIG = '/usr/share/juicer/juicer.conf'
 

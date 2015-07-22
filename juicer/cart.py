@@ -29,6 +29,7 @@ import shutil
 import urllib2
 
 import juicer.common
+import juicer.plugins
 import juicer.pulp
 import juicer.remotes
 import juicer.types
@@ -291,6 +292,12 @@ class Cart(object):
                     item.sync(self.remotes_storage)
 
         ######################################################################
+        # Execute pre plugins
+        ######################################################################
+        plugins = juicer.plugins.Plugins()
+        plugins.execute_pre_plugins(self.items())
+
+        ######################################################################
         # Generate upload requests
         ######################################################################
         widgets = ['Initializing ',
@@ -345,6 +352,8 @@ class Cart(object):
             for item in items:
                 if self.cart_type == 'docker':
                     unit_type = 'docker_image'
+                else:
+                    unit_type = self.cart_type
                 unit_key, unit_metadata = self.type_object(item.path).generate_upload_data()
                 # Keep tasks returned from import upload so we can make sure they've finished
                 tasks.append(pulp_upload.import_upload(upload_id=item.upload_id,
@@ -410,6 +419,12 @@ class Cart(object):
         # Save the cart
         ######################################################################
         self.save(warning=False)
+
+        ######################################################################
+        # Execute pre plugins
+        ######################################################################
+        plugins = juicer.plugins.Plugins()
+        plugins.execute_post_plugins(self.items())
 
     def __str__(self):
         return json.dumps(self._cart_dict(), indent=4)

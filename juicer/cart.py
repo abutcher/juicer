@@ -421,7 +421,7 @@ class Cart(object):
         self.save(warning=False)
 
         ######################################################################
-        # Execute pre plugins
+        # Execute post plugins
         ######################################################################
         plugins = juicer.plugins.Plugins()
         plugins.execute_post_plugins(self.items())

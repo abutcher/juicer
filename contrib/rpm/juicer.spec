@@ -15,14 +15,15 @@ Url:           https://github.com/abutcher/juicer/
 
 BuildArch:     noarch
 
-# Requires: python-BeautifulSoup
-# Requires: python-requests >= 0.13.1
-# Requires: rpm-python
-# Requires: PyYAML
-# Requires: python-progressbar
-# Requires: python >= 2.5
-# Requires: pymongo
-# Requires: python-magic
+Requires: m2crypto
+Requires: python-BeautifulSoup
+Requires: python-bitmath
+Requires: python-progressbar
+Requires: python-pulp-bindings >= 2.6.0-1
+Requires: python-pulp-common >= 2.6.0-1
+Requires: python-pulp-docker-common >= 1.0.0-1
+Requires: python-pymongo
+Requires: python-setuptools
 BuildRequires: python-devel
 
 

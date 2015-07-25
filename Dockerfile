@@ -10,3 +10,5 @@ RUN dnf install -y https://repos.fedorapeople.org/repos/pulp/pulp/stable/2/fedor
     man-db \
     /root/juicer* && \
     dnf clean all
+
+COPY config /root/.config/juicer/config

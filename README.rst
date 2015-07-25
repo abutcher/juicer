@@ -57,7 +57,7 @@ Usage
    hello               test your connection to the pulp server
 
 Create a repository
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 Creating a repository without specifying ``--in`` will automatically
 create the repository in every configured environment.
@@ -88,7 +88,7 @@ Or, a repository can be created in specific environments.
    single Pulp node.
 
 Create a cart
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 A cart is composed of repositories and packages.
 
@@ -110,7 +110,7 @@ Packages don't have to be local.
    juicer cart create my-cart -r my-repository http://dang.com/rpms/omg.rpm
 
 Push a cart to an environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code:: bash
 

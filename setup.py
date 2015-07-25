@@ -25,10 +25,6 @@ setup(name='juicer',
           'juicer.parser',
           'juicer.pulp'
       ],
-      data_files=[
-          ('/usr/share/juicer/plugins/pre',[]),
-          ('/usr/share/juicer/plugins/post',[])
-      ],
       entry_points={
           'console_scripts': [
               'juicer = juicer.parser.Parser:main',

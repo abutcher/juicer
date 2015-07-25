@@ -41,6 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py build
 
 %install
+mkdir -p $RPM_BUILD_ROOT/%{_datadir}/juicer/plugins/{pre,post}/
 mkdir -p $RPM_BUILD_ROOT/%{_mandir}/{man1,man5}/
 cp -v juicer.1 $RPM_BUILD_ROOT/%{_mandir}/man1/
 cp -v juicer.conf.5 $RPM_BUILD_ROOT/%{_mandir}/man5/
@@ -50,6 +51,7 @@ cp -v juicer.conf.5 $RPM_BUILD_ROOT/%{_mandir}/man5/
 ######################################################################
 # files for 'juicer' package
 %files -f juicer-files.txt
+%{_datadir}/juicer*
 %doc README.rst LICENSE
 %doc %{_mandir}/man1/juicer*
 %doc %{_mandir}/man5/juicer*

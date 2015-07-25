@@ -169,11 +169,22 @@ prod.
 
 Installation
 ------------
-Juicer was built to talk to Pulp version 2.6.0. Installation instructions are
-available `here <https://pulp.readthedocs.org/en/2.6-release/user-guide/installation.html>`_.
+Juicer was built to work with Pulp version 2.6.0. We assume that you
+have a server up and running which Juicer can talk to. Installation
+instructions are available `here
+<https://pulp.readthedocs.org/en/2.6-release/user-guide/installation.html>`_.
 
-Currently the only supported method is installing from source while
-we're under construction.
+RPM Install
+^^^^^^^^^^^
+RPM packages are available for RHEL/Centos 7 and Fedora 21 & 22.
+
+.. code::
+
+  dnf copr enable abutcher/juicer
+  dnf install -y juicer
+
+Source Install
+^^^^^^^^^^^^^^
 
 .. code::
 

@@ -5,11 +5,22 @@ Getting Started
 
 Installation
 ------------
-Juicer was built to talk to Pulp version 2.6.0. Installation instructions are
-available `here <https://pulp.readthedocs.org/en/2.6-release/user-guide/installation.html>`_.
+Juicer was built to work with Pulp version 2.6.0. We assume that you
+have a server up and running which Juicer can talk to. Installation
+instructions are available `here
+<https://pulp.readthedocs.org/en/2.6-release/user-guide/installation.html>`_.
 
-Currently the only supported method is installing from source while
-we're under construction.
+RPM Install
+^^^^^^^^^^^
+RPM packages are available for RHEL/Centos 7 and Fedora 21 & 22.
+
+.. code::
+
+  dnf copr enable abutcher/juicer
+  dnf install -y juicer
+
+Source Install
+^^^^^^^^^^^^^^
 
 .. code::
 
@@ -59,7 +70,7 @@ Usage
    hello               test your connection to the pulp server
 
 Create a repository
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 Creating a repository without specifying ``--in`` will automatically
 create the repository in every configured environment.
@@ -90,7 +101,7 @@ Or, a repository can be created in specific environments.
    single Pulp node.
 
 Create a cart
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 A cart is composed of repositories and packages.
 
@@ -156,7 +167,7 @@ with apache directory indexes.
 
 
 Push a cart to an environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Pushing a cart will upload all of its items to the specified
 environment.

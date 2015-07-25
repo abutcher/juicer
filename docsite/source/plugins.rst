@@ -10,9 +10,11 @@ that you'd want to do with a cart's files before and after uploading.
 - Plugins are read from ``/usr/share/juicer/plugins/pre`` and
   ``/usr/share/juicer/plugins/post``.
 - Plugins must be named after the class they contain.
-- Plugins will be passed an ``item_type`` (rpm, docker, or iso), the
-  ``environment``, and a list of ``items`` that have already been
-  synced to the local filesystem.
+- Plugins classes will be initialized with ``item_type`` (rpm, docker,
+  or iso), the ``environment``, and a list of ``items`` that have
+  already been synced to the local filesystem.
+- Plugin classes must contain a ``run`` member function in which all
+  of the work will be done.
 
 An Example Plugin
 -----------------

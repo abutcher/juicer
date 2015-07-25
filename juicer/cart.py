@@ -155,6 +155,8 @@ class Cart(object):
         json_body = json.dumps(self._cart_dict())
         if warning and os.path.exists(self.cart_file):  # Sometimes we don't want to show this warning.
             self.output.warn("Cart file '{cart}' already exists, overwriting with new data".format(cart=self.cart_file))
+        if not os.path.exists(juicer.common.Constants.CART_LOCATION):
+            os.mkdir(juicer.common.Constants.CART_LOCATION)
         f = open(self.cart_file, 'w')
         f.write(json_body)
         f.flush()

@@ -297,7 +297,7 @@ class Cart(object):
         # Execute pre plugins
         ######################################################################
         plugins = juicer.plugins.Plugins()
-        plugins.execute_pre_plugins(self.items())
+        plugins.execute_pre_plugins(self.cart_type, environment, self.items())
 
         ######################################################################
         # Generate upload requests
@@ -426,7 +426,7 @@ class Cart(object):
         # Execute post plugins
         ######################################################################
         plugins = juicer.plugins.Plugins()
-        plugins.execute_post_plugins(self.items())
+        plugins.execute_post_plugins(self.cart_type, environment, self.items())
 
     def __str__(self):
         return json.dumps(self._cart_dict(), indent=4)

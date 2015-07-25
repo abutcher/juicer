@@ -30,8 +30,10 @@ class Plugins(object):
         self.load_plugins()
 
     def load_plugins(self):
+        self.output.debug('Loading plugins')
         for plugin in os.listdir(juicer.common.Constants.PRE_PLUGIN_DIR):
             name = os.path.splitext(os.path.basename(plugin))[0]
+            self.output.debug("Attempting to load pre upload plugin '{plugin}'".format(plugin=plugin))
             try:
                 mod = imp.load_source(name, juicer.common.Constants.PRE_PLUGIN_DIR + plugin)
                 self.pre_plugins.append(getattr(mod, name))
@@ -40,16 +42,19 @@ class Plugins(object):
 
         for plugin in os.listdir(juicer.common.Constants.POST_PLUGIN_DIR):
             name = os.path.splitext(os.path.basename(plugin))[0]
+            self.output.debug("Attempting to load post upload plugin '{plugin}'".format(plugin=plugin))
             try:
                 mod = imp.load_source(name, juicer.common.Constants.POST_PLUGIN_DIR + plugin)
                 self.pre_plugins.append(getattr(mod, name))
             except:
                 self.output.error("Failed to load '{plugin}'".format(plugin=plugin))
 
-    def execute_pre_plugins(self, items):
+    def execute_pre_plugins(self, item_type, environment, items):
         for plugin in self.pre_plugins:
-            plugin().run(items)
+            plugin_object = plugin(item_type, environment, items)
+            plugin_object.run()
 
-    def execute_post_plugins(self, items):
+    def execute_post_plugins(self, item_type, environment, items):
         for plugin in self.post_plugins:
-            plugin().run(items)
+            plugin_object = plugin(item_type, environment, items)
+            plugin_object.run()

@@ -24,4 +24,5 @@ environments.
    :numbered:
 
    getting_started.rst
+   plugins.rst
    contributing.rst

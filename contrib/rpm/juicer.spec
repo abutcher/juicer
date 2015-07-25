@@ -23,6 +23,7 @@ Requires: python-pulp-bindings >= 2.6.0-1
 Requires: python-pulp-common >= 2.6.0-1
 Requires: python-pulp-docker-common >= 1.0.0-1
 Requires: python-pymongo
+Requires: python-pyrpm
 Requires: python-setuptools
 BuildRequires: python-devel
 
@@ -40,22 +41,18 @@ rm -rf $RPM_BUILD_ROOT
 %{__python} setup.py build
 
 %install
-# %{__python} setup.py install -O1 --root=$RPM_BUILD_ROOT
-# mkdir -p $RPM_BUILD_ROOT/%{_mandir}/{man1,man5}/
-# cp -v docs/man/man1/*.1 $RPM_BUILD_ROOT/%{_mandir}/man1/
-# cp -v docs/man/man5/*.5 $RPM_BUILD_ROOT/%{_mandir}/man5/
-# mkdir -p $RPM_BUILD_ROOT/%{_datadir}/juicer
-# #cp -vr share/juicer/completions $RPM_BUILD_ROOT/%{_datadir}/juicer/
-# cp -vr share/juicer/juicer.conf $RPM_BUILD_ROOT/%{_datadir}/juicer/
+mkdir -p $RPM_BUILD_ROOT/%{_mandir}/{man1,man5}/
+cp -v juicer.1 $RPM_BUILD_ROOT/%{_mandir}/man1/
+cp -v juicer.conf.5 $RPM_BUILD_ROOT/%{_mandir}/man5/
 %{__python2} setup.py install -O1 --root=$RPM_BUILD_ROOT --record=juicer-files.txt
 
 
 ######################################################################
 # files for 'juicer' package
 %files -f juicer-files.txt
-#%dir %{python2_sitelib}/juicer
 %doc README.rst LICENSE
-
+%doc %{_mandir}/man1/juicer*
+%doc %{_mandir}/man5/juicer*
 
 
 ######################################################################

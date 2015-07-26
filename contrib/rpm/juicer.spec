@@ -6,7 +6,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Name:          juicer
 Summary:       Pulp and release carts
 Version:       1.0.0
-Release:       2%{?dist}
+Release:       3%{?dist}
 
 Group:         Applications/Internet
 License:       GPLv3+
@@ -59,6 +59,9 @@ cp -v juicer.conf.5 $RPM_BUILD_ROOT/%{_mandir}/man5/
 
 ######################################################################
 %changelog
+* Sun Jul 26 2015 abutcher <abutcher@redhat.com> - 1.0.0-3
+- Include https endpoint for item sync fix.
+
 * Sat Jul 25 2015 abutcher <abutcher@redhat.com> - 1.0.0-2
 - Include cart directory creation fix.
 

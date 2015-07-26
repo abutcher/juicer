@@ -26,6 +26,7 @@ import pymongo
 import pymongo.errors
 import re
 import shutil
+import ssl
 import urllib2
 
 import juicer.common
@@ -507,7 +508,11 @@ class CartItem(object):
                    progressbar.ETA(), ' ',
                    bitmath.integrations.BitmathFileTransferSpeed()]
 
-        u = urllib2.urlopen(self.source)
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+
+        u = urllib2.urlopen(self.source, context=ctx)
         f = open(self.path, 'wb')
         meta = u.info()
         item_size = int(meta.getheaders("Content-Length")[0])

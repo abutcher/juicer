@@ -31,6 +31,7 @@ TESTPACKAGE := juicer
 RPMSPECDIR := ./contrib/rpm/
 RPMSPEC := $(RPMSPECDIR)/juicer.spec
 
+M2CRYPTOTAG := "swig-3.0.5-22.3"
 PULPTAG := "2.6-release"
 PULPDOCKERTAG := "pulp-docker-1.0.1-0.2.beta"
 
@@ -95,10 +96,13 @@ virtualenv: __init__.py
 	@echo "# Creating a virtualenv"
 	@echo "#############################################"
 	virtualenv $(NAME)env
-# Swig must be install at =< 3.0.4 for M2Crypto
 	. $(NAME)env/bin/activate && pip install -r requirements.txt
 # Install our unittest tools in the virtual env
 	. $(NAME)env/bin/activate && pip install pep8 nose coverage mock
+# Install M2Crypto in the virtualenv, only clone if it doesn't exist
+	if [ ! -d "M2Crypto" ]; then git clone https://github.com/mtrmac/M2Crypto.git; fi
+	. $(NAME)env/bin/activate && cd M2Crypto && git checkout $(M2CRYPTOTAG)
+	. $(NAME)env/bin/activate && cd M2Crypto && pip install .
 # Install pulp in the virtualenv, only clone if it doesn't exist
 	if [ ! -d "pulp" ]; then git clone https://github.com/pulp/pulp.git; fi
 	. $(NAME)env/bin/activate && cd pulp && git checkout $(PULPTAG)

@@ -1,6 +1,5 @@
 BeautifulSoup
 bitmath
-M2Crypto
 progressbar
 pyflakes
 pymongo

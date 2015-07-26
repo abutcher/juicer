@@ -101,7 +101,7 @@ class Parser(object):
         # Create the 'cart create' sub-parser
         parser_cart_create = subparser_cart.add_parser('create',
                                                        help='create cart with destination repositories and items',
-                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]] [-t,-type CART-TYPE]')
+                                                       usage='%(prog)s CARTNAME [-r REPONAME ITEM ... [-r REPONAME ITEM ...]] [-t,-type CART-TYPE] [-f,--force]')
 
         parser_cart_create.add_argument('cartname', metavar='CARTNAME',
                                         help='cart name')
@@ -118,6 +118,12 @@ class Parser(object):
                                         default="rpm",
                                         dest='cart_type',
                                         help='type of cart items (one of: rpm, docker, iso)(default: rpm)')
+
+        parser_cart_create.add_argument('-f', '--force',
+                                        action='store_true',
+                                        default=False,
+                                        dest='force',
+                                        help='force create')
 
         parser_cart_create.set_defaults(cmd=juicer.command.cart.CartCreateCommand)
 

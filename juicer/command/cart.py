@@ -29,7 +29,8 @@ def CartCreateCommand(args):  # pragma: no cover
     juicer.cart.Cart(name=jc.args.cartname,
                      cart_type=jc.args.cart_type,
                      description=filtered_repo_items,
-                     autosave=True)
+                     autosave=True,
+                     force=jc.args.force)
 
 
 def CartDeleteCommand(args):  # pragma: no cover

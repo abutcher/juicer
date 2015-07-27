@@ -171,7 +171,7 @@ Installation
 ------------
 Juicer was built to work with Pulp version 2.6.0. We assume that you
 have a server up and running which Juicer can talk to. Installation
-instructions are available `here
+instructions for Pulp are available `here
 <https://pulp.readthedocs.org/en/2.6-release/user-guide/installation.html>`_.
 
 RPM Install

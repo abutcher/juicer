@@ -2,12 +2,12 @@
 .\"     Title: juicer
 .\"    Author: [see the "AUTHOR" section]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 06/12/2015
+.\"      Date: 07/28/2015
 .\"    Manual: Pulp repos and release carts
 .\"    Source: Juicer 1.0.0
 .\"  Language: English
 .\"
-.TH "JUICER" "1" "06/12/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
+.TH "JUICER" "1" "07/28/2015" "Juicer 1\&.0\&.0" "Pulp repos and release carts"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -66,7 +66,7 @@ in their usage line\&.
 .SH "CART OPERATIONS"
 .SS "CART CREATE"
 .sp
-usage: juicer cart create \fICARTNAME\fR [\-r \fIREPONAME\fR \fIITEM\fR \&... [\-r \fIREPONAME\fR \fIITEM\fR \&...]]
+usage: juicer cart create \fICARTNAME\fR [\-r \fIREPONAME\fR \fIITEM\fR \&... [\-r \fIREPONAME\fR \fIITEM\fR \&...]] [\-f,\-\-force]
 .sp
 Create a cart with the items specified\&. Creating a cart will overwrite a local cart if any local cart shares a name with the cart being created\&.
 .PP
@@ -97,6 +97,11 @@ The type of cart to create,
 \fIdocker\fR, or
 \fIiso\fR\&. Defaults to
 \fIrpm\fR\&.
+.RE
+.PP
+\fB\-f,\-\-force\fR
+.RS 4
+Force push cart\&. Force must be used when local cart differs from cart server\&.
 .RE
 .SS "CART DELETE"
 .sp
@@ -141,7 +146,7 @@ The name of the cart to pull\&.
 .RE
 .SS "CART PUSH"
 .sp
-usage: juicer cart push \fICARTNAME\fR [\-f] [\-\-in ENV [ENV \&...]]
+usage: juicer cart push \fICARTNAME\fR [\-\-in ENV [ENV \&...]] [\-f,\-\-force]
 .sp
 Pushes all cart items their repositories\&. Saves cart on the cart server\&.
 .PP

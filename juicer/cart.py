@@ -38,7 +38,7 @@ from juicer.config import Config
 
 
 class Cart(object):
-    def __init__(self, name, description=None, cart_type='rpm', autoload=False, autosync=False, autosave=False):
+    def __init__(self, name, description=None, cart_type='rpm', autoload=False, autosync=False, autosave=False, force=False):
         self.output = logging.getLogger('juicer')
         self.name = name
         self.cart_file = os.path.join(juicer.common.Constants.CART_LOCATION,
@@ -67,7 +67,7 @@ class Cart(object):
                 self.output.debug("Processing {num} input items for repo {repo}".format(num=len(items), repo=repo))
                 self[repo] = items
             if autosave:
-                self.save(remote_save=False)
+                self.save(remote_save=True, force=force)
 
     def __getitem__(self, repo):
         """ Return the items in the given repo """
@@ -139,14 +139,14 @@ class Cart(object):
                 return False
         return True
 
-    def save(self, remote_save=True, warning=False):
+    def save(self, remote_save=True, warning=False, force=False):
         if self.is_empty():
             self.output.error('Cart is empty, not saving anything')
             return False
         self.save_local(warning=warning)
         if remote_save:
             if 'cart_seeds' in self.config.get(self.config.keys()[0]).keys():
-                self.save_remote()
+                self.save_remote(force=force)
             else:
                 self.output.warn('No cart_seeds found in config file. Cart not saved on remote.')
         self.output.info("Saved cart '{cart}'".format(cart=self.name))
@@ -163,7 +163,10 @@ class Cart(object):
         f.flush()
         f.close()
 
-    def save_remote(self):
+    def save_remote(self, force=False):
+        if not force:
+            if not self.verify_remote():
+                raise SystemExit("A remote cart with the same name exists and has different content, use -f to force create.")
         cart_seeds = self.config.get(self.config.keys()[0])['cart_seeds']
         connection_str = 'mongodb://' + cart_seeds
         mongo = pymongo.MongoClient(connection_str)
@@ -265,7 +268,7 @@ class Cart(object):
             else:
                 for item in items:
                     self[repo].append(CartItem(item))
-        self.save()
+        self.save(remote_save=True, force=True)
         return True
 
     def upload_items(self, environment, connection, force):

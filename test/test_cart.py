@@ -74,7 +74,7 @@ class TestCart(TestCase):
                                     description={'test-repo': ['share/juicer/empty-0.1-1.noarch.rpm']})
 
             # We can save the cart and a file is created locally.
-            cart.save()
+            cart.save(force=True)
             self.assertTrue(os.path.exists(cart.cart_file))
             # We can delete the cart and the file no longer exists.
             cart.delete()
@@ -87,7 +87,7 @@ class TestCart(TestCase):
             constants.USER_CONFIG = './config'
             cart = juicer.cart.Cart(name='test-cart',
                                     description={'test-repo': []})
-            cart.save()
+            cart.save(force=True)
             self.assertFalse(os.path.exists(cart.cart_file))
         
     def test_cart_update(self):

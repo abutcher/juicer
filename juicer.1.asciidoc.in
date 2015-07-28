@@ -53,7 +53,7 @@ CART OPERATIONS
 
 CART CREATE
 ~~~~~~~~~~~
-usage: juicer cart create 'CARTNAME' [-r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...]]
+usage: juicer cart create 'CARTNAME' [-r 'REPONAME' 'ITEM' ... [-r 'REPONAME' 'ITEM' ...]] [-f,--force]
 
 Create a cart with the items specified. Creating a cart will overwrite
 a local cart if any local cart shares a name with the cart being
@@ -72,6 +72,10 @@ Items to add to the cart in repository 'REPONAME'.
 *-t,--type* 'CART-TYPE'::
 The type of cart to create, 'rpm', 'docker', or 'iso'. Defaults
 to 'rpm'.
+
+*-f,--force*::
+Force push cart. Force must be used when local cart differs from cart
+server.
 
 
 CART DELETE
@@ -120,7 +124,7 @@ The name of the cart to pull.
 
 CART PUSH
 ~~~~~~~~~
-usage: juicer cart push 'CARTNAME' [-f] [--in ENV [ENV ...]]
+usage: juicer cart push 'CARTNAME' [--in ENV [ENV ...]] [-f,--force]
 
 Pushes all cart items their repositories. Saves cart on the cart
 server.
